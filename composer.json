@@ -7,8 +7,11 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "area17/twill": "^3.0",
         "laravel/framework": "^11.31",
-        "laravel/tinker": "^2.9"
+        "laravel/tinker": "^2.9",
+        "lunarphp/lunar": "^1.0",
+        "lunarphp/stripe": "^1.2"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
