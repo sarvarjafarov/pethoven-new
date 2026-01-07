@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "45ecb634205771b2cd94fa59cdd93e78",
+    "content-hash": "c0b512f73de04f36fea49369e24e23f6",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -13618,9 +13618,7 @@
                 "source": "https://github.com/webmozarts/assert/tree/2.0.0"
             },
             "time": "2025-12-16T21:36:00+00:00"
-        }
-    ],
-    "packages-dev": [
+        },
         {
             "name": "fakerphp/faker",
             "version": "v1.24.1",
@@ -13683,7 +13681,9 @@
                 "source": "https://github.com/FakerPHP/Faker/tree/v1.24.1"
             },
             "time": "2024-11-21T13:46:39+00:00"
-        },
+        }
+    ],
+    "packages-dev": [
         {
             "name": "filp/whoops",
             "version": "2.18.4",
