@@ -8,47 +8,59 @@
     $productUrl = $product->defaultUrl?->slug ?? $product->id;
 @endphp
 
+<!--== Start Product Item ==-->
 <div class="product-item">
     <div class="product-thumb">
-        <a href="{{ route('shop.product.show', $productUrl) }}">
-            <img src="{{ $thumbnail }}" alt="{{ $productName }}" class="w-100">
+        <a class="d-block" href="{{ route('shop.product.show', $productUrl) }}">
+            <img src="{{ $thumbnail }}" width="370" height="450" alt="{{ $productName }}">
         </a>
         @if($product->collections->isNotEmpty())
-            <span class="badges">
-                <span class="badge badge-new">{{ $product->collections->first()->translateAttribute('name') }}</span>
-            </span>
+            <span class="flag-new">{{ $product->collections->first()->translateAttribute('name') }}</span>
         @endif
         <div class="product-action">
-            <a class="action-btn" href="{{ route('shop.product.show', $productUrl) }}" title="Quick View">
-                <i class="fa fa-eye"></i>
-            </a>
-            <button class="action-btn" type="button" title="Add to Wishlist">
-                <i class="fa fa-heart-o"></i>
+            <button type="button" class="product-action-btn action-btn-quick-view">
+                <i class="fa fa-expand"></i>
             </button>
-            <button class="action-btn quick-add-to-cart" type="button" title="Add to Cart" data-variant-id="{{ $firstVariant?->id }}" data-product-name="{{ $productName }}">
-                <i class="fa fa-shopping-cart"></i>
+            <button type="button" class="product-action-btn action-btn-cart quick-add-to-cart" data-variant-id="{{ $firstVariant?->id }}" data-product-name="{{ $productName }}">
+                <span>Add to cart</span>
+            </button>
+            <button type="button" class="product-action-btn action-btn-wishlist">
+                <i class="fa fa-heart-o"></i>
             </button>
         </div>
     </div>
     <div class="product-info">
-        <h4 class="product-title">
-            <a href="{{ route('shop.product.show', $productUrl) }}">{{ $productName }}</a>
-        </h4>
+        <div class="product-rating">
+            <div class="rating">
+                <i class="fa fa-star-o"></i>
+                <i class="fa fa-star-o"></i>
+                <i class="fa fa-star-o"></i>
+                <i class="fa fa-star-o"></i>
+                <i class="fa fa-star-half-o"></i>
+            </div>
+            <div class="reviews">150 reviews</div>
+        </div>
+        <h4 class="title"><a href="{{ route('shop.product.show', $productUrl) }}">{{ $productName }}</a></h4>
         @if($price)
-            <div class="product-price">
+            <div class="prices">
                 <span class="price">{{ $price->price->formatted }}</span>
             </div>
         @else
-            <div class="product-price">
+            <div class="prices">
                 <span class="price">Price on request</span>
             </div>
         @endif
-        <div class="product-rating">
-            <i class="fa fa-star"></i>
-            <i class="fa fa-star"></i>
-            <i class="fa fa-star"></i>
-            <i class="fa fa-star"></i>
-            <i class="fa fa-star-o"></i>
-        </div>
+    </div>
+    <div class="product-action-bottom">
+        <button type="button" class="product-action-btn action-btn-quick-view">
+            <i class="fa fa-expand"></i>
+        </button>
+        <button type="button" class="product-action-btn action-btn-wishlist">
+            <i class="fa fa-heart-o"></i>
+        </button>
+        <button type="button" class="product-action-btn action-btn-cart quick-add-to-cart" data-variant-id="{{ $firstVariant?->id }}" data-product-name="{{ $productName }}">
+            <span>Add to cart</span>
+        </button>
     </div>
 </div>
+<!--== End Product Item ==-->
