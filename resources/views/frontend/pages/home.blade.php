@@ -154,22 +154,38 @@
 <!--== End Blog Section ==-->
 
 <!--== Start Newsletter Section ==-->
-<section class="section-space" style="background: linear-gradient(135deg, #FFDEE2 0%, #FFE5D4 25%, #FFF8E1 50%, #E8F5FF 75%, #F3E5F5 100%); border-radius: 20px; margin: 0 auto; max-width: 1200px;">
+<section style="padding: 80px 0;">
     <div class="container">
-        <div class="row align-items-center">
-            <div class="col-md-6">
-                <h2 style="font-size: 48px; font-weight: 800; margin-bottom: 15px; color: #1a1a2e;">Join With Us</h2>
-                <p style="color: #666; font-size: 16px;">Lorem ipsum dolor sit amet, consectetur<br>adipiscing elit ut aliquam.</p>
-            </div>
-            <div class="col-md-6">
-                <form class="newsletter-form">
-                    <div class="input-group" style="box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-radius: 50px; overflow: hidden; background: white;">
-                        <input type="email" class="form-control" placeholder="enter your email" style="border: none; padding: 20px 30px; font-size: 16px;">
-                        <button class="btn" type="submit" style="background-color: #E87B63; color: white; border: none; padding: 15px 35px; border-radius: 0;">
-                            <i class="fa fa-paper-plane"></i>
-                        </button>
-                    </div>
-                </form>
+        <div style="background: linear-gradient(135deg, #FFDEE2 0%, #FFE5D4 25%, #FFF8E1 50%, #E8F5FF 75%, #F3E5F5 100%); border-radius: 30px; padding: 60px 80px;">
+            <div class="row align-items-center">
+                <div class="col-md-6 mb-md-0 mb-6">
+                    <h2 style="font-size: 52px; font-weight: 800; margin-bottom: 20px; color: #1a1a2e; line-height: 1.2;">Join with us</h2>
+                    <p style="color: #666; font-size: 18px; line-height: 1.6; margin-bottom: 0;">Lorem ipsum dolor sit amet, consectetur<br>adipiscing elit ut aliquam.</p>
+                </div>
+                <div class="col-md-6">
+                    <form class="newsletter-form" action="#" method="POST">
+                        @csrf
+                        <div style="position: relative; display: flex; align-items: center; background: white; border-radius: 60px; box-shadow: 0 15px 40px rgba(0,0,0,0.08); overflow: hidden;">
+                            <input
+                                type="email"
+                                name="email"
+                                class="form-control"
+                                placeholder="enter your email"
+                                required
+                                style="border: none; padding: 24px 160px 24px 35px; font-size: 16px; color: #666; background: transparent; box-shadow: none; outline: none;"
+                            >
+                            <button
+                                class="btn"
+                                type="submit"
+                                style="position: absolute; right: 8px; background-color: #E87B63; color: white; border: none; padding: 18px 40px; border-radius: 50px; font-size: 16px; transition: all 0.3s ease; cursor: pointer;"
+                                onmouseover="this.style.backgroundColor='#d86a54'"
+                                onmouseout="this.style.backgroundColor='#E87B63'"
+                            >
+                                <i class="fa fa-paper-plane" style="font-size: 18px;"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
