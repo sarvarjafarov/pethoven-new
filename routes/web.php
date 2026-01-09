@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Frontend\PageController;
 use App\Http\Controllers\Frontend\ProductController;
 use App\Http\Controllers\Frontend\CartController;
+use App\Http\Controllers\Frontend\CheckoutController;
 
 // Homepage
 Route::get('/', function () {
@@ -37,11 +38,13 @@ Route::get('/wishlist', function () {
     return response('Wishlist - Coming soon');
 })->name('wishlist.index');
 
-// Checkout Routes (placeholders - will be replaced with controllers)
+// Checkout Routes
 Route::prefix('checkout')->name('checkout.')->group(function () {
-    Route::get('/', function () {
-        return response('Checkout - Coming soon');
-    })->name('index');
+    Route::get('/', [CheckoutController::class, 'index'])->name('index');
+    Route::post('/process', [CheckoutController::class, 'process'])->name('process');
+    Route::get('/payment', [CheckoutController::class, 'payment'])->name('payment');
+    Route::post('/process-payment', [CheckoutController::class, 'processPayment'])->name('process-payment');
+    Route::get('/success/{order}', [CheckoutController::class, 'success'])->name('success');
 });
 
 // Blog Routes (placeholders - will be replaced with controllers)
