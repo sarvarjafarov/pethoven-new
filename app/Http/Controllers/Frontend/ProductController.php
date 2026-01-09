@@ -15,7 +15,8 @@ class ProductController extends Controller
             'variants.prices',
             'variants.values.option',
             'thumbnail',
-            'collections'
+            'collections',
+            'defaultUrl'
         ])->where('status', 'published');
 
         // Filter by collection
@@ -60,7 +61,11 @@ class ProductController extends Controller
 
     public function show($slug)
     {
-        $product = Product::where('slug', $slug)
+        // Try to find by URL slug first, fallback to ID
+        $product = Product::whereHas('urls', function($q) use ($slug) {
+                $q->where('slug', $slug)->where('default', true);
+            })
+            ->orWhere('id', $slug)
             ->where('status', 'published')
             ->with([
                 'variants.prices.currency',
