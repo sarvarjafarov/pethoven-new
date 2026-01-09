@@ -9,7 +9,18 @@ use App\Http\Controllers\Frontend\AccountController;
 
 // Homepage
 Route::get('/', function () {
-    return view('frontend.pages.home');
+    $featuredProducts = \Lunar\Models\Product::with([
+        'variants.prices',
+        'thumbnail',
+        'collections',
+        'defaultUrl'
+    ])
+    ->where('status', 'published')
+    ->latest()
+    ->take(8)
+    ->get();
+
+    return view('frontend.pages.home', compact('featuredProducts'));
 })->name('home');
 
 // Static Pages
