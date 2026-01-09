@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Frontend\PageController;
+use App\Http\Controllers\Frontend\ProductController;
 
 // Homepage
 Route::get('/', function () {
@@ -14,15 +15,10 @@ Route::get('/contact', [PageController::class, 'contact'])->name('contact');
 Route::post('/contact', [PageController::class, 'contactSubmit'])->name('contact.submit');
 Route::get('/faq', [PageController::class, 'faq'])->name('faq');
 
-// Shop Routes (placeholders - will be replaced with controllers)
+// Shop Routes
 Route::prefix('shop')->name('shop.')->group(function () {
-    Route::get('/', function () {
-        return response('Shop page - Coming soon');
-    })->name('index');
-
-    Route::get('/product/{slug}', function ($slug) {
-        return response('Product details - Coming soon');
-    })->name('product.show');
+    Route::get('/', [ProductController::class, 'index'])->name('index');
+    Route::get('/product/{slug}', [ProductController::class, 'show'])->name('product.show');
 });
 
 // Cart Routes (placeholders - will be replaced with controllers)

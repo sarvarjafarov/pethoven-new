@@ -1,0 +1,84 @@
+<?php
+
+namespace App\Http\Controllers\Frontend;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Lunar\Models\Product;
+use Lunar\Models\Collection;
+
+class ProductController extends Controller
+{
+    public function index(Request $request)
+    {
+        $query = Product::with([
+            'variants.prices',
+            'variants.values.option',
+            'thumbnail',
+            'collections'
+        ])->where('status', 'published');
+
+        // Filter by collection
+        if ($request->has('collection')) {
+            $query->whereHas('collections', function($q) use ($request) {
+                $q->where('slug', $request->collection);
+            });
+        }
+
+        // Search functionality
+        if ($request->has('search') && $request->search) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'LIKE', "%{$search}%")
+                  ->orWhere('description', 'LIKE', "%{$search}%");
+            });
+        }
+
+        // Sorting
+        $sort = $request->get('sort', 'newest');
+        switch ($sort) {
+            case 'price_low':
+                $query->orderBy('created_at', 'asc');
+                break;
+            case 'price_high':
+                $query->orderBy('created_at', 'desc');
+                break;
+            case 'name':
+                $query->orderBy('name', 'asc');
+                break;
+            case 'newest':
+            default:
+                $query->latest();
+                break;
+        }
+
+        $products = $query->paginate(12);
+        $collections = Collection::all();
+
+        return view('frontend.shop.index', compact('products', 'collections', 'sort'));
+    }
+
+    public function show($slug)
+    {
+        $product = Product::where('slug', $slug)
+            ->where('status', 'published')
+            ->with([
+                'variants.prices.currency',
+                'variants.values.option',
+                'images',
+                'collections'
+            ])
+            ->firstOrFail();
+
+        // Get related products from same collections
+        $related = Product::whereHas('collections', function($q) use ($product) {
+            $q->whereIn('id', $product->collections->pluck('id'));
+        })
+        ->where('id', '!=', $product->id)
+        ->where('status', 'published')
+        ->limit(4)
+        ->get();
+
+        return view('frontend.shop.show', compact('product', 'related'));
+    }
+}
