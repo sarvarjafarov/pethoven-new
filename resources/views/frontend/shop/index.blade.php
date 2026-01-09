@@ -105,3 +105,59 @@
 </section>
 <!--== End Product Area ==-->
 @endsection
+
+@push('scripts')
+<script>
+$(document).ready(function() {
+    // Quick add to cart from product grid
+    $('.quick-add-to-cart').on('click', function(e) {
+        e.preventDefault();
+        const $btn = $(this);
+        const variantId = $btn.data('variant-id');
+        const productName = $btn.data('product-name');
+
+        if (!variantId) {
+            alert('Product variant not available');
+            return;
+        }
+
+        const originalHtml = $btn.html();
+        $btn.prop('disabled', true);
+        $btn.html('<i class="fa fa-spinner fa-spin"></i>');
+
+        $.ajax({
+            url: '{{ route("cart.add") }}',
+            method: 'POST',
+            data: {
+                variant_id: variantId,
+                quantity: 1,
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                if (response.success) {
+                    // Update cart count in header
+                    const $cartBadge = $('.cart-count');
+                    $cartBadge.text(response.cart_count);
+
+                    if (response.cart_count > 0) {
+                        $cartBadge.show();
+                    }
+
+                    // Show success message
+                    alert(productName + ' added to cart!');
+
+                    // Reset button
+                    $btn.prop('disabled', false);
+                    $btn.html(originalHtml);
+                }
+            },
+            error: function(xhr) {
+                alert('Error adding product to cart');
+                $btn.prop('disabled', false);
+                $btn.html(originalHtml);
+            }
+        });
+    });
+});
+</script>
+@endpush

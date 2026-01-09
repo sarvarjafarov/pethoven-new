@@ -52,8 +52,14 @@
                                 <rect class="icon-rect" width="30" height="30" fill="currentColor"/>
                             </svg>
                         </span>
-                        @if(session()->has('cart_count') && session('cart_count') > 0)
-                            <span class="badge">{{ session('cart_count') }}</span>
+                        @php
+                            $cart = \Lunar\Facades\CartSession::current();
+                            $cartCount = $cart ? $cart->lines->sum('quantity') : 0;
+                        @endphp
+                        @if($cartCount > 0)
+                            <span class="badge cart-count">{{ $cartCount }}</span>
+                        @else
+                            <span class="badge cart-count" style="display: none;">0</span>
                         @endif
                     </a>
 

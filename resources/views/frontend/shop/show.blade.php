@@ -70,15 +70,54 @@
                         </div>
                     @endif
 
+                    @if($product->variants->count() > 1)
+                        <div class="product-details-variant mb-4">
+                            @php
+                                $options = [];
+                                foreach($product->variants as $variant) {
+                                    foreach($variant->values as $value) {
+                                        $optionName = $value->option->name ?? 'Option';
+                                        if (!isset($options[$optionName])) {
+                                            $options[$optionName] = [];
+                                        }
+                                        $options[$optionName][] = $value->name ?? '';
+                                    }
+                                }
+                                foreach($options as &$values) {
+                                    $values = array_unique($values);
+                                }
+                            @endphp
+
+                            @foreach($options as $optionName => $values)
+                                <div class="form-group mb-3">
+                                    <label class="form-label fw-bold">{{ $optionName }}</label>
+                                    <select class="form-select variant-option" data-option="{{ $optionName }}">
+                                        <option value="">Select {{ $optionName }}</option>
+                                        @foreach($values as $value)
+                                            @if($value)
+                                                <option value="{{ $value }}">{{ $value }}</option>
+                                            @endif
+                                        @endforeach
+                                    </select>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+
                     <div class="product-details-pro-qty mb-6">
+                        <label class="form-label fw-bold">Quantity</label>
                         <div class="pro-qty">
-                            <input type="text" title="Quantity" value="1" min="1">
+                            <button type="button" class="dec qtybtn">-</button>
+                            <input type="text" id="quantity-input" title="Quantity" value="1" min="1" readonly>
+                            <button type="button" class="inc qtybtn">+</button>
                         </div>
                     </div>
 
                     <div class="product-details-action">
                         <div class="product-details-cart-wishlist">
-                            <button type="button" class="btn btn-primary">Add to Cart</button>
+                            <button type="button" id="add-to-cart-btn" class="btn btn-primary" data-variant-id="{{ $firstVariant?->id }}">
+                                <i class="fa fa-shopping-cart me-2"></i>Add to Cart
+                            </button>
                             <button type="button" class="btn btn-outline-primary ms-3">
                                 <i class="fa fa-heart-o"></i> Wishlist
                             </button>
@@ -122,3 +161,114 @@
 </section>
 <!--== End Product Details Area ==-->
 @endsection
+
+@push('scripts')
+<script>
+$(document).ready(function() {
+    // Product variants data
+    const variants = @json($product->variants->map(function($variant) {
+        return [
+            'id' => $variant->id,
+            'sku' => $variant->sku,
+            'price' => $variant->prices->first()?->price->formatted ?? '',
+            'values' => $variant->values->pluck('name', 'option.name')->toArray()
+        ];
+    }));
+
+    // Quantity buttons
+    $('.qtybtn').on('click', function() {
+        const $input = $('#quantity-input');
+        let qty = parseInt($input.val()) || 1;
+
+        if ($(this).hasClass('inc')) {
+            qty++;
+        } else if ($(this).hasClass('dec') && qty > 1) {
+            qty--;
+        }
+
+        $input.val(qty);
+    });
+
+    // Variant selection
+    $('.variant-option').on('change', function() {
+        const selectedOptions = {};
+
+        $('.variant-option').each(function() {
+            const optionName = $(this).data('option');
+            const optionValue = $(this).val();
+            if (optionValue) {
+                selectedOptions[optionName] = optionValue;
+            }
+        });
+
+        // Find matching variant
+        const matchingVariant = variants.find(variant => {
+            return Object.keys(selectedOptions).every(optionName => {
+                return variant.values[optionName] === selectedOptions[optionName];
+            });
+        });
+
+        if (matchingVariant) {
+            // Update price
+            if (matchingVariant.price) {
+                $('.product-details-action .price').text(matchingVariant.price);
+            }
+
+            // Update SKU
+            $('.product-details-meta li:first span:last').text(matchingVariant.sku || 'N/A');
+
+            // Update add to cart button
+            $('#add-to-cart-btn').data('variant-id', matchingVariant.id);
+        }
+    });
+
+    // Add to cart
+    $('#add-to-cart-btn').on('click', function() {
+        const $btn = $(this);
+        const variantId = $btn.data('variant-id');
+        const quantity = parseInt($('#quantity-input').val()) || 1;
+
+        if (!variantId) {
+            alert('Please select product options');
+            return;
+        }
+
+        $btn.prop('disabled', true);
+        $btn.html('<i class="fa fa-spinner fa-spin me-2"></i>Adding...');
+
+        $.ajax({
+            url: '{{ route("cart.add") }}',
+            method: 'POST',
+            data: {
+                variant_id: variantId,
+                quantity: quantity,
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                if (response.success) {
+                    // Update cart count in header
+                    const $cartBadge = $('.cart-count');
+                    $cartBadge.text(response.cart_count);
+
+                    if (response.cart_count > 0) {
+                        $cartBadge.show();
+                    }
+
+                    // Show success message
+                    alert('Product added to cart successfully!');
+
+                    // Reset button
+                    $btn.prop('disabled', false);
+                    $btn.html('<i class="fa fa-shopping-cart me-2"></i>Add to Cart');
+                }
+            },
+            error: function(xhr) {
+                alert('Error adding product to cart. Please try again.');
+                $btn.prop('disabled', false);
+                $btn.html('<i class="fa fa-shopping-cart me-2"></i>Add to Cart');
+            }
+        });
+    });
+});
+</script>
+@endpush

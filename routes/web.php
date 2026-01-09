@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Frontend\PageController;
 use App\Http\Controllers\Frontend\ProductController;
+use App\Http\Controllers\Frontend\CartController;
 
 // Homepage
 Route::get('/', function () {
@@ -21,11 +22,14 @@ Route::prefix('shop')->name('shop.')->group(function () {
     Route::get('/product/{slug}', [ProductController::class, 'show'])->name('product.show');
 });
 
-// Cart Routes (placeholders - will be replaced with controllers)
+// Cart Routes
 Route::prefix('cart')->name('cart.')->group(function () {
-    Route::get('/', function () {
-        return response('Cart - Coming soon');
-    })->name('index');
+    Route::get('/', [CartController::class, 'index'])->name('index');
+    Route::post('/add', [CartController::class, 'add'])->name('add');
+    Route::put('/{lineId}', [CartController::class, 'update'])->name('update');
+    Route::delete('/{lineId}', [CartController::class, 'remove'])->name('remove');
+    Route::post('/clear', [CartController::class, 'clear'])->name('clear');
+    Route::get('/count', [CartController::class, 'count'])->name('count');
 });
 
 // Wishlist Route (placeholder)

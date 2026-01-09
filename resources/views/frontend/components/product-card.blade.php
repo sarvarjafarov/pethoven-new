@@ -23,7 +23,7 @@
             <button class="action-btn" type="button" title="Add to Wishlist">
                 <i class="fa fa-heart-o"></i>
             </button>
-            <button class="action-btn" type="button" title="Add to Cart">
+            <button class="action-btn quick-add-to-cart" type="button" title="Add to Cart" data-variant-id="{{ $firstVariant?->id }}" data-product-name="{{ $product->name }}">
                 <i class="fa fa-shopping-cart"></i>
             </button>
         </div>
