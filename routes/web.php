@@ -5,6 +5,7 @@ use App\Http\Controllers\Frontend\PageController;
 use App\Http\Controllers\Frontend\ProductController;
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\CheckoutController;
+use App\Http\Controllers\Frontend\AccountController;
 
 // Homepage
 Route::get('/', function () {
@@ -47,6 +48,15 @@ Route::prefix('checkout')->name('checkout.')->group(function () {
     Route::get('/success/{order}', [CheckoutController::class, 'success'])->name('success');
 });
 
+// Account Routes (protected)
+Route::middleware('auth')->prefix('account')->name('account.')->group(function () {
+    Route::get('/dashboard', [AccountController::class, 'dashboard'])->name('dashboard');
+    Route::get('/orders', [AccountController::class, 'orders'])->name('orders');
+    Route::get('/orders/{id}', [AccountController::class, 'orderShow'])->name('orders.show');
+    Route::get('/profile', [AccountController::class, 'profile'])->name('profile');
+    Route::post('/profile', [AccountController::class, 'profileUpdate'])->name('profile.update');
+});
+
 // Blog Routes (placeholders - will be replaced with controllers)
 Route::prefix('blog')->name('blog.')->group(function () {
     Route::get('/', function () {
@@ -58,22 +68,5 @@ Route::prefix('blog')->name('blog.')->group(function () {
     })->name('show');
 });
 
-// Account Routes (placeholders - will require auth middleware)
-Route::prefix('account')->name('account.')->group(function () {
-    Route::get('/dashboard', function () {
-        return response('Dashboard - Coming soon');
-    })->name('dashboard');
-});
-
-// Placeholder auth routes (will be replaced with Laravel Breeze)
-Route::get('/login', function () {
-    return response('Login - Coming soon');
-})->name('login');
-
-Route::get('/register', function () {
-    return response('Register - Coming soon');
-})->name('register');
-
-Route::post('/logout', function () {
-    return redirect()->route('home');
-})->name('logout');
+// Include Breeze auth routes
+require __DIR__.'/auth.php';

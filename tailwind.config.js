@@ -1,19 +1,14 @@
 import defaultTheme from 'tailwindcss/defaultTheme';
+import forms from '@tailwindcss/forms';
 
 /** @type {import('tailwindcss').Config} */
 export default {
     content: [
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
         './storage/framework/views/*.php',
-        './app/Filament/**/*.php',
-        './vendor/filament/**/*.blade.php',
-        './vendor/lunarphp/**/*.blade.php',
-        // Explicitly EXCLUDE frontend views to prevent Bootstrap/Tailwind conflicts
-        // Frontend uses Bootstrap from public/brancy/css/
-        // './resources/views/frontend/**/*.blade.php', // EXCLUDED
-        './resources/**/*.js',
-        './resources/**/*.vue',
+        './resources/views/**/*.blade.php',
     ],
+
     theme: {
         extend: {
             fontFamily: {
@@ -21,5 +16,6 @@ export default {
             },
         },
     },
-    plugins: [],
+
+    plugins: [forms],
 };
