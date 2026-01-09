@@ -1,24 +1,18 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Frontend\PageController;
 
 // Homepage
 Route::get('/', function () {
     return view('frontend.pages.home');
 })->name('home');
 
-// Static Pages (placeholders for now)
-Route::get('/about', function () {
-    return view('frontend.pages.about');
-})->name('about');
-
-Route::get('/contact', function () {
-    return view('frontend.pages.contact');
-})->name('contact');
-
-Route::get('/faq', function () {
-    return view('frontend.pages.faq');
-})->name('faq');
+// Static Pages
+Route::get('/about', [PageController::class, 'about'])->name('about');
+Route::get('/contact', [PageController::class, 'contact'])->name('contact');
+Route::post('/contact', [PageController::class, 'contactSubmit'])->name('contact.submit');
+Route::get('/faq', [PageController::class, 'faq'])->name('faq');
 
 // Shop Routes (placeholders - will be replaced with controllers)
 Route::prefix('shop')->name('shop.')->group(function () {
