@@ -6,6 +6,7 @@ use App\Http\Controllers\Frontend\ProductController;
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\CheckoutController;
 use App\Http\Controllers\Frontend\AccountController;
+use App\Http\Controllers\Frontend\BlogController;
 
 // Homepage
 Route::get('/', function () {
@@ -68,15 +69,10 @@ Route::middleware('auth')->prefix('account')->name('account.')->group(function (
     Route::post('/profile', [AccountController::class, 'profileUpdate'])->name('profile.update');
 });
 
-// Blog Routes (placeholders - will be replaced with controllers)
+// Blog Routes
 Route::prefix('blog')->name('blog.')->group(function () {
-    Route::get('/', function () {
-        return response('Blog - Coming soon');
-    })->name('index');
-
-    Route::get('/{slug}', function ($slug) {
-        return response('Blog post - Coming soon');
-    })->name('show');
+    Route::get('/', [BlogController::class, 'index'])->name('index');
+    Route::get('/{slug}', [BlogController::class, 'show'])->name('show');
 });
 
 // Include Breeze auth routes
