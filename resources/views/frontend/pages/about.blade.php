@@ -4,84 +4,144 @@
 
 @section('content')
 <!--== Start Page Header Area Wrapper ==-->
-<div class="page-header-area bg-img" style="background-image: url({{ asset('brancy/images/photos/page-header1.webp') }});">
+<section class="page-header-area">
     <div class="container">
-        <div class="row">
-            <div class="col-md-12">
+        <div class="row align-items-center">
+            <div class="col-md-7 col-lg-7 col-xl-5">
                 <div class="page-header-content">
-                    <h2 class="title">About Us</h2>
-                    <nav class="breadcrumb-area">
-                        <ul class="breadcrumb">
-                            <li><a href="{{ route('home') }}">Home</a></li>
-                            <li class="breadcrumb-sep">//</li>
-                            <li>About Us</li>
-                        </ul>
-                    </nav>
+                    <div class="title-img"><img src="{{ asset('brancy/images/photos/about-title.webp') }}" alt="Image"></div>
+                    <h2 class="page-header-title">We, are {{ config('app.name') }}</h2>
+                    <h4 class="page-header-sub-title">Best cosmetics provider</h4>
+                    <p class="page-header-desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis.</p>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
-<!--== End Page Header Area Wrapper ==-->
-
-<!--== Start About Area Wrapper ==-->
-<section class="section-space">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="about-content">
-                    <div class="section-title text-start">
-                        <h2 class="title">Welcome to {{ config('app.name') }}</h2>
-                        <p>Your trusted beauty and cosmetic destination</p>
-                    </div>
-                    <p>We are dedicated to providing you with the highest quality beauty and cosmetic products. Our mission is to help you feel confident and beautiful every day.</p>
-
-                    <h4 class="mt-7 mb-4">Our Values</h4>
-                    <ul class="list-unstyled">
-                        <li class="mb-3"><i class="fa fa-check-circle text-primary me-2"></i> Quality Products</li>
-                        <li class="mb-3"><i class="fa fa-check-circle text-primary me-2"></i> Customer Satisfaction</li>
-                        <li class="mb-3"><i class="fa fa-check-circle text-primary me-2"></i> Expert Knowledge</li>
-                        <li class="mb-3"><i class="fa fa-check-circle text-primary me-2"></i> Sustainable Practices</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="about-thumb">
-                    <img src="{{ asset('brancy/images/photos/about1.webp') }}" alt="About Us" class="img-fluid">
-                </div>
-            </div>
-        </div>
-
-        <div class="row mt-10">
-            <div class="col-lg-4">
-                <div class="feature-icon-box text-center p-6">
-                    <div class="icon mb-4">
-                        <img src="{{ asset('brancy/images/icons/feature1.webp') }}" alt="Quality">
-                    </div>
-                    <h4>Premium Quality</h4>
-                    <p>We source only the finest ingredients for our products</p>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="feature-icon-box text-center p-6">
-                    <div class="icon mb-4">
-                        <img src="{{ asset('brancy/images/icons/feature2.webp') }}" alt="Expert">
-                    </div>
-                    <h4>Expert Care</h4>
-                    <p>Our team provides personalized beauty advice</p>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="feature-icon-box text-center p-6">
-                    <div class="icon mb-4">
-                        <img src="{{ asset('brancy/images/icons/feature3.webp') }}" alt="Satisfaction">
-                    </div>
-                    <h4>100% Satisfaction</h4>
-                    <p>Your satisfaction is our top priority</p>
+            <div class="col-md-5 col-lg-5 col-xl-7">
+                <div class="page-header-thumb">
+                    <img src="{{ asset('brancy/images/photos/about1.webp') }}" width="570" height="669" alt="Image">
                 </div>
             </div>
         </div>
     </div>
 </section>
+<!--== End Page Header Area Wrapper ==-->
+
+<!--== Start Funfact Area Wrapper ==-->
+<section class="funfact-area section-space">
+    <div class="container">
+        <div class="row mb-n6">
+            <div class="col-sm-6 col-lg-4 mb-6">
+                <!--== Start Funfact Item ==-->
+                <div class="funfact-item">
+                    <div class="icon">
+                        <img src="{{ asset('brancy/images/icons/funfact1.webp') }}" width="110" height="110" alt="Icon">
+                    </div>
+                    <h2 class="funfact-number">5000+</h2>
+                    <h6 class="funfact-title">Clients</h6>
+                </div>
+                <!--== End Funfact Item ==-->
+            </div>
+            <div class="col-sm-6 col-lg-4 mb-6">
+                <!--== Start Funfact Item ==-->
+                <div class="funfact-item">
+                    <div class="icon">
+                        <img src="{{ asset('brancy/images/icons/funfact2.webp') }}" width="110" height="110" alt="Icon">
+                    </div>
+                    <h2 class="funfact-number">250+</h2>
+                    <h6 class="funfact-title">Projects</h6>
+                </div>
+                <!--== End Funfact Item ==-->
+            </div>
+            <div class="col-sm-6 col-lg-4 mb-6">
+                <!--== Start Funfact Item ==-->
+                <div class="funfact-item">
+                    <div class="icon">
+                        <img src="{{ asset('brancy/images/icons/funfact3.webp') }}" width="110" height="110" alt="Icon">
+                    </div>
+                    <h2 class="funfact-number">1.5M+</h2>
+                    <h6 class="funfact-title">Revenue</h6>
+                </div>
+                <!--== End Funfact Item ==-->
+            </div>
+        </div>
+    </div>
+</section>
+<!--== End Funfact Area Wrapper ==-->
+
+<!--== Start Brand Logo Area Wrapper ==-->
+<div class="section-space">
+    <div class="container">
+        <div class="swiper brand-logo-slider-container">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide brand-logo-item">
+                    <!--== Start Brand Logo Item ==-->
+                    <img src="{{ asset('brancy/images/brand-logo/1.webp') }}" width="155" height="110" alt="Image-HasTech">
+                    <!--== End Brand Logo Item ==-->
+                </div>
+                <div class="swiper-slide brand-logo-item">
+                    <!--== Start Brand Logo Item ==-->
+                    <img src="{{ asset('brancy/images/brand-logo/2.webp') }}" width="241" height="110" alt="Image-HasTech">
+                    <!--== End Brand Logo Item ==-->
+                </div>
+                <div class="swiper-slide brand-logo-item">
+                    <!--== Start Brand Logo Item ==-->
+                    <img src="{{ asset('brancy/images/brand-logo/3.webp') }}" width="147" height="110" alt="Image-HasTech">
+                    <!--== End Brand Logo Item ==-->
+                </div>
+                <div class="swiper-slide brand-logo-item">
+                    <!--== Start Brand Logo Item ==-->
+                    <img src="{{ asset('brancy/images/brand-logo/4.webp') }}" width="196" height="110" alt="Image-HasTech">
+                    <!--== End Brand Logo Item ==-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--== End Brand Logo Area Wrapper ==-->
+
+<!--== Start About Area Wrapper ==-->
+<section class="section-space pt-0 mb-n1">
+    <div class="container">
+        <div class="about-thumb">
+            <img src="{{ asset('brancy/images/photos/about2.webp') }}" alt="Image">
+        </div>
+        <div class="about-content">
+            <h2 class="title">Best Cosmetics Provider</h2>
+            <p class="desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit. In vel arcu aliquet sem risus nisl. Neque, scelerisque in erat lacus ridiculus habitant porttitor. Malesuada pulvinar sollicitudin enim, quis sapien tellus est. Pellentesque amet vel maecenas nisi. In elementum magna nulla ridiculus sapien mollis volutpat sit. Arcu egestas massa consectetur felis urna porttitor ac.</p>
+        </div>
+    </div>
+</section>
 <!--== End About Area Wrapper ==-->
+
+<!--== Start Feature Area Wrapper ==-->
+<div class="feature-area section-space">
+    <div class="container">
+        <div class="row mb-n9">
+            <div class="col-md-6 col-lg-4 mb-8">
+                <!--== Start Feature Item ==-->
+                <div class="feature-item">
+                    <h5 class="title"><img class="icon" src="{{ asset('brancy/images/icons/feature1.webp') }}" width="60" height="60" alt="Icon"> Support Team</h5>
+                    <p class="desc">Lorem ipsum dolor amet, consectetur adipiscing. Ac tortor enim metus, turpis.</p>
+                </div>
+                <!--== End Feature Item ==-->
+            </div>
+            <div class="col-md-6 col-lg-4 mb-8">
+                <!--== Start Feature Item ==-->
+                <div class="feature-item">
+                    <h5 class="title"><img class="icon" src="{{ asset('brancy/images/icons/feature2.webp') }}" width="60" height="60" alt="Icon"> Certification</h5>
+                    <p class="desc">Lorem ipsum dolor amet, consectetur adipiscing. Ac tortor enim metus, turpis.</p>
+                </div>
+                <!--== End Feature Item ==-->
+            </div>
+            <div class="col-md-6 col-lg-4 mb-8">
+                <!--== Start Feature Item ==-->
+                <div class="feature-item">
+                    <h5 class="title"><img class="icon" src="{{ asset('brancy/images/icons/feature3.webp') }}" width="60" height="60" alt="Icon"> Natural Products</h5>
+                    <p class="desc">Lorem ipsum dolor amet, consectetur adipiscing. Ac tortor enim metus, turpis.</p>
+                </div>
+                <!--== End Feature Item ==-->
+            </div>
+        </div>
+    </div>
+</div>
+<!--== End Feature Area Wrapper ==-->
 @endsection

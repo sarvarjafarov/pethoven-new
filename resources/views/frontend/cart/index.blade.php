@@ -4,24 +4,21 @@
 
 @section('content')
 <!--== Start Page Header Area ==-->
-<div class="page-header-area bg-img" style="background-image: url({{ asset('brancy/images/photos/page-header1.webp') }});">
+<section class="page-header-area" data-bg-img="{{ asset('brancy/images/photos/breadcrumb1.webp') }}">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <div class="page-header-content">
-                    <h2 class="title">Shopping Cart</h2>
-                    <nav class="breadcrumb-area">
-                        <ul class="breadcrumb">
-                            <li><a href="{{ route('home') }}">Home</a></li>
-                            <li class="breadcrumb-sep">//</li>
-                            <li>Shopping Cart</li>
-                        </ul>
-                    </nav>
+                <div class="page-header-st3-content text-center">
+                    <ol class="breadcrumb justify-content-center">
+                        <li class="breadcrumb-item"><a class="text-dark" href="{{ route('home') }}">Home</a></li>
+                        <li class="breadcrumb-item active text-dark" aria-current="page">Shopping Cart</li>
+                    </ol>
+                    <h2 class="page-header-st3-title">Shopping Cart</h2>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</section>
 <!--== End Page Header Area ==-->
 
 <!--== Start Shopping Cart Area ==-->
@@ -43,122 +40,126 @@
 
         @if($cart && $cart->lines->count() > 0)
             <div class="row">
-                <div class="col-lg-8">
-                    <div class="shopping-cart-table table-responsive">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th class="product-name">Product</th>
-                                    <th class="product-price">Price</th>
-                                    <th class="product-quantity">Quantity</th>
-                                    <th class="product-subtotal">Subtotal</th>
-                                    <th class="product-remove">Remove</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($cart->lines as $line)
-                                    @php
-                                        $purchasable = $line->purchasable;
-                                        $product = $purchasable->product ?? null;
-                                        $image = $product?->thumbnail?->getUrl('small') ?? asset('brancy/images/shop/1.webp');
-                                    @endphp
-                                    <tr data-line-id="{{ $line->id }}">
-                                        <td class="product-name">
-                                            <div class="d-flex align-items-center">
-                                                <div class="product-thumb me-3">
-                                                    <img src="{{ $image }}" alt="{{ $line->description }}" style="width: 80px; height: 80px; object-fit: cover;">
-                                                </div>
-                                                <div class="product-info">
-                                                    <h5 class="mb-1">{{ $line->description }}</h5>
-                                                    @if($purchasable->sku)
-                                                        <small class="text-muted">SKU: {{ $purchasable->sku }}</small>
-                                                    @endif
-                                                    @if($purchasable->values && $purchasable->values->count() > 0)
-                                                        <div class="mt-1">
-                                                            @foreach($purchasable->values as $value)
-                                                                <small class="text-muted">{{ $value->option->name ?? '' }}: {{ $value->name ?? '' }}</small><br>
-                                                            @endforeach
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="product-price">
-                                            <span class="amount">{{ $line->unitPrice->formatted }}</span>
-                                        </td>
-                                        <td class="product-quantity">
-                                            <div class="pro-qty" style="width: 120px;">
-                                                <button type="button" class="dec qtybtn" data-line-id="{{ $line->id }}">-</button>
-                                                <input type="text" class="quantity-input" value="{{ $line->quantity }}" readonly>
-                                                <button type="button" class="inc qtybtn" data-line-id="{{ $line->id }}">+</button>
-                                            </div>
-                                        </td>
-                                        <td class="product-subtotal">
-                                            <span class="amount line-total">{{ $line->subTotal->formatted }}</span>
-                                        </td>
-                                        <td class="product-remove">
-                                            <button type="button" class="btn btn-link text-danger remove-item" data-line-id="{{ $line->id }}">
-                                                <i class="fa fa-trash"></i>
-                                            </button>
-                                        </td>
+                <div class="col-lg-12">
+                    <div class="shopping-cart-form table-responsive">
+                        <form action="#" method="post">
+                            @csrf
+                            <table class="table text-center">
+                                <thead>
+                                    <tr>
+                                        <th class="product-remove">&nbsp;</th>
+                                        <th class="product-thumbnail">&nbsp;</th>
+                                        <th class="product-name">Product</th>
+                                        <th class="product-price">Price</th>
+                                        <th class="product-quantity">Quantity</th>
+                                        <th class="product-subtotal">Total</th>
                                     </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    @foreach($cart->lines as $line)
+                                        @php
+                                            $purchasable = $line->purchasable;
+                                            $product = $purchasable->product ?? null;
+                                            $image = $product?->thumbnail?->getUrl('small') ?? asset('brancy/images/shop/1.webp');
+                                            $productUrl = $product ? route('shop.product.show', $product->defaultUrl?->slug ?? $product->id) : '#';
+                                        @endphp
+                                        <tr data-line-id="{{ $line->id }}">
+                                            <td class="product-remove">
+                                                <button type="button" class="btn-close remove-item" data-line-id="{{ $line->id }}" aria-label="Close">×</button>
+                                            </td>
+                                            <td class="product-thumbnail">
+                                                <a class="d-block" href="{{ $productUrl }}">
+                                                    <img src="{{ $image }}" width="80" height="90" alt="{{ $line->description }}">
+                                                </a>
+                                            </td>
+                                            <td class="product-name">
+                                                <h5 class="title"><a href="{{ $productUrl }}">{{ $line->description }}</a></h5>
+                                                @if($purchasable->values && $purchasable->values->count() > 0)
+                                                    <div class="mt-1">
+                                                        @foreach($purchasable->values as $value)
+                                                            <small class="text-muted">{{ $value->option->name ?? '' }}: {{ $value->name ?? '' }}</small><br>
+                                                        @endforeach
+                                                    </div>
+                                                @endif
+                                            </td>
+                                            <td class="product-price">
+                                                <span class="price">{{ $line->unitPrice->formatted }}</span>
+                                            </td>
+                                            <td class="product-quantity">
+                                                <div class="pro-qty">
+                                                    <button type="button" class="dec qtybtn" data-line-id="{{ $line->id }}">-</button>
+                                                    <input type="text" class="quantity-input" value="{{ $line->quantity }}" readonly>
+                                                    <button type="button" class="inc qtybtn" data-line-id="{{ $line->id }}">+</button>
+                                                </div>
+                                            </td>
+                                            <td class="product-subtotal">
+                                                <span class="price line-total">{{ $line->subTotal->formatted }}</span>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </form>
                     </div>
 
-                    <div class="cart-actions mt-4">
-                        <div class="row justify-content-between">
-                            <div class="col-auto">
-                                <a href="{{ route('shop.index') }}" class="btn btn-outline-primary">
-                                    <i class="fa fa-angle-left me-2"></i>Continue Shopping
-                                </a>
-                            </div>
-                            <div class="col-auto">
-                                <form action="{{ route('cart.clear') }}" method="POST" class="d-inline" id="clear-cart-form">
-                                    @csrf
-                                    <button type="button" class="btn btn-outline-danger" id="clear-cart-btn">
-                                        <i class="fa fa-trash me-2"></i>Clear Cart
-                                    </button>
-                                </form>
+                    <div class="shopping-cart-footer">
+                        <div class="row align-items-center">
+                            <div class="col-12">
+                                <div class="shopping-cart-btn">
+                                    <a class="btn btn-outline-dark" href="{{ route('shop.index') }}">Continue Shopping</a>
+                                    <form action="{{ route('cart.clear') }}" method="POST" class="d-inline" id="clear-cart-form">
+                                        @csrf
+                                        <button type="button" class="btn btn-outline-danger" id="clear-cart-btn">Clear Cart</button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="col-lg-4">
-                    <div class="cart-totals-wrapper mt-lg-0 mt-8">
-                        <h4 class="mb-4">Cart Totals</h4>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="shopping-cart-coupon mt-6">
+                        <h4 class="title">Coupon Code</h4>
+                        <p>Enter your coupon code if you have one.</p>
+                        <form action="#" method="post">
+                            @csrf
+                            <div class="coupon-form">
+                                <input class="form-control" type="text" name="coupon" placeholder="Enter coupon code">
+                                <button type="submit" class="btn">Apply</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="shopping-cart-total mt-6">
+                        <h4 class="title">Cart Totals</h4>
                         <table class="table">
                             <tbody>
                                 <tr>
-                                    <th>Subtotal</th>
-                                    <td id="cart-subtotal">{{ $cart->subTotal->formatted }}</td>
+                                    <td>Subtotal</td>
+                                    <td class="amount" id="cart-subtotal">{{ $cart->subTotal->formatted }}</td>
                                 </tr>
                                 @if($cart->taxTotal->value > 0)
                                     <tr>
-                                        <th>Tax</th>
-                                        <td id="cart-tax">{{ $cart->taxTotal->formatted }}</td>
+                                        <td>Tax</td>
+                                        <td class="amount" id="cart-tax">{{ $cart->taxTotal->formatted }}</td>
                                     </tr>
                                 @endif
                                 @if($cart->discountTotal && $cart->discountTotal->value > 0)
                                     <tr>
-                                        <th>Discount</th>
-                                        <td class="text-success" id="cart-discount">-{{ $cart->discountTotal->formatted }}</td>
+                                        <td>Discount</td>
+                                        <td class="amount text-success" id="cart-discount">-{{ $cart->discountTotal->formatted }}</td>
                                     </tr>
                                 @endif
-                                <tr class="order-total">
-                                    <th>Total</th>
-                                    <td id="cart-total"><strong>{{ $cart->total->formatted }}</strong></td>
+                                <tr>
+                                    <td class="total">Total</td>
+                                    <td class="total-amount" id="cart-total">{{ $cart->total->formatted }}</td>
                                 </tr>
                             </tbody>
                         </table>
-
-                        <div class="cart-checkout-btn mt-4">
-                            <a href="{{ route('checkout.index') }}" class="btn btn-primary w-100">
-                                Proceed to Checkout<i class="fa fa-angle-right ms-2"></i>
-                            </a>
-                        </div>
+                        <a class="btn btn-theme d-block w-100" href="{{ route('checkout.index') }}">Proceed To Checkout</a>
                     </div>
                 </div>
             </div>
