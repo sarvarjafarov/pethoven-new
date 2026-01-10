@@ -9,7 +9,7 @@
 @endphp
 
 <!--== Start Product Item ==-->
-<div class="product-item">
+<div class="product-item product-st3-item">
     <div class="product-thumb">
         <a class="d-block" href="{{ route('shop.product.show', $productUrl) }}">
             <img src="{{ $thumbnail }}" width="370" height="450" alt="{{ $productName }}">
