@@ -78,28 +78,26 @@
 @endpush
 
 @section('content')
-<!--== Start Page Header Area ==-->
-<div class="page-header-area bg-img" style="background-image: url({{ asset('brancy/images/photos/page-header1.webp') }});">
+<!--== Start Page Header Area Wrapper ==-->
+<section class="page-header-area pt-10 pb-9" data-bg-color="#FFF3DA">
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
-                <div class="page-header-content">
-                    <h2 class="title">{{ $product->name }}</h2>
-                    <nav class="breadcrumb-area">
-                        <ul class="breadcrumb">
-                            <li><a href="{{ route('home') }}">Home</a></li>
-                            <li class="breadcrumb-sep">//</li>
-                            <li><a href="{{ route('shop.index') }}">Shop</a></li>
-                            <li class="breadcrumb-sep">//</li>
-                            <li>{{ $product->name }}</li>
-                        </ul>
-                    </nav>
+            <div class="col-md-5">
+                <div class="page-header-st3-content text-center text-md-start">
+                    <ol class="breadcrumb justify-content-center justify-content-md-start">
+                        <li class="breadcrumb-item"><a class="text-dark" href="{{ route('home') }}">Home</a></li>
+                        <li class="breadcrumb-item active text-dark" aria-current="page">Product Detail</li>
+                    </ol>
+                    <h2 class="page-header-title">{{ $product->translateAttribute('name') }}</h2>
                 </div>
+            </div>
+            <div class="col-md-7">
+                <h5 class="showing-pagination-results mt-5 mt-md-9 text-center text-md-end">Showing Single Product</h5>
             </div>
         </div>
     </div>
-</div>
-<!--== End Page Header Area ==-->
+</section>
+<!--== End Page Header Area Wrapper ==-->
 
 <!--== Start Product Details Area ==-->
 <section class="section-space">
@@ -122,16 +120,19 @@
 
                     <div class="product-details-review mb-5">
                         <div class="product-review-icon">
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star-o"></i>
+                            <i class="fa fa-star-o"></i>
+                            <i class="fa fa-star-o"></i>
+                            <i class="fa fa-star-o"></i>
                             <i class="fa fa-star-half-o"></i>
                         </div>
+                        <button type="button" class="product-review-show">150 reviews</button>
                     </div>
 
                     @if($product->description)
-                        <p class="mb-6">{!! nl2br(e($product->description)) !!}</p>
+                        <p class="mb-6">{!! nl2br(e($product->translateAttribute('description'))) !!}</p>
+                    @else
+                        <p class="mb-6">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed viverra amet, sodales faucibus nibh. Vivamus amet potenti ultricies nunc gravida duis. Nascetur scelerisque massa sodales.</p>
                     @endif
 
                     @php
@@ -139,11 +140,6 @@
                         $price = $firstVariant?->prices->first();
                     @endphp
 
-                    @if($price)
-                        <div class="product-details-action mb-4">
-                            <h4 class="price">{{ $price->price->formatted }}</h4>
-                        </div>
-                    @endif
 
                     @if($product->variants->count() > 1)
                         <div class="product-details-variant mb-4">
@@ -189,12 +185,13 @@
                     </div>
 
                     <div class="product-details-action">
+                        <h4 class="price">{{ $price ? $price->price->formatted : 'Price on request' }}</h4>
                         <div class="product-details-cart-wishlist">
-                            <button type="button" id="add-to-cart-btn" class="btn btn-primary" data-variant-id="{{ $firstVariant?->id }}">
-                                <i class="fa fa-shopping-cart me-2"></i>Add to Cart
+                            <button type="button" id="add-to-cart-btn" class="btn" data-variant-id="{{ $firstVariant?->id }}">
+                                Add to cart
                             </button>
-                            <button type="button" class="btn btn-outline-primary ms-3">
-                                <i class="fa fa-heart-o"></i> Wishlist
+                            <button type="button" class="btn-wishlist action-btn-wishlist" data-product-id="{{ $product->id }}" data-product-name="{{ $productName }}">
+                                <i class="fa fa-heart-o"></i>
                             </button>
                         </div>
                     </div>

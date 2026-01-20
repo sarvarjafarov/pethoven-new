@@ -12,26 +12,57 @@
             <div class="col-lg-7 col-xl-7 d-none d-lg-block">
                 <div class="header-navigation ps-7">
                     <ul class="main-nav justify-content-start">
-                        <li><a href="{{ route('home') }}">Home</a></li>
-                        <li><a href="{{ route('about') }}">About</a></li>
-                        <li class="has-submenu position-static"><a href="{{ route('shop.index') }}">Shop</a>
+                        <li class="has-submenu"><a href="{{ route('home') }}">home</a>
+                            <ul class="submenu-nav">
+                                <li><a href="{{ route('home') }}">Home One</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="{{ route('about') }}">about</a></li>
+                        <li class="has-submenu position-static"><a href="{{ route('shop.index') }}">shop</a>
                             <ul class="submenu-nav-mega">
                                 <li><a href="#/" class="mega-title">Shop Layout</a>
                                     <ul>
-                                        <li><a href="{{ route('shop.index') }}">Shop Grid</a></li>
-                                        <li><a href="{{ route('shop.index') }}">Shop with Sidebar</a></li>
+                                        <li><a href="{{ route('shop.index') }}">Shop 3 Column</a></li>
+                                        <li><a href="{{ route('shop.index') }}">Shop 4 Column</a></li>
+                                        <li><a href="{{ route('shop.index') }}">Shop Left Sidebar</a></li>
+                                        <li><a href="{{ route('shop.index') }}">Shop Right Sidebar</a></li>
                                     </ul>
                                 </li>
-                                <li><a href="#/" class="mega-title">Shop Pages</a>
+                                <li><a href="#/" class="mega-title">Single Product</a>
+                                    <ul>
+                                        <li><a href="{{ route('shop.index') }}">Single Product Normal</a></li>
+                                        <li><a href="{{ route('shop.index') }}">Single Product Variable</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="#/" class="mega-title">Others Pages</a>
                                     <ul>
                                         <li><a href="{{ route('cart.index') }}">Shopping Cart</a></li>
                                         <li><a href="{{ route('checkout.index') }}">Checkout</a></li>
                                         <li><a href="{{ route('wishlist.index') }}">Wishlist</a></li>
+                                        <li><a href="{{ route('compare.index') }}">Compare</a></li>
                                     </ul>
                                 </li>
                             </ul>
                         </li>
-                        <li><a href="{{ route('blog.index') }}">Blog</a></li>
+                        <li class="has-submenu"><a href="{{ route('blog.index') }}">Blog</a>
+                            <ul class="submenu-nav">
+                                <li class="has-submenu"><a href="#/">Blog Layout</a>
+                                    <ul class="submenu-nav">
+                                        <li><a href="{{ route('blog.index') }}">Blog Grid</a></li>
+                                        <li><a href="{{ route('blog.index') }}">Blog Left Sidebar</a></li>
+                                        <li><a href="{{ route('blog.index') }}">Blog Right Sidebar</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="{{ route('blog.index') }}">Blog Details</a></li>
+                            </ul>
+                        </li>
+                        <li class="has-submenu"><a href="{{ route('account.dashboard') }}">Pages</a>
+                            <ul class="submenu-nav">
+                                <li><a href="{{ route('account.dashboard') }}">My Account</a></li>
+                                <li><a href="{{ route('faq') }}">Frequently Questions</a></li>
+                                <li><a href="{{ route('home') }}">Page Not Found</a></li>
+                            </ul>
+                        </li>
                         <li><a href="{{ route('contact') }}">Contact</a></li>
                     </ul>
                 </div>
@@ -52,7 +83,7 @@
                         </span>
                     </button>
 
-                    <a class="header-action-btn" href="{{ route('cart.index') }}">
+                    <button class="header-action-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#AsideOffcanvasCart" aria-controls="AsideOffcanvasCart">
                         <span class="icon">
                             <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                                 <rect class="icon-rect" width="30" height="30" fill="url(#pattern2)"/>
@@ -73,7 +104,7 @@
                         @else
                             <span class="badge cart-count" style="display: none;">0</span>
                         @endif
-                    </a>
+                    </button>
 
                     @auth
                         <a class="header-action-btn" href="{{ route('account.dashboard') }}">
@@ -142,6 +173,52 @@
 </aside>
 <!--== End Aside Search Form ==-->
 
+<!--== Start Aside Cart ==-->
+<aside class="aside-cart-wrapper offcanvas offcanvas-end" tabindex="-1" id="AsideOffcanvasCart" aria-labelledby="offcanvasRightLabel">
+    <div class="offcanvas-header">
+        <h1 class="d-none" id="offcanvasRightLabel">Shopping Cart</h1>
+        <button class="btn-aside-cart-close" data-bs-dismiss="offcanvas" aria-label="Close">Shopping Cart <i class="fa fa-chevron-right"></i></button>
+    </div>
+    <div class="offcanvas-body">
+        @php
+            $cart = \Lunar\Facades\CartSession::current();
+            $cartLines = $cart ? $cart->lines : collect();
+            $cartTotal = $cart ? $cart->total : 0;
+        @endphp
+        @if($cartLines->isNotEmpty())
+            <ul class="aside-cart-product-list">
+                @foreach($cartLines as $line)
+                    <li class="aside-product-list-item">
+                        <a href="{{ route('cart.remove', $line->id) }}" class="remove" onclick="event.preventDefault(); document.getElementById('remove-cart-{{ $line->id }}').submit();">×</a>
+                        <form id="remove-cart-{{ $line->id }}" action="{{ route('cart.remove', $line->id) }}" method="POST" style="display: none;">
+                            @csrf
+                            @method('DELETE')
+                        </form>
+                        <a href="{{ route('shop.product.show', $line->purchasable->product->defaultUrl?->slug ?? $line->purchasable->product->id) }}">
+                            @if($line->purchasable->product->thumbnail)
+                                <img src="{{ $line->purchasable->product->thumbnail->getUrl('small') }}" width="68" height="84" alt="{{ $line->purchasable->product->translateAttribute('name') }}">
+                            @else
+                                <img src="{{ asset('brancy/images/shop/cart1.webp') }}" width="68" height="84" alt="{{ $line->purchasable->product->translateAttribute('name') }}">
+                            @endif
+                            <span class="product-title">{{ $line->purchasable->product->translateAttribute('name') }}</span>
+                        </a>
+                        <span class="product-price">{{ $line->quantity }} × {{ $line->subTotal->formatted }}</span>
+                    </li>
+                @endforeach
+            </ul>
+            <p class="cart-total"><span>Subtotal:</span><span class="amount">{{ $cartTotal->formatted }}</span></p>
+            <a class="btn-total" href="{{ route('cart.index') }}">View cart</a>
+            <a class="btn-total" href="{{ route('checkout.index') }}">Checkout</a>
+        @else
+            <div class="text-center py-5">
+                <p>Your cart is empty</p>
+                <a class="btn-total" href="{{ route('shop.index') }}">Continue Shopping</a>
+            </div>
+        @endif
+    </div>
+</aside>
+<!--== End Aside Cart ==-->
+
 <!--== Start Mobile Menu ==-->
 <aside class="aside-menu-wrapper offcanvas offcanvas-end" tabindex="-1" id="AsideOffcanvasMenu" aria-labelledby="offcanvasRightLabel">
     <div class="offcanvas-header">
@@ -151,25 +228,58 @@
     <div class="offcanvas-body">
         <div id="offcanvasNav" class="offcanvas-menu-nav">
             <ul>
-                <li><a href="{{ route('home') }}">Home</a></li>
-                <li><a href="{{ route('about') }}">About</a></li>
-                <li class="offcanvas-nav-parent">
-                    <a class="offcanvas-nav-item" href="{{ route('shop.index') }}">Shop</a>
+                <li class="offcanvas-nav-parent"><a class="offcanvas-nav-item" href="{{ route('home') }}">home</a>
+                    <ul>
+                        <li><a href="{{ route('home') }}">Home One</a></li>
+                    </ul>
                 </li>
-                <li><a href="{{ route('blog.index') }}">Blog</a></li>
-                <li><a href="{{ route('contact') }}">Contact</a></li>
-                @auth
-                    <li><a href="{{ route('account.dashboard') }}">My Account</a></li>
-                    <li>
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit" class="btn btn-link text-start w-100">Logout</button>
-                        </form>
-                    </li>
-                @else
-                    <li><a href="{{ route('login') }}">Login</a></li>
-                    <li><a href="{{ route('register') }}">Register</a></li>
-                @endauth
+                <li class="offcanvas-nav-parent"><a class="offcanvas-nav-item" href="{{ route('about') }}">about</a></li>
+                <li class="offcanvas-nav-parent"><a class="offcanvas-nav-item" href="{{ route('shop.index') }}">shop</a>
+                    <ul>
+                        <li><a href="#" class="offcanvas-nav-item">Shop Layout</a>
+                            <ul>
+                                <li><a href="{{ route('shop.index') }}">Shop 3 Column</a></li>
+                                <li><a href="{{ route('shop.index') }}">Shop 4 Column</a></li>
+                                <li><a href="{{ route('shop.index') }}">Shop Left Sidebar</a></li>
+                                <li><a href="{{ route('shop.index') }}">Shop Right Sidebar</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#" class="offcanvas-nav-item">Single Product</a>
+                            <ul>
+                                <li><a href="{{ route('shop.index') }}">Single Product Normal</a></li>
+                                <li><a href="{{ route('shop.index') }}">Single Product Variable</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#" class="offcanvas-nav-item">Others Pages</a>
+                            <ul>
+                                <li><a href="{{ route('cart.index') }}">Shopping Cart</a></li>
+                                <li><a href="{{ route('checkout.index') }}">Checkout</a></li>
+                                <li><a href="{{ route('wishlist.index') }}">Wishlist</a></li>
+                                <li><a href="{{ route('compare.index') }}">Compare</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li class="offcanvas-nav-parent"><a class="offcanvas-nav-item" href="{{ route('blog.index') }}">Blog</a>
+                    <ul>
+                        <li><a class="offcanvas-nav-item" href="#">Blog Layout</a>
+                            <ul>
+                                <li><a href="{{ route('blog.index') }}">Blog Grid</a></li>
+                                <li><a href="{{ route('blog.index') }}">Blog Left Sidebar</a></li>
+                                <li><a href="{{ route('blog.index') }}">Blog Right Sidebar</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="{{ route('blog.index') }}">Blog Details</a></li>
+                    </ul>
+                </li>
+                <li class="offcanvas-nav-parent"><a class="offcanvas-nav-item" href="{{ route('account.dashboard') }}">Pages</a>
+                    <ul>
+                        <li><a href="{{ route('account.dashboard') }}">My Account</a></li>
+                        <li><a href="{{ route('faq') }}">Frequently Questions</a></li>
+                        <li><a href="{{ route('home') }}">Page Not Found</a></li>
+                    </ul>
+                </li>
+                <li class="offcanvas-nav-parent"><a class="offcanvas-nav-item" href="{{ route('contact') }}">Contact</a></li>
             </ul>
         </div>
     </div>
