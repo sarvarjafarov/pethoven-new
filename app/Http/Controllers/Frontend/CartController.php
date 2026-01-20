@@ -33,7 +33,7 @@ class CartController extends Controller
                 'quantity' => 'required|integer|min:1',
             ]);
 
-            $variant = ProductVariant::with(['product'])->find($request->variant_id);
+            $variant = ProductVariant::with(['product', 'taxClass'])->find($request->variant_id);
 
             if (!$variant) {
                 return response()->json([
@@ -61,6 +61,25 @@ class CartController extends Controller
                     'success' => false,
                     'message' => 'Product information is incomplete. Please contact support.'
                 ], 400);
+            }
+
+            // Ensure variant has a tax class (required for tax calculation)
+            if (!$variant->tax_class_id) {
+                \Log::warning('Variant missing tax_class_id, attempting to assign default tax class', [
+                    'variant_id' => $variant->id
+                ]);
+                
+                // Get or create default tax class
+                $taxClass = \Lunar\Models\TaxClass::first();
+                if (!$taxClass) {
+                    $taxClass = \Lunar\Models\TaxClass::create([
+                        'name' => 'Default Tax',
+                    ]);
+                }
+                
+                // Assign tax class to variant
+                $variant->tax_class_id = $taxClass->id;
+                $variant->save();
             }
 
             // Ensure we have a cart with currency and channel BEFORE adding items
