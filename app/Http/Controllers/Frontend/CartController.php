@@ -86,13 +86,28 @@ class CartController extends Controller
                     }
                     $cart->save();
                 }
+                
+                // Reload cart with relationships to ensure Lunar can access them
+                $cart->load(['currency', 'channel']);
             }
 
             // Now add item to cart (cart is guaranteed to have currency and channel)
-            CartSession::add(
-                purchasable: $variant,
-                quantity: $request->quantity
-            );
+            // Wrap in try-catch to catch any Lunar internal errors
+            try {
+                CartSession::add(
+                    purchasable: $variant,
+                    quantity: $request->quantity
+                );
+            } catch (\Exception $e) {
+                \Log::error('CartSession::add() failed: ' . $e->getMessage(), [
+                    'exception' => $e,
+                    'cart_id' => $cart->id ?? null,
+                    'cart_currency_id' => $cart->currency_id ?? null,
+                    'cart_channel_id' => $cart->channel_id ?? null,
+                    'variant_id' => $variant->id ?? null,
+                ]);
+                throw $e; // Re-throw to be caught by outer try-catch
+            }
 
             // Get the cart after adding item
             $cart = CartSession::current();
