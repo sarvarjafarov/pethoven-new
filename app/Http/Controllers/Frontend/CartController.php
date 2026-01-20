@@ -49,8 +49,8 @@ class CartController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Product added to cart',
-                'cart_count' => $cart ? $cart->lines->sum('quantity') : 0,
-                'cart_total' => $cart ? $cart->total->formatted : '£0.00'
+                'cart_count' => $cart && $cart->lines ? $cart->lines->sum('quantity') : 0,
+                'cart_total' => ($cart && $cart->total) ? $cart->total->formatted : '£0.00'
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
