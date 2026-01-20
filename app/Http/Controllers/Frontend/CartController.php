@@ -80,9 +80,50 @@ class CartController extends Controller
                 // Assign tax class to variant
                 $variant->tax_class_id = $taxClass->id;
                 $variant->save();
+                
+                // Reload variant to ensure tax class relationship is available
+                $variant->refresh();
+                $variant->load('taxClass');
+            }
+            
+            // Ensure the tax class relationship is loaded and valid
+            if (!$variant->relationLoaded('taxClass')) {
+                $variant->load('taxClass');
+            }
+            
+            // Verify tax class exists (not just the ID)
+            if (!$variant->taxClass || !$variant->taxClass->id) {
+                \Log::error('Variant tax class relationship is null or invalid', [
+                    'variant_id' => $variant->id,
+                    'tax_class_id' => $variant->tax_class_id
+                ]);
+                
+                // Get or create default tax class
+                $taxClass = \Lunar\Models\TaxClass::first();
+                if (!$taxClass) {
+                    $taxClass = \Lunar\Models\TaxClass::create([
+                        'name' => 'Default Tax',
+                    ]);
+                }
+                
+                // Assign and reload
+                $variant->tax_class_id = $taxClass->id;
+                $variant->save();
+                $variant->refresh();
+                $variant->load('taxClass');
+            }
+
+            // CRITICAL: Fix any existing cart lines that might have missing tax classes
+            // before we call CartSession::current() which triggers calculation
+            // This must happen BEFORE any CartSession operations that trigger calculation
+            try {
+                $this->fixExistingCartLines();
+            } catch (\Exception $e) {
+                \Log::warning('Failed to fix existing cart lines before add: ' . $e->getMessage());
             }
 
             // Ensure we have a cart with currency and channel BEFORE adding items
+            // This might trigger calculation, so we fixed existing lines above
             $cart = CartSession::current();
             
             // If no cart exists or cart is missing currency/channel, create/fix it
@@ -169,6 +210,23 @@ class CartController extends Controller
                     'success' => false,
                     'message' => 'Cart configuration error. Please refresh and try again.'
                 ], 500);
+            }
+
+            // CRITICAL: Reload variant with all necessary relationships before adding
+            // Lunar will use this variant instance, so ensure it has everything loaded
+            $variant = ProductVariant::with(['product', 'taxClass', 'prices.currency'])
+                ->findOrFail($variant->id);
+            
+            // Double-check tax class is present (shouldn't be needed but be safe)
+            if (!$variant->tax_class_id || !$variant->taxClass || !$variant->taxClass->id) {
+                $taxClass = \Lunar\Models\TaxClass::first();
+                if (!$taxClass) {
+                    $taxClass = \Lunar\Models\TaxClass::create(['name' => 'Default Tax']);
+                }
+                $variant->tax_class_id = $taxClass->id;
+                $variant->save();
+                $variant->refresh();
+                $variant->load('taxClass');
             }
 
             // Now add item to cart (cart is guaranteed to have currency and channel)
@@ -369,6 +427,9 @@ class CartController extends Controller
     public function count()
     {
         try {
+            // Fix any existing cart lines before calculating
+            $this->fixExistingCartLines();
+            
             $cart = CartSession::current();
             $count = $cart && $cart->lines ? $cart->lines->sum('quantity') : 0;
             
@@ -379,6 +440,111 @@ class CartController extends Controller
             \Log::warning('Cart count failed: ' . $e->getMessage());
             return response()->json([
                 'count' => 0
+            ]);
+        }
+    }
+
+    /**
+     * Fix existing cart lines that might have variants without tax classes
+     * This prevents tax calculation errors when CartSession::current() is called
+     */
+    private function fixExistingCartLines()
+    {
+        try {
+            // Get cart ID from session without triggering calculation
+            $cartId = session()->get(config('lunar.cart_session.session_key'));
+            
+            if (!$cartId) {
+                return;
+            }
+            
+            // Get cart with lines and purchasables
+            // Use withoutGlobalScopes to avoid any issues
+            $cart = Cart::withoutGlobalScopes()
+                ->with(['lines.purchasable' => function($query) {
+                    $query->with('taxClass');
+                }])
+                ->find($cartId);
+            
+            if (!$cart || !$cart->lines || $cart->lines->isEmpty()) {
+                return;
+            }
+            
+            // Get default tax class
+            $defaultTaxClass = \Lunar\Models\TaxClass::first();
+            if (!$defaultTaxClass) {
+                $defaultTaxClass = \Lunar\Models\TaxClass::create([
+                    'name' => 'Default Tax',
+                ]);
+            }
+            
+            $fixed = false;
+            
+            // Fix any lines with variants missing tax classes
+            foreach ($cart->lines as $line) {
+                $purchasable = $line->purchasable;
+                
+                if ($purchasable instanceof ProductVariant) {
+                    // Reload purchasable to ensure we have fresh data
+                    $variant = ProductVariant::with('taxClass')->find($purchasable->id);
+                    
+                    if (!$variant) {
+                        continue;
+                    }
+                    
+                    // Check if variant has tax class
+                    $needsFix = false;
+                    
+                    if (!$variant->tax_class_id) {
+                        $needsFix = true;
+                        \Log::warning('Cart line variant missing tax_class_id', [
+                            'line_id' => $line->id,
+                            'variant_id' => $variant->id
+                        ]);
+                    } elseif (!$variant->relationLoaded('taxClass') || !$variant->taxClass) {
+                        // Tax class ID exists but relationship is null
+                        $needsFix = true;
+                        \Log::warning('Cart line variant tax class relationship is null', [
+                            'line_id' => $line->id,
+                            'variant_id' => $variant->id,
+                            'tax_class_id' => $variant->tax_class_id
+                        ]);
+                    } elseif (!$variant->taxClass->id) {
+                        // Tax class exists but has no ID (shouldn't happen but be safe)
+                        $needsFix = true;
+                        \Log::warning('Cart line variant tax class has no ID', [
+                            'line_id' => $line->id,
+                            'variant_id' => $variant->id,
+                            'tax_class_id' => $variant->tax_class_id
+                        ]);
+                    }
+                    
+                    if ($needsFix) {
+                        // Assign default tax class
+                        $variant->tax_class_id = $defaultTaxClass->id;
+                        $variant->save();
+                        $fixed = true;
+                        
+                        \Log::info('Fixed cart line variant tax class', [
+                            'line_id' => $line->id,
+                            'variant_id' => $variant->id,
+                            'tax_class_id' => $defaultTaxClass->id
+                        ]);
+                    }
+                }
+            }
+            
+            // If we fixed anything, clear any cached cart data
+            if ($fixed) {
+                // Clear cart from cache/session to force reload
+                // This ensures the next CartSession::current() gets fresh data
+                cache()->forget('cart_' . $cartId);
+            }
+        } catch (\Exception $e) {
+            // Don't let this break the flow, just log it
+            \Log::warning('Failed to fix existing cart lines: ' . $e->getMessage(), [
+                'exception' => $e,
+                'trace' => $e->getTraceAsString()
             ]);
         }
     }
