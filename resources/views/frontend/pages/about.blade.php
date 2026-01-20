@@ -9,7 +9,9 @@
         <div class="row align-items-center">
             <div class="col-md-7 col-lg-7 col-xl-5">
                 <div class="page-header-content">
-                    <div class="title-img"><img src="{{ asset('brancy/images/photos/about-title.webp') }}" alt="Image"></div>
+                    <div class="title-img">
+                        <img src="https://template.hasthemes.com/brancy/brancy/assets/images/photos/about-title.webp" alt="About title">
+                    </div>
                     <h2 class="page-header-title">We, are {{ config('app.name') }}</h2>
                     <h4 class="page-header-sub-title">Best cosmetics provider</h4>
                     <p class="page-header-desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis.</p>
@@ -17,7 +19,7 @@
             </div>
             <div class="col-md-5 col-lg-5 col-xl-7">
                 <div class="page-header-thumb">
-                    <img src="{{ asset('brancy/images/photos/about1.webp') }}" width="570" height="669" alt="Image">
+                    <img src="https://template.hasthemes.com/brancy/brancy/assets/images/photos/about1.webp" width="570" height="669" alt="About hero">
                 </div>
             </div>
         </div>
@@ -33,7 +35,7 @@
                 <!--== Start Funfact Item ==-->
                 <div class="funfact-item">
                     <div class="icon">
-                        <img src="{{ asset('brancy/images/icons/funfact1.webp') }}" width="110" height="110" alt="Icon">
+                        <img src="https://template.hasthemes.com/brancy/brancy/assets/images/icons/funfact1.webp" width="110" height="110" alt="Clients icon">
                     </div>
                     <h2 class="funfact-number">5000+</h2>
                     <h6 class="funfact-title">Clients</h6>
@@ -44,7 +46,7 @@
                 <!--== Start Funfact Item ==-->
                 <div class="funfact-item">
                     <div class="icon">
-                        <img src="{{ asset('brancy/images/icons/funfact2.webp') }}" width="110" height="110" alt="Icon">
+                        <img src="https://template.hasthemes.com/brancy/brancy/assets/images/icons/funfact2.webp" width="110" height="110" alt="Projects icon">
                     </div>
                     <h2 class="funfact-number">250+</h2>
                     <h6 class="funfact-title">Projects</h6>
@@ -55,7 +57,7 @@
                 <!--== Start Funfact Item ==-->
                 <div class="funfact-item">
                     <div class="icon">
-                        <img src="{{ asset('brancy/images/icons/funfact3.webp') }}" width="110" height="110" alt="Icon">
+                        <img src="https://template.hasthemes.com/brancy/brancy/assets/images/icons/funfact3.webp" width="110" height="110" alt="Revenue icon">
                     </div>
                     <h2 class="funfact-number">1.5M+</h2>
                     <h6 class="funfact-title">Revenue</h6>
@@ -74,22 +76,22 @@
             <div class="swiper-wrapper">
                 <div class="swiper-slide brand-logo-item">
                     <!--== Start Brand Logo Item ==-->
-                    <img src="{{ asset('brancy/images/brand-logo/1.webp') }}" width="155" height="110" alt="Image-HasTech">
+                    <img src="https://template.hasthemes.com/brancy/brancy/assets/images/brand-logo/1.webp" width="155" height="110" alt="Brand logo 1">
                     <!--== End Brand Logo Item ==-->
                 </div>
                 <div class="swiper-slide brand-logo-item">
                     <!--== Start Brand Logo Item ==-->
-                    <img src="{{ asset('brancy/images/brand-logo/2.webp') }}" width="241" height="110" alt="Image-HasTech">
+                    <img src="https://template.hasthemes.com/brancy/brancy/assets/images/brand-logo/2.webp" width="241" height="110" alt="Brand logo 2">
                     <!--== End Brand Logo Item ==-->
                 </div>
                 <div class="swiper-slide brand-logo-item">
                     <!--== Start Brand Logo Item ==-->
-                    <img src="{{ asset('brancy/images/brand-logo/3.webp') }}" width="147" height="110" alt="Image-HasTech">
+                    <img src="https://template.hasthemes.com/brancy/brancy/assets/images/brand-logo/3.webp" width="147" height="110" alt="Brand logo 3">
                     <!--== End Brand Logo Item ==-->
                 </div>
                 <div class="swiper-slide brand-logo-item">
                     <!--== Start Brand Logo Item ==-->
-                    <img src="{{ asset('brancy/images/brand-logo/4.webp') }}" width="196" height="110" alt="Image-HasTech">
+                    <img src="https://template.hasthemes.com/brancy/brancy/assets/images/brand-logo/4.webp" width="196" height="110" alt="Brand logo 4">
                     <!--== End Brand Logo Item ==-->
                 </div>
             </div>
@@ -102,7 +104,7 @@
 <section class="section-space pt-0 mb-n1">
     <div class="container">
         <div class="about-thumb">
-            <img src="{{ asset('brancy/images/photos/about2.webp') }}" alt="Image">
+            <img src="https://template.hasthemes.com/brancy/brancy/assets/images/photos/about2.webp" alt="Best cosmetics provider">
         </div>
         <div class="about-content">
             <h2 class="title">Best Cosmetics Provider</h2>
@@ -119,7 +121,10 @@
             <div class="col-md-6 col-lg-4 mb-8">
                 <!--== Start Feature Item ==-->
                 <div class="feature-item">
-                    <h5 class="title"><img class="icon" src="{{ asset('brancy/images/icons/feature1.webp') }}" width="60" height="60" alt="Icon"> Support Team</h5>
+                    <h5 class="title">
+                        <img class="icon" src="https://template.hasthemes.com/brancy/brancy/assets/images/icons/feature1.webp" width="60" height="60" alt="Support team icon">
+                        Support Team
+                    </h5>
                     <p class="desc">Lorem ipsum dolor amet, consectetur adipiscing. Ac tortor enim metus, turpis.</p>
                 </div>
                 <!--== End Feature Item ==-->
@@ -127,7 +132,10 @@
             <div class="col-md-6 col-lg-4 mb-8">
                 <!--== Start Feature Item ==-->
                 <div class="feature-item">
-                    <h5 class="title"><img class="icon" src="{{ asset('brancy/images/icons/feature2.webp') }}" width="60" height="60" alt="Icon"> Certification</h5>
+                    <h5 class="title">
+                        <img class="icon" src="https://template.hasthemes.com/brancy/brancy/assets/images/icons/feature2.webp" width="60" height="60" alt="Certification icon">
+                        Certification
+                    </h5>
                     <p class="desc">Lorem ipsum dolor amet, consectetur adipiscing. Ac tortor enim metus, turpis.</p>
                 </div>
                 <!--== End Feature Item ==-->
@@ -135,7 +143,10 @@
             <div class="col-md-6 col-lg-4 mb-8">
                 <!--== Start Feature Item ==-->
                 <div class="feature-item">
-                    <h5 class="title"><img class="icon" src="{{ asset('brancy/images/icons/feature3.webp') }}" width="60" height="60" alt="Icon"> Natural Products</h5>
+                    <h5 class="title">
+                        <img class="icon" src="https://template.hasthemes.com/brancy/brancy/assets/images/icons/feature3.webp" width="60" height="60" alt="Natural products icon">
+                        Natural Products
+                    </h5>
                     <p class="desc">Lorem ipsum dolor amet, consectetur adipiscing. Ac tortor enim metus, turpis.</p>
                 </div>
                 <!--== End Feature Item ==-->
