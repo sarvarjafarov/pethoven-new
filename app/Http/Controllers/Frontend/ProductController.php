@@ -78,7 +78,8 @@ class ProductController extends Controller
 
         // Get related products from same collections
         $related = Product::whereHas('collections', function($q) use ($product) {
-            $q->whereIn('id', $product->collections->pluck('id'));
+            // Qualify the column to avoid ambiguity in Postgres when the relationship subquery joins tables
+            $q->whereIn('lunar_collections.id', $product->collections->pluck('id'));
         })
         ->where('id', '!=', $product->id)
         ->where('status', 'published')
