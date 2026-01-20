@@ -4,7 +4,7 @@
     $firstVariant = $product->variants->first();
     $price = $firstVariant?->prices->first();
     // Cycle through demo images (1-6) based on product ID
-    // Use product thumbnail if it exists and is valid, otherwise use demo images
+    // Use product thumbnail if it exists and is valid LOCAL URL, otherwise use demo images
     $demoImageIndex = (($product->id ?? 1) % 6) + 1;
     $productThumbnail = null;
     try {
@@ -12,8 +12,13 @@
     } catch (\Exception $e) {
         // If thumbnail fails, use demo image
     }
-    // Use demo images if no thumbnail or thumbnail is invalid
-    $thumbnail = (!empty($productThumbnail) && strpos($productThumbnail, 'http') !== false) 
+    // Check if thumbnail is valid and NOT an external URL (like template.hasthemes.com)
+    $isValidLocalThumbnail = !empty($productThumbnail) 
+        && strpos($productThumbnail, 'http') !== false 
+        && strpos($productThumbnail, 'template.hasthemes.com') === false
+        && (strpos($productThumbnail, url('/')) === 0 || strpos($productThumbnail, '/') === 0);
+    // Use demo images if no thumbnail or thumbnail is external/invalid
+    $thumbnail = $isValidLocalThumbnail 
         ? $productThumbnail 
         : asset("brancy/images/shop/{$demoImageIndex}.webp");
     $productName = $product->translateAttribute('name');

@@ -106,15 +106,20 @@
             <div class="col-lg-6">
                 <div class="product-details-thumb">
                     @php
-                        // Use product thumbnail if available and valid, otherwise use demo image
+                        // Use product thumbnail if available and valid LOCAL URL, otherwise use demo image
                         $productThumbnail = null;
                         try {
                             $productThumbnail = $product->thumbnail?->getUrl('large');
                         } catch (\Exception $e) {
                             // If thumbnail fails, use demo image
                         }
-                        // Use demo image if no thumbnail or thumbnail is invalid
-                        $mainImage = (!empty($productThumbnail) && strpos($productThumbnail, 'http') !== false) 
+                        // Check if thumbnail is valid and NOT an external URL (like template.hasthemes.com)
+                        $isValidLocalThumbnail = !empty($productThumbnail) 
+                            && strpos($productThumbnail, 'http') !== false 
+                            && strpos($productThumbnail, 'template.hasthemes.com') === false
+                            && (strpos($productThumbnail, url('/')) === 0 || strpos($productThumbnail, '/') === 0);
+                        // Use demo image if no thumbnail or thumbnail is external/invalid
+                        $mainImage = $isValidLocalThumbnail 
                             ? $productThumbnail 
                             : asset('brancy/images/shop/product-details/1.webp');
                     @endphp
@@ -374,7 +379,7 @@
                             @php
                                 $relatedVariant = $relatedProduct->variants->first();
                                 $relatedPrice = $relatedVariant?->prices->first();
-                                // Use product thumbnail if available and valid, otherwise use demo image
+                                // Use product thumbnail if available and valid LOCAL URL, otherwise use demo image
                                 $relatedProductThumbnail = null;
                                 try {
                                     $relatedProductThumbnail = $relatedProduct->thumbnail?->getUrl('medium');
@@ -383,7 +388,12 @@
                                 }
                                 // Cycle through demo images (1-6) based on product ID
                                 $demoImageIndex = (($relatedProduct->id ?? 1) % 6) + 1;
-                                $relatedThumbnail = (!empty($relatedProductThumbnail) && strpos($relatedProductThumbnail, 'http') !== false) 
+                                // Check if thumbnail is valid and NOT an external URL (like template.hasthemes.com)
+                                $isValidLocalThumbnail = !empty($relatedProductThumbnail) 
+                                    && strpos($relatedProductThumbnail, 'http') !== false 
+                                    && strpos($relatedProductThumbnail, 'template.hasthemes.com') === false
+                                    && (strpos($relatedProductThumbnail, url('/')) === 0 || strpos($relatedProductThumbnail, '/') === 0);
+                                $relatedThumbnail = $isValidLocalThumbnail 
                                     ? $relatedProductThumbnail 
                                     : asset("brancy/images/shop/{$demoImageIndex}.webp");
                                 $relatedName = $relatedProduct->translateAttribute('name');
