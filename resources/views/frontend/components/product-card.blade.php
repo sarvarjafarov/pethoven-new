@@ -12,10 +12,11 @@
     } catch (\Exception $e) {
         // If thumbnail fails, use demo image
     }
-    // Check if thumbnail is valid LOCAL URL (not from template CDN, but from our own domain)
+    // Check if thumbnail is valid LOCAL URL (not from template CDN, and not a broken /storage URL on Heroku)
     $isValidLocalThumbnail = !empty($productThumbnail) 
         && strpos($productThumbnail, 'http') !== false 
         && strpos($productThumbnail, 'template.hasthemes.com') === false
+        && strpos($productThumbnail, '/storage/') === false
         && (strpos($productThumbnail, url('/')) === 0 || strpos($productThumbnail, '/') === 0);
     // Use template CDN demo images if no local thumbnail
     $thumbnail = $isValidLocalThumbnail 
