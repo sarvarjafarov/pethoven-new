@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Lunar\Facades\CartSession;
 use Lunar\Models\ProductVariant;
+use Lunar\Models\Cart;
+use Lunar\Models\Currency;
+use Lunar\Models\Channel;
 
 class CartController extends Controller
 {
@@ -39,7 +42,53 @@ class CartController extends Controller
                 ], 404);
             }
 
-            // Add item to cart (Lunar will auto-create cart if needed with proper currency/channel)
+            // Ensure we have a cart with currency and channel BEFORE adding items
+            $cart = CartSession::current();
+            
+            // If no cart exists or cart is missing currency/channel, create/fix it
+            if (!$cart || !$cart->currency_id || !$cart->channel_id) {
+                $currency = Currency::getDefault();
+                $channel = Channel::getDefault();
+                
+                if (!$currency) {
+                    \Log::error('No default currency found');
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Store configuration error. Please contact support.'
+                    ], 500);
+                }
+                
+                if (!$channel) {
+                    \Log::error('No default channel found');
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Store configuration error. Please contact support.'
+                    ], 500);
+                }
+                
+                // Create new cart if it doesn't exist
+                if (!$cart) {
+                    $cart = Cart::create([
+                        'currency_id' => $currency->id,
+                        'channel_id' => $channel->id,
+                        'user_id' => auth()->id(),
+                    ]);
+                    
+                    // Store cart ID in session
+                    session()->put(config('lunar.cart_session.session_key'), $cart->id);
+                } else {
+                    // Fix existing cart
+                    if (!$cart->currency_id) {
+                        $cart->currency_id = $currency->id;
+                    }
+                    if (!$cart->channel_id) {
+                        $cart->channel_id = $channel->id;
+                    }
+                    $cart->save();
+                }
+            }
+
+            // Now add item to cart (cart is guaranteed to have currency and channel)
             CartSession::add(
                 purchasable: $variant,
                 quantity: $request->quantity
