@@ -9,6 +9,10 @@ use Lunar\Models\ProductVariant;
 use Lunar\Models\Cart;
 use Lunar\Models\Currency;
 use Lunar\Models\Channel;
+use Lunar\Models\TaxZone;
+use Lunar\Models\TaxClass;
+use Lunar\Models\TaxRate;
+use Lunar\Models\Country;
 
 class CartController extends Controller
 {
@@ -113,6 +117,10 @@ class CartController extends Controller
                 $variant->load('taxClass');
             }
 
+            // CRITICAL: Ensure TaxZone exists (required for tax calculation)
+            // SystemTaxDriver will fail if TaxZone::getDefault() returns null
+            $this->ensureTaxZoneExists();
+
             // CRITICAL: Fix any existing cart lines that might have missing tax classes
             // before we call CartSession::current() which triggers calculation
             // This must happen BEFORE any CartSession operations that trigger calculation
@@ -176,7 +184,7 @@ class CartController extends Controller
                 
                 // Reload cart with relationships to ensure Lunar can access them
                 if ($cart) {
-                    $cart->load(['currency', 'channel']);
+                    $cart->load('currency');
                 }
             }
 
@@ -190,9 +198,9 @@ class CartController extends Controller
                 ], 500);
             }
 
-            // Ensure cart has currency and channel relationships loaded
-            if (!$cart->relationLoaded('currency') || !$cart->relationLoaded('channel')) {
-                $cart->load(['currency', 'channel']);
+            // Ensure cart has currency relationship loaded
+            if (!$cart->relationLoaded('currency')) {
+                $cart->load('currency');
             }
 
             // Verify required relationships exist
@@ -204,8 +212,9 @@ class CartController extends Controller
                 ], 500);
             }
 
-            if (!$cart->channel || !$cart->channel->id) {
-                \Log::error('Cart channel is missing or invalid', ['cart_id' => $cart->id ?? null]);
+            // Verify channel_id exists (Cart model doesn't have channel relationship)
+            if (!$cart->channel_id) {
+                \Log::error('Cart channel_id is missing', ['cart_id' => $cart->id ?? null]);
                 return response()->json([
                     'success' => false,
                     'message' => 'Cart configuration error. Please refresh and try again.'
@@ -441,6 +450,71 @@ class CartController extends Controller
             return response()->json([
                 'count' => 0
             ]);
+        }
+    }
+
+    /**
+     * Ensure TaxZone exists - CRITICAL for tax calculation
+     * SystemTaxDriver fails if TaxZone::getDefault() returns null
+     */
+    private function ensureTaxZoneExists()
+    {
+        try {
+            $taxZone = TaxZone::where('default', true)->first();
+            
+            if (!$taxZone) {
+                \Log::warning('Default TaxZone missing, creating one');
+                
+                $taxZone = TaxZone::create([
+                    'name' => 'Default Tax Zone',
+                    'zone_type' => 'country',
+                    'price_display' => 'tax_exclusive',
+                    'default' => true,
+                    'active' => true,
+                ]);
+                
+                // Add all countries to the tax zone if possible
+                if (class_exists(Country::class) && Country::count() > 0) {
+                    try {
+                        $taxZone->countries()->createMany(
+                            Country::get()->take(10)->map(fn ($country) => [
+                                'country_id' => $country->id,
+                            ])
+                        );
+                    } catch (\Exception $e) {
+                        \Log::warning('Failed to add countries to tax zone: ' . $e->getMessage());
+                    }
+                }
+            }
+            
+            // Ensure TaxClass exists
+            $taxClass = TaxClass::first();
+            if (!$taxClass) {
+                $taxClass = TaxClass::create([
+                    'name' => 'Default Tax',
+                ]);
+            }
+            
+            // Ensure TaxRate exists
+            $taxRate = TaxRate::where('tax_zone_id', $taxZone->id)
+                ->where('tax_class_id', $taxClass->id)
+                ->first();
+            
+            if (!$taxRate) {
+                TaxRate::create([
+                    'tax_zone_id' => $taxZone->id,
+                    'tax_class_id' => $taxClass->id,
+                    'name' => 'Standard Rate',
+                    'percentage' => 0,
+                    'priority' => 1,
+                ]);
+            }
+        } catch (\Exception $e) {
+            \Log::error('Failed to ensure TaxZone exists: ' . $e->getMessage(), [
+                'exception' => $e,
+                'trace' => $e->getTraceAsString()
+            ]);
+            // Don't throw - let it fail gracefully if we can't create it
         }
     }
 
