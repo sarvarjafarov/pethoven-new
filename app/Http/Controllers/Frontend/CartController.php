@@ -24,33 +24,51 @@ class CartController extends Controller
      */
     public function add(Request $request)
     {
-        $request->validate([
-            'variant_id' => 'required|exists:lunar_product_variants,id',
-            'quantity' => 'required|integer|min:1',
-        ]);
+        try {
+            $request->validate([
+                'variant_id' => 'required|exists:lunar_product_variants,id',
+                'quantity' => 'required|integer|min:1',
+            ]);
 
-        $variant = ProductVariant::find($request->variant_id);
+            $variant = ProductVariant::find($request->variant_id);
 
-        if (!$variant) {
+            if (!$variant) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Product variant not found'
+                ], 404);
+            }
+
+            CartSession::add(
+                purchasable: $variant,
+                quantity: $request->quantity
+            );
+
+            $cart = CartSession::current();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Product added to cart',
+                'cart_count' => $cart->lines->sum('quantity'),
+                'cart_total' => $cart->total->formatted
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Product variant not found'
-            ], 404);
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            \Log::error('Cart add error: ' . $e->getMessage(), [
+                'exception' => $e,
+                'request' => $request->all()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to add product to cart: ' . $e->getMessage()
+            ], 500);
         }
-
-        CartSession::add(
-            purchasable: $variant,
-            quantity: $request->quantity
-        );
-
-        $cart = CartSession::current();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Product added to cart',
-            'cart_count' => $cart->lines->sum('quantity'),
-            'cart_total' => $cart->total->formatted
-        ]);
     }
 
     /**
