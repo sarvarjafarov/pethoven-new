@@ -78,14 +78,24 @@ class ProductController extends Controller
 
         // Get related products from same collections
         $related = Product::whereHas('collections', function($q) use ($product) {
-            // Qualify the column to avoid ambiguity in Postgres when the relationship subquery joins tables
-            $q->whereIn('lunar_collections.id', $product->collections->pluck('id'));
-        })
-        ->where('id', '!=', $product->id)
-        ->where('status', 'published')
-        ->limit(4)
-        ->get();
+                // Qualify the column to avoid ambiguity in Postgres when the relationship subquery joins tables
+                $q->whereIn('lunar_collections.id', $product->collections->pluck('id'));
+            })
+            ->where('id', '!=', $product->id)
+            ->where('status', 'published')
+            ->limit(4)
+            ->get();
 
-        return view('frontend.shop.show', compact('product', 'related'));
+        // Prepare variant data for frontend (JSON-safe, avoid complex expressions inside Blade @json)
+        $variantData = $product->variants->map(function ($variant) {
+            return [
+                'id' => $variant->id,
+                'sku' => $variant->sku,
+                'price' => optional($variant->prices->first())->price->formatted ?? '',
+                'values' => $variant->values->pluck('name', 'option.name')->toArray(),
+            ];
+        })->values();
+
+        return view('frontend.shop.show', compact('product', 'related', 'variantData'));
     }
 }

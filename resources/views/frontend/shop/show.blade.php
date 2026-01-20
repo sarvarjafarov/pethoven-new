@@ -241,14 +241,7 @@
 <script>
 $(document).ready(function() {
     // Product variants data
-    const variants = @json($product->variants->map(function($variant) {
-        return [
-            'id' => $variant->id,
-            'sku' => $variant->sku,
-            'price' => $variant->prices->first()?->price->formatted ?? '',
-            'values' => $variant->values->pluck('name', 'option.name')->toArray()
-        ];
-    }));
+    const variants = @json($variantData);
 
     // Quantity buttons
     $('.qtybtn').on('click', function() {
