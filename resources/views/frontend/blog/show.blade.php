@@ -3,6 +3,12 @@
 @section('title', $post->title . ' - ' . config('app.name'))
 
 @section('content')
+@php
+    $postFeatured = $post->featured_image ?? null;
+    $postFeaturedSrc = $postFeatured
+        ? (\Illuminate\Support\Str::startsWith($postFeatured, ['http://', 'https://']) ? $postFeatured : asset($postFeatured))
+        : null;
+@endphp
 <!--== Start Page Header Area ==-->
 <div class="page-header-area bg-img" style="background-image: url({{ asset('brancy/images/photos/page-header1.webp') }});">
     <div class="container">
@@ -32,9 +38,9 @@
         <div class="row">
             <div class="col-lg-8">
                 <article class="blog-detail">
-                    @if($post->featured_image)
+                    @if($postFeaturedSrc)
                         <div class="blog-detail-thumb mb-6" style="border-radius: 15px; overflow: hidden;">
-                            <img src="{{ asset($post->featured_image) }}" alt="{{ $post->title }}" class="w-100">
+                            <img src="{{ $postFeaturedSrc }}" alt="{{ $post->title }}" class="w-100">
                         </div>
                     @endif
 
@@ -104,10 +110,16 @@
                             <div class="related-posts">
                                 @foreach($relatedPosts as $relatedPost)
                                     <div class="related-post-item mb-4 pb-4" style="border-bottom: 1px solid #eee;">
-                                        @if($relatedPost->featured_image)
+                                        @php
+                                            $relatedFeatured = $relatedPost->featured_image ?? null;
+                                            $relatedFeaturedSrc = $relatedFeatured
+                                                ? (\Illuminate\Support\Str::startsWith($relatedFeatured, ['http://', 'https://']) ? $relatedFeatured : asset($relatedFeatured))
+                                                : null;
+                                        @endphp
+                                        @if($relatedFeaturedSrc)
                                             <a href="{{ route('blog.show', $relatedPost->slug) }}" class="d-flex gap-3 text-decoration-none">
                                                 <img
-                                                    src="{{ asset($relatedPost->featured_image) }}"
+                                                    src="{{ $relatedFeaturedSrc }}"
                                                     alt="{{ $relatedPost->title }}"
                                                     style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;"
                                                 >

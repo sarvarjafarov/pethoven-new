@@ -7,8 +7,8 @@
     /** @var \Illuminate\Support\Collection|\App\Models\BlogPost[] $posts */
     $cdn = 'https://template.hasthemes.com/brancy/brancy/assets/images';
 
-    $postLink = function ($post) {
-        return $post ? route('blog.show', $post->slug) : '#/';
+    $postLink = function ($post, string $demoSlug) {
+        return route('blog.show', $post?->slug ?: $demoSlug);
     };
 
     $postTitle = function ($post, $fallback) {
@@ -69,12 +69,12 @@
             <div class="col-sm-6 col-lg-4 mb-8">
                 <!--== Start Blog Item ==-->
                 <div class="post-item">
-                    <a href="{{ $postLink($posts[0] ?? null) }}" class="thumb">
+                    <a href="{{ $postLink($posts[0] ?? null, 'demo-1') }}" class="thumb">
                         <img src="{{ $cdn }}/blog/1.webp" width="370" height="320" alt="Image-HasTech">
                     </a>
                     <div class="content">
                         <a class="post-category" href="{{ route('blog.index') }}">beauty</a>
-                        <h4 class="title"><a href="{{ $postLink($posts[0] ?? null) }}">{{ $postTitle($posts[0] ?? null, 'Lorem ipsum dolor sit amet consectetur adipiscing.') }}</a></h4>
+                        <h4 class="title"><a href="{{ $postLink($posts[0] ?? null, 'demo-1') }}">{{ $postTitle($posts[0] ?? null, 'Lorem ipsum dolor sit amet consectetur adipiscing.') }}</a></h4>
                         <ul class="meta">
                             <li class="author-info"><span>By:</span> <a href="{{ route('blog.index') }}">{{ $postAuthor($posts[0] ?? null) }}</a></li>
                             <li class="post-date">{{ $postDate($posts[0] ?? null) }}</li>
@@ -87,12 +87,12 @@
             <div class="col-sm-6 col-lg-4 mb-8">
                 <!--== Start Blog Item ==-->
                 <div class="post-item">
-                    <a href="{{ $postLink($posts[1] ?? null) }}" class="thumb">
+                    <a href="{{ $postLink($posts[1] ?? null, 'demo-2') }}" class="thumb">
                         <img src="{{ $cdn }}/blog/4.webp" width="370" height="320" alt="Image-HasTech">
                     </a>
                     <div class="content">
                         <a class="post-category post-category-two" data-bg-color="#A49CFF" href="{{ route('blog.index') }}">beauty</a>
-                        <h4 class="title"><a href="{{ $postLink($posts[1] ?? null) }}">{{ $postTitle($posts[1] ?? null, 'Benefit of Hot Ston Spa for your health & life.') }}</a></h4>
+                        <h4 class="title"><a href="{{ $postLink($posts[1] ?? null, 'demo-2') }}">{{ $postTitle($posts[1] ?? null, 'Benefit of Hot Ston Spa for your health & life.') }}</a></h4>
                         <ul class="meta">
                             <li class="author-info"><span>By:</span> <a href="{{ route('blog.index') }}">{{ $postAuthor($posts[1] ?? null) }}</a></li>
                             <li class="post-date">{{ $postDate($posts[1] ?? null) }}</li>
@@ -108,9 +108,9 @@
                         <!--== Start Blog Item ==-->
                         <div class="post-item">
                             <div class="content">
-                                <h4 class="title mt-0"><a href="{{ $postLink($posts[2] ?? null) }}">{{ $postTitle($posts[2] ?? null, 'Lorem ipsum dolor sit amet, consectetur adipiscing') }}</a></h4>
+                                <h4 class="title mt-0"><a href="{{ $postLink($posts[2] ?? null, 'demo-1') }}">{{ $postTitle($posts[2] ?? null, 'Lorem ipsum dolor sit amet, consectetur adipiscing') }}</a></h4>
                                 <p class="desc">{{ $postDesc($posts[2] ?? null, 'Lorem ipsum dolor sit amet, conseur adipiscing elit ut aliqua, purus sit amet luctus venenatis.') }}</p>
-                                <a class="btn-link" href="{{ $postLink($posts[2] ?? null) }}">Learn more</a>
+                                <a class="btn-link" href="{{ $postLink($posts[2] ?? null, 'demo-1') }}">Learn more</a>
                             </div>
                         </div>
                         <!--== End Blog Item ==-->
@@ -119,9 +119,9 @@
                         <!--== Start Blog Item ==-->
                         <div class="post-item">
                             <div class="content">
-                                <h4 class="title mt-0"><a href="{{ $postLink($posts[3] ?? null) }}">{{ $postTitle($posts[3] ?? null, 'Facial Scrub is natural treatment for face.') }}</a></h4>
+                                <h4 class="title mt-0"><a href="{{ $postLink($posts[3] ?? null, 'demo-3') }}">{{ $postTitle($posts[3] ?? null, 'Facial Scrub is natural treatment for face.') }}</a></h4>
                                 <p class="desc">{{ $postDesc($posts[3] ?? null, 'Lorem ipsum dolor sit amet, conseur adipiscing elit ut aliqua, purus.') }}</p>
-                                <a class="btn-link" href="{{ $postLink($posts[3] ?? null) }}">Learn more</a>
+                                <a class="btn-link" href="{{ $postLink($posts[3] ?? null, 'demo-3') }}">Learn more</a>
                             </div>
                         </div>
                         <!--== End Blog Item ==-->
@@ -140,11 +140,11 @@
             <div class="col-sm-6 mb-8">
                 <!--== Start Blog Item ==-->
                 <div class="post-item">
-                    <a href="{{ $postLink($posts[4] ?? null) }}" class="thumb">
+                    <a href="{{ $postLink($posts[4] ?? null, 'demo-3') }}" class="thumb">
                         <img src="{{ $cdn }}/blog/col6-1.webp" width="570" height="340" alt="Image-HasTech">
                     </a>
                     <div class="content">
-                        <h4 class="title"><a href="{{ $postLink($posts[4] ?? null) }}">{{ $postTitle($posts[4] ?? null, 'Facial Scrub is natural treatment for face.') }}</a></h4>
+                        <h4 class="title"><a href="{{ $postLink($posts[4] ?? null, 'demo-3') }}">{{ $postTitle($posts[4] ?? null, 'Facial Scrub is natural treatment for face.') }}</a></h4>
                         <p class="desc">{{ $postDesc($posts[4] ?? null, 'Lorem ipsum dolor sit amet, conseur adipiscing elit ut aliqua, purus sit amet luctus venenatis.') }}</p>
                         <ul class="meta">
                             <li class="author-info"><span>By:</span> <a href="{{ route('blog.index') }}">{{ $postAuthor($posts[4] ?? null) }}</a></li>
@@ -158,11 +158,11 @@
             <div class="col-sm-6 mb-8">
                 <!--== Start Blog Item ==-->
                 <div class="post-item">
-                    <a href="{{ $postLink($posts[5] ?? null) }}" class="thumb">
+                    <a href="{{ $postLink($posts[5] ?? null, 'demo-2') }}" class="thumb">
                         <img src="{{ $cdn }}/blog/col6-2.webp" width="570" height="340" alt="Image-HasTech">
                     </a>
                     <div class="content">
-                        <h4 class="title"><a href="{{ $postLink($posts[5] ?? null) }}">{{ $postTitle($posts[5] ?? null, 'Benefit of Hot Ston Spa for your health') }}</a></h4>
+                        <h4 class="title"><a href="{{ $postLink($posts[5] ?? null, 'demo-2') }}">{{ $postTitle($posts[5] ?? null, 'Benefit of Hot Ston Spa for your health') }}</a></h4>
                         <p class="desc">{{ $postDesc($posts[5] ?? null, 'Lorem ipsum dolor sit amet, conseur adipiscing elit ut aliqua, purus sit amet luctus venenatis.') }}</p>
                         <ul class="meta">
                             <li class="author-info"><span>By:</span> <a href="{{ route('blog.index') }}">{{ $postAuthor($posts[5] ?? null) }}</a></li>
@@ -201,12 +201,12 @@
                 <div class="col-sm-6 col-lg-4 mb-8">
                     <!--== Start Blog Item ==-->
                     <div class="post-item">
-                        <a href="{{ $postLink($p) }}" class="thumb">
+                        <a href="{{ $postLink($p, 'demo-1') }}" class="thumb">
                             <img src="{{ $cdn }}/blog/{{ $img }}" width="370" height="320" alt="Image-HasTech">
                         </a>
                         <div class="content">
                             <a class="{{ $categoryClass }}" @if($bg) data-bg-color="{{ $bg }}" @endif href="{{ route('blog.index') }}">beauty</a>
-                            <h4 class="title"><a href="{{ $postLink($p) }}">{{ $postTitle($p, 'Lorem ipsum dolor sit amet consectetur adipiscing.') }}</a></h4>
+                            <h4 class="title"><a href="{{ $postLink($p, 'demo-1') }}">{{ $postTitle($p, 'Lorem ipsum dolor sit amet consectetur adipiscing.') }}</a></h4>
                             <ul class="meta">
                                 <li class="author-info"><span>By:</span> <a href="{{ route('blog.index') }}">{{ $postAuthor($p) }}</a></li>
                                 <li class="post-date">{{ $postDate($p) }}</li>
@@ -250,12 +250,12 @@
                 @endphp
                 <div class="col-sm-6 col-lg-4 mb-8">
                     <div class="post-item">
-                        <a href="{{ $postLink($p) }}" class="thumb">
+                        <a href="{{ $postLink($p, 'demo-1') }}" class="thumb">
                             <img src="{{ $cdn }}/blog/{{ $img }}" width="370" height="320" alt="Image-HasTech">
                         </a>
                         <div class="content">
                             <a class="{{ $categoryClass }}" @if($bg) data-bg-color="{{ $bg }}" @endif href="{{ route('blog.index') }}">beauty</a>
-                            <h4 class="title"><a href="{{ $postLink($p) }}">{{ $postTitle($p, 'Lorem ipsum dolor sit amet consectetur adipiscing.') }}</a></h4>
+                            <h4 class="title"><a href="{{ $postLink($p, 'demo-1') }}">{{ $postTitle($p, 'Lorem ipsum dolor sit amet consectetur adipiscing.') }}</a></h4>
                             <ul class="meta">
                                 <li class="author-info"><span>By:</span> <a href="{{ route('blog.index') }}">{{ $postAuthor($p) }}</a></li>
                                 <li class="post-date">{{ $postDate($p) }}</li>
