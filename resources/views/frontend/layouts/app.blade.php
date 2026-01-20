@@ -397,7 +397,7 @@
                         <i class="fa fa-shopping-cart" style="font-size: 16px;"></i>
                         <span>View Cart</span>
                     </a>
-                    <button type="button" class="btn" data-dismiss="modal" style="flex: 1; padding: 12px 20px; background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%); color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 14px; letter-spacing: 0.5px; text-transform: uppercase; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(255, 107, 107, 0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(255, 107, 107, 0.3)';">
+                    <button type="button" class="btn" id="continueShoppingBtn" style="flex: 1; padding: 12px 20px; background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%); color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 14px; letter-spacing: 0.5px; text-transform: uppercase; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3); cursor: pointer;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(255, 107, 107, 0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(255, 107, 107, 0.3)';">
                         <span>Continue Shopping</span>
                     </button>
                 </div>
@@ -420,6 +420,12 @@
         //     $('#addToCartModal').modal('hide');
         // }, 3000);
     }
+
+    // Handle Continue Shopping button click
+    $(document).on('click', '#continueShoppingBtn', function(e) {
+        e.preventDefault();
+        $('#addToCartModal').modal('hide');
+    });
     </script>
 
 </body>
