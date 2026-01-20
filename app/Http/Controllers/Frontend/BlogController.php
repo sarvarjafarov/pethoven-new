@@ -31,22 +31,11 @@ class BlogController extends Controller
             });
         }
 
-        // Get all posts (no pagination for template structure)
-        $allPosts = $query->get();
-        
-        // New Posts (latest 2 posts)
-        $newPosts = $allPosts->take(2);
-        
-        // Others Posts (remaining posts)
-        $othersPosts = $allPosts->skip(2);
-        
-        $categories = BlogPost::published()
-            ->select('category')
-            ->distinct()
-            ->whereNotNull('category')
-            ->pluck('category');
+        // We render the page using the Brancy `blog.html` structure.
+        // The view will map the first N posts into the template slots and fall back to Brancy demo content.
+        $posts = $query->get();
 
-        return view('frontend.blog.index', compact('newPosts', 'othersPosts', 'categories'));
+        return view('frontend.blog.index', compact('posts'));
     }
 
     /**
