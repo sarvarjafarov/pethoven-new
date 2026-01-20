@@ -33,13 +33,34 @@ class CartController extends Controller
                 'quantity' => 'required|integer|min:1',
             ]);
 
-            $variant = ProductVariant::find($request->variant_id);
+            $variant = ProductVariant::with(['product'])->find($request->variant_id);
 
             if (!$variant) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Product variant not found'
                 ], 404);
+            }
+
+            // Ensure variant has required data
+            if (!$variant->id) {
+                \Log::error('Variant found but has no ID', ['variant_id' => $request->variant_id]);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid product variant'
+                ], 400);
+            }
+
+            // Ensure variant has a product relationship
+            if (!$variant->product || !$variant->product->id) {
+                \Log::error('Variant product is missing or invalid', [
+                    'variant_id' => $variant->id,
+                    'product' => $variant->product ? 'exists but no id' : 'null'
+                ]);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Product information is incomplete. Please contact support.'
+                ], 400);
             }
 
             // Ensure we have a cart with currency and channel BEFORE adding items
@@ -50,16 +71,20 @@ class CartController extends Controller
                 $currency = Currency::getDefault();
                 $channel = Channel::getDefault();
                 
-                if (!$currency) {
-                    \Log::error('No default currency found');
+                if (!$currency || !$currency->id) {
+                    \Log::error('No default currency found or currency has no ID', [
+                        'currency' => $currency ? 'exists but no id' : 'null'
+                    ]);
                     return response()->json([
                         'success' => false,
                         'message' => 'Store configuration error. Please contact support.'
                     ], 500);
                 }
                 
-                if (!$channel) {
-                    \Log::error('No default channel found');
+                if (!$channel || !$channel->id) {
+                    \Log::error('No default channel found or channel has no ID', [
+                        'channel' => $channel ? 'exists but no id' : 'null'
+                    ]);
                     return response()->json([
                         'success' => false,
                         'message' => 'Store configuration error. Please contact support.'
@@ -75,20 +100,56 @@ class CartController extends Controller
                     ]);
                     
                     // Store cart ID in session
-                    session()->put(config('lunar.cart_session.session_key'), $cart->id);
+                    if ($cart && $cart->id) {
+                        session()->put(config('lunar.cart_session.session_key'), $cart->id);
+                    }
                 } else {
                     // Fix existing cart
-                    if (!$cart->currency_id) {
+                    if (!$cart->currency_id && $currency->id) {
                         $cart->currency_id = $currency->id;
                     }
-                    if (!$cart->channel_id) {
+                    if (!$cart->channel_id && $channel->id) {
                         $cart->channel_id = $channel->id;
                     }
                     $cart->save();
                 }
                 
                 // Reload cart with relationships to ensure Lunar can access them
+                if ($cart) {
+                    $cart->load(['currency', 'channel']);
+                }
+            }
+
+            // Ensure cart is fresh from session before adding item
+            $cart = CartSession::current();
+            if (!$cart) {
+                \Log::error('Cart is null before adding item');
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to retrieve cart. Please refresh and try again.'
+                ], 500);
+            }
+
+            // Ensure cart has currency and channel relationships loaded
+            if (!$cart->relationLoaded('currency') || !$cart->relationLoaded('channel')) {
                 $cart->load(['currency', 'channel']);
+            }
+
+            // Verify required relationships exist
+            if (!$cart->currency || !$cart->currency->id) {
+                \Log::error('Cart currency is missing or invalid', ['cart_id' => $cart->id ?? null]);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cart configuration error. Please refresh and try again.'
+                ], 500);
+            }
+
+            if (!$cart->channel || !$cart->channel->id) {
+                \Log::error('Cart channel is missing or invalid', ['cart_id' => $cart->id ?? null]);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cart configuration error. Please refresh and try again.'
+                ], 500);
             }
 
             // Now add item to cart (cart is guaranteed to have currency and channel)
@@ -101,10 +162,11 @@ class CartController extends Controller
             } catch (\Exception $e) {
                 \Log::error('CartSession::add() failed: ' . $e->getMessage(), [
                     'exception' => $e,
-                    'cart_id' => $cart->id ?? null,
-                    'cart_currency_id' => $cart->currency_id ?? null,
-                    'cart_channel_id' => $cart->channel_id ?? null,
-                    'variant_id' => $variant->id ?? null,
+                    'trace' => $e->getTraceAsString(),
+                    'cart_id' => ($cart && isset($cart->id)) ? $cart->id : null,
+                    'cart_currency_id' => ($cart && isset($cart->currency_id)) ? $cart->currency_id : null,
+                    'cart_channel_id' => ($cart && isset($cart->channel_id)) ? $cart->channel_id : null,
+                    'variant_id' => ($variant && isset($variant->id)) ? $variant->id : null,
                 ]);
                 throw $e; // Re-throw to be caught by outer try-catch
             }
