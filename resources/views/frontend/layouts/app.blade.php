@@ -114,6 +114,13 @@
 
     <!-- Quick View Script -->
     <script>
+    // Setup CSRF token for all AJAX requests
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
     $(document).ready(function() {
         // Quick view modal trigger
         $(document).on('click', '.action-btn-quick-view', function(e) {
@@ -236,6 +243,67 @@
                 }
             });
         }
+    });
+
+    // Add to cart functionality (global handler for all pages)
+    $(document).on('click', '.quick-add-to-cart', function(e) {
+        e.preventDefault();
+
+        const $btn = $(this);
+        const variantId = $btn.data('variant-id');
+        const productName = $btn.data('product-name');
+
+        if (!variantId) {
+            alert('Product variant not available');
+            return;
+        }
+
+        const originalHtml = $btn.html();
+        $btn.prop('disabled', true);
+        $btn.html('<i class="fa fa-spinner fa-spin"></i>');
+
+        $.ajax({
+            url: '{{ route("cart.add") }}',
+            method: 'POST',
+            data: {
+                variant_id: variantId,
+                quantity: 1,
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                if (response.success) {
+                    // Update cart count in header
+                    const $cartBadge = $('.cart-count');
+                    $cartBadge.text(response.cart_count);
+
+                    if (response.cart_count > 0) {
+                        $cartBadge.show();
+                    }
+
+                    // Show success message
+                    alert(productName ? (productName + ' added to cart!') : 'Product added to cart!');
+
+                    // Reset button
+                    $btn.prop('disabled', false);
+                    $btn.html(originalHtml);
+                } else {
+                    alert(response.message || 'Failed to add product to cart');
+                    $btn.prop('disabled', false);
+                    $btn.html(originalHtml);
+                }
+            },
+            error: function(xhr) {
+                let errorMsg = 'Error adding product to cart';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMsg = xhr.responseJSON.message;
+                } else if (xhr.status === 419) {
+                    errorMsg = 'Session expired. Please refresh the page and try again.';
+                }
+                alert(errorMsg);
+                $btn.prop('disabled', false);
+                $btn.html(originalHtml);
+            }
+        });
     });
 
     // Compare functionality
