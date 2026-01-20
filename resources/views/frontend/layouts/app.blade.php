@@ -363,39 +363,42 @@
 
     <!-- Add to Cart Success Modal -->
     <div class="modal fade" id="addToCartModal" tabindex="-1" role="dialog" aria-labelledby="addToCartModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 500px;">
-            <div class="modal-content" style="border-radius: 8px; overflow: hidden;">
+        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 520px;">
+            <div class="modal-content" style="border: none; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.15);">
                 <!-- Modal Header (Red) -->
-                <div class="modal-header" style="background-color: #dc3545; color: white; border: none; padding: 15px 20px;">
-                    <h5 class="modal-title" id="addToCartModalLabel" style="font-size: 16px; font-weight: 600;">Added To Cart Successfully!</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white; opacity: 1; text-shadow: none; font-size: 24px; line-height: 1;">
+                <div class="modal-header" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; border: none; padding: 18px 24px; position: relative;">
+                    <h5 class="modal-title" id="addToCartModalLabel" style="font-size: 17px; font-weight: 700; letter-spacing: 0.3px; margin: 0;">Added To Cart Successfully!</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white; opacity: 1; text-shadow: none; font-size: 28px; line-height: 1; font-weight: 300; padding: 0; margin: 0; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='rgba(255,255,255,0.2)'" onmouseout="this.style.backgroundColor='transparent'">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <!-- Modal Body -->
-                <div class="modal-body" style="padding: 20px; background: white;">
+                <div class="modal-body" style="padding: 30px 24px; background: white;">
                     <div class="text-center">
                         <!-- Success Icon -->
-                        <div class="mb-3">
-                            <i class="fa fa-check-circle" style="font-size: 48px; color: #28a745;"></i>
+                        <div style="margin-bottom: 24px;">
+                            <div style="width: 64px; height: 64px; background: linear-gradient(135deg, #28a745 0%, #20c997 100%); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);">
+                                <i class="fa fa-check" style="font-size: 32px; color: white; font-weight: bold;"></i>
+                            </div>
                         </div>
                         <!-- Product Image Container -->
-                        <div style="background: linear-gradient(135deg, #e8d5ff 0%, #f8f0ff 100%); padding: 20px; border-radius: 8px; margin-bottom: 15px; min-height: 200px; display: flex; align-items: center; justify-content: center;">
-                            <img id="cart-modal-product-image" src="" alt="Product" style="max-width: 100%; max-height: 200px; object-fit: contain; border-radius: 4px;" onerror="this.src='{{ asset('brancy/images/shop/1.webp') }}'">
+                        <div style="background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 50%, #ffffff 100%); padding: 28px; border-radius: 12px; margin-bottom: 20px; min-height: 220px; display: flex; align-items: center; justify-content: center; box-shadow: inset 0 2px 8px rgba(0,0,0,0.05);">
+                            <img id="cart-modal-product-image" src="" alt="Product" style="max-width: 100%; max-height: 200px; object-fit: contain; border-radius: 6px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));" onerror="this.src='{{ asset('brancy/images/shop/1.webp') }}'">
                         </div>
                         <!-- Product Name -->
-                        <h6 id="cart-modal-product-name" style="font-size: 16px; font-weight: 600; margin-bottom: 10px; color: #333;"></h6>
+                        <h6 id="cart-modal-product-name" style="font-size: 18px; font-weight: 700; margin-bottom: 8px; color: #2c3e50; line-height: 1.4;"></h6>
                         <!-- Success Message -->
-                        <p style="color: #666; font-size: 14px; margin-bottom: 0;">Item has been added to your shopping cart.</p>
+                        <p style="color: #7f8c8d; font-size: 14px; margin-bottom: 0; line-height: 1.6; font-weight: 400;">Item has been added to your shopping cart.</p>
                     </div>
                 </div>
                 <!-- Modal Footer -->
-                <div class="modal-footer" style="border-top: 1px solid #eee; padding: 15px 20px; background: #f8f9fa;">
-                    <a href="{{ route('cart.index') }}" class="btn btn-dark" style="flex: 1; margin-right: 10px; padding: 10px;">
-                        <i class="fa fa-shopping-cart me-2"></i>View Cart
+                <div class="modal-footer" style="border-top: 1px solid #e9ecef; padding: 20px 24px; background: #ffffff; display: flex; gap: 12px;">
+                    <a href="{{ route('cart.index') }}" class="btn" style="flex: 1; padding: 12px 20px; background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%); color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 14px; letter-spacing: 0.5px; text-transform: uppercase; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(255, 107, 107, 0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(255, 107, 107, 0.3)';">
+                        <i class="fa fa-shopping-cart" style="font-size: 16px;"></i>
+                        <span>View Cart</span>
                     </a>
-                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal" style="flex: 1; padding: 10px;">
-                        Continue Shopping
+                    <button type="button" class="btn" data-dismiss="modal" style="flex: 1; padding: 12px 20px; background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%); color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 14px; letter-spacing: 0.5px; text-transform: uppercase; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(255, 107, 107, 0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(255, 107, 107, 0.3)';">
+                        <span>Continue Shopping</span>
                     </button>
                 </div>
             </div>
