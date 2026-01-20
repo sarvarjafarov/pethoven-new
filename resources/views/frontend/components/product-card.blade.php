@@ -3,9 +3,19 @@
 @php
     $firstVariant = $product->variants->first();
     $price = $firstVariant?->prices->first();
-    // Use product thumbnail if available, otherwise cycle through demo images (1-6)
-    $demoImageIndex = ($product->id % 6) + 1;
-    $thumbnail = $product->thumbnail?->getUrl('medium') ?? asset("brancy/images/shop/{$demoImageIndex}.webp");
+    // Cycle through demo images (1-6) based on product ID
+    // Use product thumbnail if it exists and is valid, otherwise use demo images
+    $demoImageIndex = (($product->id ?? 1) % 6) + 1;
+    $productThumbnail = null;
+    try {
+        $productThumbnail = $product->thumbnail?->getUrl('medium');
+    } catch (\Exception $e) {
+        // If thumbnail fails, use demo image
+    }
+    // Use demo images if no thumbnail or thumbnail is invalid
+    $thumbnail = (!empty($productThumbnail) && strpos($productThumbnail, 'http') !== false) 
+        ? $productThumbnail 
+        : asset("brancy/images/shop/{$demoImageIndex}.webp");
     $productName = $product->translateAttribute('name');
     $productUrl = $product->defaultUrl?->slug ?? $product->id;
 @endphp
