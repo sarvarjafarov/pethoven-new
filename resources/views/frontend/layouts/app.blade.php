@@ -114,14 +114,13 @@
 
     <!-- Quick View Script -->
     <script>
-    // Setup CSRF token for all AJAX requests
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-
     $(document).ready(function() {
+        // Setup CSRF token for all AJAX requests (after jQuery is loaded)
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
         // Quick view modal trigger
         $(document).on('click', '.action-btn-quick-view', function(e) {
             e.preventDefault();
