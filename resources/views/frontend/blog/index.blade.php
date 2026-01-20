@@ -3,135 +3,197 @@
 @section('title', 'Blog - ' . config('app.name'))
 
 @section('content')
-<!--== Start Page Header Area ==-->
-<div class="page-header-area bg-img" style="background-image: url({{ asset('brancy/images/photos/page-header1.webp') }});">
+<!--== Start Page Header Area Wrapper ==-->
+<section class="page-header-area">
     <div class="container">
-        <div class="row">
-            <div class="col-md-12">
+        <div class="row align-items-center">
+            <div class="col-md-7 col-lg-7 col-xl-5">
                 <div class="page-header-content">
-                    <h2 class="title">Blog</h2>
-                    <nav class="breadcrumb-area">
-                        <ul class="breadcrumb">
-                            <li><a href="{{ route('home') }}">Home</a></li>
-                            <li class="breadcrumb-sep">//</li>
-                            <li>Blog</li>
-                        </ul>
-                    </nav>
+                    <div class="title-img"><img src="https://template.hasthemes.com/brancy/brancy/assets/images/photos/page-header-text1.webp" alt="Image"></div>
+                    <h2 class="page-header-title">Whats the beauty secrets?</h2>
+                    <p class="page-header-desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis.</p>
+                </div>
+            </div>
+            <div class="col-md-5 col-lg-5 col-xl-7">
+                <div class="page-header-thumb">
+                    <img src="https://template.hasthemes.com/brancy/brancy/assets/images/photos/page-header1.webp" width="570" height="669" alt="Image">
                 </div>
             </div>
         </div>
     </div>
-</div>
-<!--== End Page Header Area ==-->
+</section>
+<!--== End Page Header Area Wrapper ==-->
 
-<!--== Start Blog Area ==-->
+<!--== Start Blog Area Wrapper ==-->
 <section class="section-space">
     <div class="container">
-        <div class="row mb-6">
-            <div class="col-lg-8">
-                @if(request('search'))
-                    <div class="alert alert-info">
-                        <strong>Search results for:</strong> "{{ request('search') }}"
-                        <a href="{{ route('blog.index') }}" class="float-end text-decoration-none">Clear search</a>
-                    </div>
-                @endif
-            </div>
-            <div class="col-lg-4">
-                <form action="{{ route('blog.index') }}" method="GET" class="d-flex gap-2">
-                    <input type="search" name="search" class="form-control" placeholder="Search blog..." value="{{ request('search') }}">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fa fa-search"></i>
-                    </button>
-                </form>
+        <!--== Start New Posts Section ==-->
+        <div class="row mb-10">
+            <div class="col-12">
+                <h3 class="section-title">New Posts</h3>
+                <p class="section-desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis</p>
             </div>
         </div>
-
-        @if($categories->isNotEmpty())
-            <div class="row mb-8">
-                <div class="col-12">
-                    <div class="blog-categories">
-                        <h5 class="mb-4">Filter by Category:</h5>
-                        <div class="d-flex flex-wrap gap-2">
-                            <a href="{{ route('blog.index') }}"
-                               class="btn {{ !request('category') ? 'btn-primary' : 'btn-outline-primary' }} btn-sm">
-                                All Posts
-                            </a>
-                            @foreach($categories as $category)
-                                <a href="{{ route('blog.index', ['category' => $category]) }}"
-                                   class="btn {{ request('category') == $category ? 'btn-primary' : 'btn-outline-primary' }} btn-sm">
-                                    {{ ucfirst($category) }}
-                                </a>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
-            </div>
-        @endif
-
-        <div class="row g-4">
-            @forelse($posts as $post)
-                <div class="col-md-6 col-lg-4">
-                    <div class="blog-card" style="background: white; border-radius: 15px; overflow: hidden; height: 100%;">
+        
+        <div class="row mb-n9">
+            @forelse($newPosts as $index => $post)
+                <div class="col-md-6 col-lg-6 mb-9">
+                    <!--== Start Blog Item ==-->
+                    <div class="blog-item">
                         <div class="blog-thumb">
-                            @if($post->featured_image)
-                                <a href="{{ route('blog.show', $post->slug) }}">
-                                    <img src="{{ asset($post->featured_image) }}" alt="{{ $post->title }}" class="w-100" style="height: 250px; object-fit: cover;">
-                                </a>
+                            <a href="{{ route('blog.show', $post->slug) }}">
+                                @if($post->featured_image)
+                                    <img src="{{ asset($post->featured_image) }}" width="570" height="400" alt="{{ $post->title }}">
+                                @else
+                                    <img src="https://template.hasthemes.com/brancy/brancy/assets/images/blog/{{ ($index % 6) + 1 }}.webp" width="570" height="400" alt="{{ $post->title }}">
+                                @endif
+                            </a>
+                            @if($post->category)
+                                <a href="{{ route('blog.index', ['category' => $post->category]) }}" class="blog-category">{{ $post->category }}</a>
                             @else
-                                <a href="{{ route('blog.show', $post->slug) }}">
-                                    <img src="{{ asset('brancy/images/blog/1.webp') }}" alt="{{ $post->title }}" class="w-100" style="height: 250px; object-fit: cover;">
-                                </a>
+                                <a href="#" class="blog-category">beauty</a>
                             @endif
                         </div>
-                        <div class="blog-content p-4">
-                            @if($post->category)
-                                <span class="badge" style="background-color: {{ '#' . substr(md5($post->category), 0, 6) }}; color: white; padding: 8px 20px; border-radius: 20px; font-size: 12px; margin-bottom: 15px; display: inline-block;">
-                                    {{ strtoupper($post->category) }}
-                                </span>
-                            @endif
-                            <h4 style="font-size: 20px; font-weight: 700; margin-bottom: 15px;">
-                                <a href="{{ route('blog.show', $post->slug) }}" class="text-decoration-none text-dark">
-                                    {{ $post->title }}
-                                </a>
+                        <div class="blog-content">
+                            <h4 class="blog-title">
+                                <a href="{{ route('blog.show', $post->slug) }}">{{ $post->title }}</a>
                             </h4>
-                            @if($post->excerpt)
-                                <p style="color: #666; font-size: 14px; margin-bottom: 15px;">
-                                    {{ Str::limit($post->excerpt, 120) }}
-                                </p>
-                            @endif
-                            <p style="color: #999; font-size: 14px;">
-                                BY: {{ strtoupper($post->author) }} &nbsp;&nbsp; {{ $post->formatted_date }}
-                            </p>
-                            <a href="{{ route('blog.show', $post->slug) }}" class="btn btn-sm btn-outline-primary mt-2">
-                                Read More <i class="fa fa-arrow-right ms-1"></i>
-                            </a>
+                            <ul class="blog-meta">
+                                <li>By: {{ $post->author ?? 'Tomas De Momen' }}</li>
+                                <li>{{ $post->formatted_date ?? $post->published_at?->format('F d, Y') ?? 'February 13, 2022' }}</li>
+                            </ul>
                         </div>
                     </div>
+                    <!--== End Blog Item ==-->
                 </div>
             @empty
-                <div class="col-12">
-                    <div class="text-center py-10">
-                        <i class="fa fa-file-text-o fa-4x mb-4 text-muted"></i>
-                        <h4>No Blog Posts Found</h4>
-                        <p class="text-muted">Check back later for new articles.</p>
-                        @if(request('search') || request('category'))
-                            <a href="{{ route('blog.index') }}" class="btn btn-primary mt-4">View All Posts</a>
-                        @endif
+                <!-- Demo content when no posts -->
+                <div class="col-md-6 col-lg-6 mb-9">
+                    <div class="blog-item">
+                        <div class="blog-thumb">
+                            <a href="#">
+                                <img src="https://template.hasthemes.com/brancy/brancy/assets/images/blog/1.webp" width="570" height="400" alt="Image">
+                            </a>
+                            <a href="#" class="blog-category">beauty</a>
+                        </div>
+                        <div class="blog-content">
+                            <h4 class="blog-title">
+                                <a href="#">Lorem ipsum dolor sit amet consectetur adipiscing.</a>
+                            </h4>
+                            <ul class="blog-meta">
+                                <li>By: Tomas De Momen</li>
+                                <li>February 13, 2022</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-6 mb-9">
+                    <div class="blog-item">
+                        <div class="blog-thumb">
+                            <a href="#">
+                                <img src="https://template.hasthemes.com/brancy/brancy/assets/images/blog/2.webp" width="570" height="400" alt="Image">
+                            </a>
+                            <a href="#" class="blog-category">beauty</a>
+                        </div>
+                        <div class="blog-content">
+                            <h4 class="blog-title">
+                                <a href="#">Benefit of Hot Ston Spa for your health & life.</a>
+                            </h4>
+                            <ul class="blog-meta">
+                                <li>By: Tomas De Momen</li>
+                                <li>February 13, 2022</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             @endforelse
         </div>
+        <!--== End New Posts Section ==-->
 
-        @if($posts->hasPages())
-            <div class="row mt-10">
-                <div class="col-12">
-                    <div class="pagination-area">
-                        {{ $posts->links() }}
-                    </div>
-                </div>
+        <!--== Start Others Posts Section ==-->
+        <div class="row mb-10 mt-10">
+            <div class="col-12">
+                <h3 class="section-title">Others Posts</h3>
+                <p class="section-desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis</p>
             </div>
-        @endif
+        </div>
+        
+        <div class="row mb-n9">
+            @forelse($othersPosts as $index => $post)
+                <div class="col-md-6 col-lg-4 mb-9">
+                    <!--== Start Blog Item ==-->
+                    <div class="blog-item">
+                        <div class="blog-thumb">
+                            <a href="{{ route('blog.show', $post->slug) }}">
+                                @if($post->featured_image)
+                                    <img src="{{ asset($post->featured_image) }}" width="370" height="270" alt="{{ $post->title }}">
+                                @else
+                                    <img src="https://template.hasthemes.com/brancy/brancy/assets/images/blog/{{ (($index + 2) % 6) + 1 }}.webp" width="370" height="270" alt="{{ $post->title }}">
+                                @endif
+                            </a>
+                            @if($post->category)
+                                <a href="{{ route('blog.index', ['category' => $post->category]) }}" class="blog-category">{{ $post->category }}</a>
+                            @else
+                                <a href="#" class="blog-category">beauty</a>
+                            @endif
+                        </div>
+                        <div class="blog-content">
+                            <h4 class="blog-title">
+                                <a href="{{ route('blog.show', $post->slug) }}">{{ $post->title }}</a>
+                            </h4>
+                            <ul class="blog-meta">
+                                <li>By: {{ $post->author ?? 'Tomas De Momen' }}</li>
+                                <li>{{ $post->formatted_date ?? $post->published_at?->format('F d, Y') ?? 'February 13, 2022' }}</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!--== End Blog Item ==-->
+                </div>
+            @empty
+                <!-- Demo content when no posts -->
+                @for($i = 1; $i <= 6; $i++)
+                    <div class="col-md-6 col-lg-4 mb-9">
+                        <div class="blog-item">
+                            <div class="blog-thumb">
+                                <a href="#">
+                                    <img src="https://template.hasthemes.com/brancy/brancy/assets/images/blog/{{ $i }}.webp" width="370" height="270" alt="Image">
+                                </a>
+                                <a href="#" class="blog-category">beauty</a>
+                            </div>
+                            <div class="blog-content">
+                                <h4 class="blog-title">
+                                    <a href="#">Lorem ipsum dolor sit amet consectetur adipiscing.</a>
+                                </h4>
+                                <ul class="blog-meta">
+                                    <li>By: Tomas De Momen</li>
+                                    <li>February 13, 2022</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                @endfor
+            @endforelse
+        </div>
+        <!--== End Others Posts Section ==-->
     </div>
 </section>
-<!--== End Blog Area ==-->
+<!--== End Blog Area Wrapper ==-->
+
+<!--== Start Newsletter Area Wrapper ==-->
+<section class="newsletter-area bg-img" style="background-image: url(https://template.hasthemes.com/brancy/brancy/assets/images/photos/bg1.webp);">
+    <div class="container">
+        <div class="newsletter-content text-center">
+            <h2 class="newsletter-title">Join with us</h2>
+            <p class="newsletter-desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam.</p>
+            <form action="{{ route('newsletter.subscribe') }}" method="POST" class="newsletter-form">
+                @csrf
+                <div class="newsletter-form-group">
+                    <input type="email" name="email" class="form-control" placeholder="Enter your email address" required>
+                    <button type="submit" class="btn btn-theme">Subscribe</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+<!--== End Newsletter Area Wrapper ==-->
 @endsection

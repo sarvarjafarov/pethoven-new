@@ -31,14 +31,22 @@ class BlogController extends Controller
             });
         }
 
-        $posts = $query->paginate(9);
+        // Get all posts (no pagination for template structure)
+        $allPosts = $query->get();
+        
+        // New Posts (latest 2 posts)
+        $newPosts = $allPosts->take(2);
+        
+        // Others Posts (remaining posts)
+        $othersPosts = $allPosts->skip(2);
+        
         $categories = BlogPost::published()
             ->select('category')
             ->distinct()
             ->whereNotNull('category')
             ->pluck('category');
 
-        return view('frontend.blog.index', compact('posts', 'categories'));
+        return view('frontend.blog.index', compact('newPosts', 'othersPosts', 'categories'));
     }
 
     /**
