@@ -266,8 +266,7 @@
             method: 'POST',
             data: {
                 variant_id: variantId,
-                quantity: 1,
-                _token: '{{ csrf_token() }}'
+                quantity: 1
             },
             success: function(response) {
                 if (response.success) {
