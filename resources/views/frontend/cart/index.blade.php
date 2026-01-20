@@ -10,8 +10,8 @@
             <div class="col-md-12">
                 <div class="page-header-st3-content text-center">
                     <ol class="breadcrumb justify-content-center">
-                        <li class="breadcrumb-item"><a class="text-dark" href="{{ route('home') }}">Home</a></li>
-                        <li class="breadcrumb-item active text-dark" aria-current="page">Shopping Cart</li>
+                        <li class="breadcrumb-item"><a class="text-dark" href="{{ route('home') }}">1. Home</a></li>
+                        <li class="breadcrumb-item active text-dark" aria-current="page">2. Cart</li>
                     </ol>
                     <h2 class="page-header-st3-title">Shopping Cart</h2>
                 </div>
@@ -136,33 +136,33 @@
                             <tbody>
                                 <tr>
                                     <td>Subtotal</td>
-                                    <td class="amount text-end" id="cart-subtotal">{{ $cart->subTotal->formatted }}</td>
+                                    <td class="amount" id="cart-subtotal">{{ $cart->subTotal->formatted }}</td>
                                 </tr>
                                 <tr>
                                     <td>Shipping</td>
-                                    <td class="amount text-end">
+                                    <td class="amount">
                                         @if($cart->shippingTotal && $cart->shippingTotal->value > 0)
-                                            {{ $cart->shippingTotal->formatted }}
+                                            Flat rate: {{ $cart->shippingTotal->formatted }} Free shipping Local pickup Shipping to <strong>USA</strong>. <a href="javascript:void(0)" class="text-decoration-underline">Change address</a>
                                         @else
-                                            <span class="text-muted">Free shipping</span>
+                                            Flat rate: Free shipping Local pickup Shipping to <strong>USA</strong>. <a href="javascript:void(0)" class="text-decoration-underline">Change address</a>
                                         @endif
                                     </td>
                                 </tr>
                                 @if($cart->taxTotal->value > 0)
                                     <tr>
                                         <td>Tax</td>
-                                        <td class="amount text-end" id="cart-tax">{{ $cart->taxTotal->formatted }}</td>
+                                        <td class="amount" id="cart-tax">{{ $cart->taxTotal->formatted }}</td>
                                     </tr>
                                 @endif
                                 @if($cart->discountTotal && $cart->discountTotal->value > 0)
                                     <tr>
                                         <td>Discount</td>
-                                        <td class="amount text-success text-end" id="cart-discount">-{{ $cart->discountTotal->formatted }}</td>
+                                        <td class="amount text-success" id="cart-discount">-{{ $cart->discountTotal->formatted }}</td>
                                     </tr>
                                 @endif
                                 <tr class="order-total">
                                     <td><strong>Total</strong></td>
-                                    <td class="total-amount text-end"><strong id="cart-total">{{ $cart->total->formatted }}</strong></td>
+                                    <td class="total-amount"><strong id="cart-total">{{ $cart->total->formatted }}</strong></td>
                                 </tr>
                             </tbody>
                         </table>
