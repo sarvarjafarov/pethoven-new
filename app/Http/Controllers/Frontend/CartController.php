@@ -39,12 +39,26 @@ class CartController extends Controller
                 ], 404);
             }
 
+            // Add item to cart (Lunar will auto-create cart if needed with proper currency/channel)
             CartSession::add(
                 purchasable: $variant,
                 quantity: $request->quantity
             );
 
+            // Get the cart after adding item
             $cart = CartSession::current();
+            
+            // Ensure cart exists and has required relationships
+            if (!$cart) {
+                \Log::error('Cart is null after adding item');
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to create cart. Please refresh and try again.'
+                ], 500);
+            }
+            
+            // Refresh cart to ensure calculations are up to date
+            $cart->refresh();
             
             // Calculate cart count safely
             $cartCount = 0;
@@ -110,11 +124,24 @@ class CartController extends Controller
             $cart = CartSession::current();
 
             if ($request->ajax()) {
+                $cartCount = $cart && $cart->lines ? $cart->lines->sum('quantity') : 0;
+                $cartTotal = '£0.00';
+                if ($cart) {
+                    try {
+                        $total = $cart->total;
+                        if ($total) {
+                            $cartTotal = $total->formatted ?? '£0.00';
+                        }
+                    } catch (\Exception $e) {
+                        \Log::warning('Cart total calculation failed in update: ' . $e->getMessage());
+                    }
+                }
+                
                 return response()->json([
                     'success' => true,
                     'message' => 'Cart updated',
-                    'cart_count' => $cart->lines->sum('quantity'),
-                    'cart_total' => $cart->total->formatted
+                    'cart_count' => $cartCount,
+                    'cart_total' => $cartTotal
                 ]);
             }
 
@@ -144,11 +171,24 @@ class CartController extends Controller
             $cart = CartSession::current();
 
             if (request()->ajax()) {
+                $cartCount = $cart && $cart->lines ? $cart->lines->sum('quantity') : 0;
+                $cartTotal = '£0.00';
+                if ($cart) {
+                    try {
+                        $total = $cart->total;
+                        if ($total) {
+                            $cartTotal = $total->formatted ?? '£0.00';
+                        }
+                    } catch (\Exception $e) {
+                        \Log::warning('Cart total calculation failed in remove: ' . $e->getMessage());
+                    }
+                }
+                
                 return response()->json([
                     'success' => true,
                     'message' => 'Item removed from cart',
-                    'cart_count' => $cart->lines->sum('quantity'),
-                    'cart_total' => $cart->total->formatted
+                    'cart_count' => $cartCount,
+                    'cart_total' => $cartTotal
                 ]);
             }
 
@@ -183,10 +223,18 @@ class CartController extends Controller
      */
     public function count()
     {
-        $cart = CartSession::current();
-
-        return response()->json([
-            'count' => $cart->lines->sum('quantity')
-        ]);
+        try {
+            $cart = CartSession::current();
+            $count = $cart && $cart->lines ? $cart->lines->sum('quantity') : 0;
+            
+            return response()->json([
+                'count' => $count
+            ]);
+        } catch (\Exception $e) {
+            \Log::warning('Cart count failed: ' . $e->getMessage());
+            return response()->json([
+                'count' => 0
+            ]);
+        }
     }
 }

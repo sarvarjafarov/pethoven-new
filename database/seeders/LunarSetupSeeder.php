@@ -53,17 +53,39 @@ class LunarSetupSeeder extends Seeder
 
         // Associate channel with currency and language using pivot tables
         if (\Schema::hasTable('lunar_currency_channel')) {
-            \DB::table('lunar_currency_channel')->insertOrIgnore([
-                'currency_id' => $currency->id,
-                'channel_id' => $channel->id,
-            ]);
+            $exists = \DB::table('lunar_currency_channel')
+                ->where('currency_id', $currency->id)
+                ->where('channel_id', $channel->id)
+                ->exists();
+            
+            if (!$exists) {
+                \DB::table('lunar_currency_channel')->insert([
+                    'currency_id' => $currency->id,
+                    'channel_id' => $channel->id,
+                ]);
+                $this->command->info('Associated currency with channel');
+            }
         }
+        
         if (\Schema::hasTable('lunar_language_channel')) {
-            \DB::table('lunar_language_channel')->insertOrIgnore([
-                'language_id' => $language->id,
-                'channel_id' => $channel->id,
-            ]);
+            $exists = \DB::table('lunar_language_channel')
+                ->where('language_id', $language->id)
+                ->where('channel_id', $channel->id)
+                ->exists();
+            
+            if (!$exists) {
+                \DB::table('lunar_language_channel')->insert([
+                    'language_id' => $language->id,
+                    'channel_id' => $channel->id,
+                ]);
+                $this->command->info('Associated language with channel');
+            }
         }
+        
+        // Verify associations
+        $this->command->info('Channel ID: ' . $channel->id);
+        $this->command->info('Currency ID: ' . $currency->id);
+        $this->command->info('Language ID: ' . $language->id);
     }
 }
 

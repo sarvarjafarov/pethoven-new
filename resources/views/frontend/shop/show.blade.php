@@ -530,8 +530,7 @@ $(document).ready(function() {
             method: 'POST',
             data: {
                 variant_id: variantId,
-                quantity: quantity,
-                _token: '{{ csrf_token() }}'
+                quantity: quantity
             },
             success: function(response) {
                 if (response.success) {
