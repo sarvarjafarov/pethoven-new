@@ -20,26 +20,27 @@ class PageController extends Controller
     public function contactSubmit(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
             'email' => 'required|email',
-            'subject' => 'required|string|max:255',
             'message' => 'required|string',
         ]);
+
+        $fullName = trim($validated['first_name'] . ' ' . $validated['last_name']);
 
         // Store in database (optional - create ContactSubmission model if needed)
         // Or send email notification to admin
         try {
-            \Illuminate\Support\Facades\Mail::send([], [], function ($message) use ($validated) {
+            \Illuminate\Support\Facades\Mail::send([], [], function ($message) use ($validated, $fullName) {
                 $message->to(config('mail.from.address'))
-                    ->subject('Contact Form: ' . $validated['subject'])
+                    ->subject('Contact Form Submission')
                     ->setBody(
-                        "Name: {$validated['name']}\n" .
-                        "Email: {$validated['email']}\n" .
-                        "Subject: {$validated['subject']}\n\n" .
+                        "Name: {$fullName}\n" .
+                        "Email: {$validated['email']}\n\n" .
                         "Message:\n{$validated['message']}",
                         'text/plain'
                     )
-                    ->replyTo($validated['email'], $validated['name']);
+                    ->replyTo($validated['email'], $fullName);
             });
         } catch (\Exception $e) {
             // Log error but don't show to user
