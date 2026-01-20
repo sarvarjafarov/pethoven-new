@@ -83,6 +83,12 @@ class ProductController extends Controller
             })
             ->where('id', '!=', $product->id)
             ->where('status', 'published')
+            ->with([
+                'variants.prices',
+                'thumbnail',
+                'collections',
+                'defaultUrl'
+            ])
             ->limit(4)
             ->get();
 

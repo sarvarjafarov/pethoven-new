@@ -5,7 +5,7 @@
 @php
     $productName = $product->translateAttribute('name');
     $productDescription = $product->translateAttribute('description') ? strip_tags($product->translateAttribute('description')) : $productName;
-    $productImage = $product->thumbnail?->getUrl('large') ?? asset('brancy/images/shop/1.webp');
+    $productImage = $product->thumbnail?->getUrl('large') ?? asset('brancy/images/shop/product-details/1.webp');
     $productUrl = route('shop.product.show', $product->defaultUrl?->slug ?? $product->id);
     $firstVariant = $product->variants->first();
     $price = $firstVariant?->prices->first();
@@ -99,26 +99,30 @@
 </section>
 <!--== End Page Header Area Wrapper ==-->
 
-<!--== Start Product Details Area ==-->
+<!--== Start Product Details Area Wrapper ==-->
 <section class="section-space">
     <div class="container">
-        <div class="row">
+        <div class="row product-details">
             <div class="col-lg-6">
-                <div class="product-single-thumb">
+                <div class="product-details-thumb">
                     @php
-                        $mainImage = $product->thumbnail?->getUrl('large') ?? asset('brancy/images/shop/1.webp');
+                        $mainImage = $product->thumbnail?->getUrl('large') ?? asset('brancy/images/shop/product-details/1.webp');
                     @endphp
-                    <img src="{{ $mainImage }}" alt="{{ $product->name }}" class="img-fluid">
+                    <img src="{{ $mainImage }}" width="570" height="693" alt="{{ $productName }}">
+                    @if($product->collections->isNotEmpty() || true)
+                        <span class="flag-new">new</span>
+                    @endif
                 </div>
             </div>
             <div class="col-lg-6">
                 <div class="product-details-content">
                     @if($product->collections->isNotEmpty())
-                        <h5 class="product-details-collection">{{ $product->collections->first()->name }}</h5>
+                        <h5 class="product-details-collection">{{ $product->collections->first()->translateAttribute('name') }}</h5>
+                    @else
+                        <h5 class="product-details-collection">Premioum collection</h5>
                     @endif
-                    <h3 class="product-details-title">{{ $product->name }}</h3>
-
-                    <div class="product-details-review mb-5">
+                    <h3 class="product-details-title">{{ $product->translateAttribute('name') }}</h3>
+                    <div class="product-details-review">
                         <div class="product-review-icon">
                             <i class="fa fa-star-o"></i>
                             <i class="fa fa-star-o"></i>
@@ -129,109 +133,314 @@
                         <button type="button" class="product-review-show">150 reviews</button>
                     </div>
 
-                    @if($product->description)
-                        <p class="mb-6">{!! nl2br(e($product->translateAttribute('description'))) !!}</p>
-                    @else
-                        <p class="mb-6">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed viverra amet, sodales faucibus nibh. Vivamus amet potenti ultricies nunc gravida duis. Nascetur scelerisque massa sodales.</p>
-                    @endif
-
                     @php
-                        $firstVariant = $product->variants->first();
-                        $price = $firstVariant?->prices->first();
+                        $variants = $product->variants;
+                        $selectedVariant = $firstVariant;
+                        $selectedPrice = $price;
                     @endphp
 
-
-                    @if($product->variants->count() > 1)
-                        <div class="product-details-variant mb-4">
-                            @php
-                                $options = [];
-                                foreach($product->variants as $variant) {
+                    @if($variants->count() > 1)
+                        <div class="product-details-qty-list">
+                            @foreach($variants as $index => $variant)
+                                @php
+                                    $variantPrice = $variant->prices->first();
+                                    $variantName = '';
                                     foreach($variant->values as $value) {
-                                        $optionName = $value->option->name ?? 'Option';
-                                        if (!isset($options[$optionName])) {
-                                            $options[$optionName] = [];
-                                        }
-                                        $options[$optionName][] = $value->name ?? '';
+                                        $variantName .= ($variantName ? ' ' : '') . ($value->name ?? '');
                                     }
-                                }
-                                foreach($options as &$values) {
-                                    $values = array_unique($values);
-                                }
-                            @endphp
-
-                            @foreach($options as $optionName => $values)
-                                <div class="form-group mb-3">
-                                    <label class="form-label fw-bold">{{ $optionName }}</label>
-                                    <select class="form-select variant-option" data-option="{{ $optionName }}">
-                                        <option value="">Select {{ $optionName }}</option>
-                                        @foreach($values as $value)
-                                            @if($value)
-                                                <option value="{{ $value }}">{{ $value }}</option>
-                                            @endif
-                                        @endforeach
-                                    </select>
+                                    if (!$variantName) {
+                                        $variantName = $variant->sku ?? 'Option ' . ($index + 1);
+                                    }
+                                @endphp
+                                <div class="qty-list-check">
+                                    <input class="form-check-input variant-radio" type="radio" name="productVariant" id="variant{{ $variant->id }}" value="{{ $variant->id }}" data-variant-id="{{ $variant->id }}" data-price="{{ $variantPrice?->price->formatted ?? '0.00' }}" {{ $index === 0 ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="variant{{ $variant->id }}">
+                                        {{ $variantName }}
+                                        <b>{{ $variantPrice ? $variantPrice->price->formatted : 'Price on request' }}</b>
+                                        @if($index === 1 && $variants->count() > 1)
+                                            <span class="extra-offer">extra 25%</span>
+                                        @endif
+                                    </label>
                                 </div>
                             @endforeach
                         </div>
                     @endif
 
-                    <div class="product-details-pro-qty mb-6">
-                        <label class="form-label fw-bold">Quantity</label>
+                    <div class="product-details-pro-qty">
                         <div class="pro-qty">
-                            <button type="button" class="dec qtybtn">-</button>
-                            <input type="text" id="quantity-input" title="Quantity" value="1" min="1" readonly>
-                            <button type="button" class="inc qtybtn">+</button>
+                            <input type="text" id="quantity-input" title="Quantity" value="01" readonly>
                         </div>
+                    </div>
+
+                    <div class="product-details-shipping-cost">
+                        <input class="form-check-input" type="checkbox" value="" id="ShippingCost" checked>
+                        <label class="form-check-label" for="ShippingCost">Shipping from USA, Shipping Fees $4.22</label>
                     </div>
 
                     <div class="product-details-action">
-                        <h4 class="price">{{ $price ? $price->price->formatted : 'Price on request' }}</h4>
+                        <h4 class="price">{{ $selectedPrice ? $selectedPrice->price->formatted : 'Price on request' }}</h4>
                         <div class="product-details-cart-wishlist">
-                            <button type="button" id="add-to-cart-btn" class="btn" data-variant-id="{{ $firstVariant?->id }}">
-                                Add to cart
-                            </button>
                             <button type="button" class="btn-wishlist action-btn-wishlist" data-product-id="{{ $product->id }}" data-product-name="{{ $productName }}">
                                 <i class="fa fa-heart-o"></i>
                             </button>
+                            <button type="button" id="add-to-cart-btn" class="btn" data-variant-id="{{ $selectedVariant?->id }}">
+                                Add to cart
+                            </button>
                         </div>
-                    </div>
-
-                    <div class="product-details-meta mt-6">
-                        <ul>
-                            <li><span>SKU:</span> {{ $firstVariant?->sku ?? 'N/A' }}</li>
-                            @if($product->collections->isNotEmpty())
-                                <li>
-                                    <span>Categories:</span>
-                                    @foreach($product->collections as $collection)
-                                        <a href="{{ route('shop.index', ['collection' => $collection->slug]) }}">{{ $collection->name }}</a>{{ !$loop->last ? ', ' : '' }}
-                                    @endforeach
-                                </li>
-                            @endif
-                        </ul>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-lg-7">
+                <div class="nav product-details-nav" id="product-details-nav-tab" role="tablist">
+                    <button class="nav-link" id="specification-tab" data-bs-toggle="tab" data-bs-target="#specification" type="button" role="tab" aria-controls="specification" aria-selected="false">Specification</button>
+                    <button class="nav-link active" id="review-tab" data-bs-toggle="tab" data-bs-target="#review" type="button" role="tab" aria-controls="review" aria-selected="true">Review</button>
+                </div>
+                <div class="tab-content" id="product-details-nav-tabContent">
+                    <div class="tab-pane" id="specification" role="tabpanel" aria-labelledby="specification-tab">
+                        <ul class="product-details-info-wrap">
+                            <li><span>Weight</span>
+                                <p>250 g</p>
+                            </li>
+                            <li><span>Dimensions</span>
+                                <p>10 x 10 x 15 cm</p>
+                            </li>
+                            <li><span>Materials</span>
+                                <p>60% cotton, 40% polyester</p>
+                            </li>
+                            <li><span>Other Info</span>
+                                <p>American heirloom jean shorts pug seitan letterpress</p>
+                            </li>
+                        </ul>
 
-        @if($related->isNotEmpty())
-            <div class="row mt-12">
-                <div class="col-12">
-                    <div class="section-title text-center mb-8">
-                        <h2 class="title">Related Products</h2>
+                        @if($product->description)
+                            <p>{!! nl2br(e($product->translateAttribute('description'))) !!}</p>
+                        @else
+                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius velit corporis quo voluptate culpa soluta, esse accusamus, sunt quia omnis amet temporibus sapiente harum quam itaque libero tempore. Ipsum, ducimus. lorem</p>
+                        @endif
+                    </div>
+
+                    <div class="tab-pane fade show active" id="review" role="tabpanel" aria-labelledby="review-tab">
+                        <!--== Start Reviews Content Item ==-->
+                        <div class="product-review-item">
+                            <div class="product-review-top">
+                                <div class="product-review-thumb">
+                                    <img src="{{ asset('brancy/images/shop/product-details/comment1.webp') }}" alt="Images">
+                                </div>
+                                <div class="product-review-content">
+                                    <span class="product-review-name">Tomas Doe</span>
+                                    <span class="product-review-designation">Delveloper</span>
+                                    <div class="product-review-icon">
+                                        <i class="fa fa-star-o"></i>
+                                        <i class="fa fa-star-o"></i>
+                                        <i class="fa fa-star-o"></i>
+                                        <i class="fa fa-star-o"></i>
+                                        <i class="fa fa-star-half-o"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed viverra amet, sodales faucibus nibh. Vivamus amet potenti ultricies nunc gravida duis. Nascetur scelerisque massa sodales.</p>
+                            <button type="button" class="review-reply"><i class="fa fa fa-undo"></i></button>
+                        </div>
+                        <!--== End Reviews Content Item ==-->
+
+                        <!--== Start Reviews Content Item ==-->
+                        <div class="product-review-item product-review-reply">
+                            <div class="product-review-top">
+                                <div class="product-review-thumb">
+                                    <img src="{{ asset('brancy/images/shop/product-details/comment2.webp') }}" alt="Images">
+                                </div>
+                                <div class="product-review-content">
+                                    <span class="product-review-name">Tomas Doe</span>
+                                    <span class="product-review-designation">Delveloper</span>
+                                    <div class="product-review-icon">
+                                        <i class="fa fa-star-o"></i>
+                                        <i class="fa fa-star-o"></i>
+                                        <i class="fa fa-star-o"></i>
+                                        <i class="fa fa-star-o"></i>
+                                        <i class="fa fa-star-half-o"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed viverra amet, sodales faucibus nibh. Vivamus amet potenti ultricies nunc gravida duis. Nascetur scelerisque massa sodales.</p>
+                            <button type="button" class="review-reply"><i class="fa fa fa-undo"></i></button>
+                        </div>
+                        <!--== End Reviews Content Item ==-->
+
+                        <!--== Start Reviews Content Item ==-->
+                        <div class="product-review-item mb-0">
+                            <div class="product-review-top">
+                                <div class="product-review-thumb">
+                                    <img src="{{ asset('brancy/images/shop/product-details/comment3.webp') }}" alt="Images">
+                                </div>
+                                <div class="product-review-content">
+                                    <span class="product-review-name">Tomas Doe</span>
+                                    <span class="product-review-designation">Delveloper</span>
+                                    <div class="product-review-icon">
+                                        <i class="fa fa-star-o"></i>
+                                        <i class="fa fa-star-o"></i>
+                                        <i class="fa fa-star-o"></i>
+                                        <i class="fa fa-star-o"></i>
+                                        <i class="fa fa-star-half-o"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed viverra amet, sodales faucibus nibh. Vivamus amet potenti ultricies nunc gravida duis. Nascetur scelerisque massa sodales.</p>
+                            <button type="button" class="review-reply"><i class="fa fa fa-undo"></i></button>
+                        </div>
+                        <!--== End Reviews Content Item ==-->
                     </div>
                 </div>
             </div>
-            <div class="row g-4 g-sm-5">
-                @foreach($related as $relatedProduct)
-                    <div class="col-6 col-md-3">
-                        @include('frontend.components.product-card', ['product' => $relatedProduct])
+            <div class="col-lg-5">
+                <div class="product-reviews-form-wrap">
+                    <h4 class="product-form-title">Leave a replay</h4>
+                    <div class="product-reviews-form">
+                        <form action="#">
+                            <div class="form-input-item">
+                                <textarea class="form-control" placeholder="Enter you feedback"></textarea>
+                            </div>
+                            <div class="form-input-item">
+                                <input class="form-control" type="text" placeholder="Full Name">
+                            </div>
+                            <div class="form-input-item">
+                                <input class="form-control" type="email" placeholder="Email Address">
+                            </div>
+                            <div class="form-input-item">
+                                <div class="form-ratings-item">
+                                    <select id="product-review-form-rating-select" class="select-ratings">
+                                        <option value="1">01</option>
+                                        <option value="2">02</option>
+                                        <option value="3">03</option>
+                                        <option value="4">04</option>
+                                        <option value="5">05</option>
+                                    </select>
+                                    <span class="title">Provide Your Ratings</span>
+                                    <div class="product-ratingsform-form-wrap">
+                                        <div class="product-ratingsform-form-icon">
+                                            <i class="fa fa-star-o"></i>
+                                            <i class="fa fa-star-o"></i>
+                                            <i class="fa fa-star-o"></i>
+                                            <i class="fa fa-star-o"></i>
+                                            <i class="fa fa-star-o"></i>
+                                        </div>
+                                        <div id="product-review-form-rating" class="product-ratingsform-form-icon-fill">
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="reviews-form-checkbox">
+                                    <input class="form-check-input" type="checkbox" value="" id="ReviewsFormCheckbox" checked>
+                                    <label class="form-check-label" for="ReviewsFormCheckbox">Provide ratings anonymously.</label>
+                                </div>
+                            </div>
+                            <div class="form-input-item mb-0">
+                                <button type="submit" class="btn">SUBMIT</button>
+                            </div>
+                        </form>
                     </div>
-                @endforeach
+                </div>
             </div>
-        @endif
+        </div>
     </div>
 </section>
-<!--== End Product Details Area ==-->
+<!--== End Product Details Area Wrapper ==-->
+
+<!--== Start Product Banner Area Wrapper ==-->
+<div class="container">
+    <!--== Start Product Category Item ==-->
+    <a href="{{ route('shop.index') }}" class="product-banner-item">
+        <img src="{{ asset('brancy/images/shop/banner/7.webp') }}" width="1170" height="240" alt="Image-HasTech">
+    </a>
+    <!--== End Product Category Item ==-->
+</div>
+<!--== End Product Banner Area Wrapper ==-->
+
+<!--== Start Product Area Wrapper ==-->
+@if($related->isNotEmpty())
+<section class="section-space">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="section-title">
+                    <h2 class="title">Related Products</h2>
+                    <p class="m-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis</p>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-n10">
+            <div class="col-12">
+                <div class="swiper related-product-slide-container">
+                    <div class="swiper-wrapper">
+                        @foreach($related as $relatedProduct)
+                            @php
+                                $relatedVariant = $relatedProduct->variants->first();
+                                $relatedPrice = $relatedVariant?->prices->first();
+                                $relatedThumbnail = $relatedProduct->thumbnail?->getUrl('medium') ?? asset('brancy/images/shop/8.webp');
+                                $relatedName = $relatedProduct->translateAttribute('name');
+                                $relatedUrl = $relatedProduct->defaultUrl?->slug ?? $relatedProduct->id;
+                            @endphp
+                            <div class="swiper-slide mb-10">
+                                <!--== Start Product Item ==-->
+                                <div class="product-item product-st2-item">
+                                    <div class="product-thumb">
+                                        <a class="d-block" href="{{ route('shop.product.show', $relatedUrl) }}">
+                                            <img src="{{ $relatedThumbnail }}" width="370" height="450" alt="{{ $relatedName }}">
+                                        </a>
+                                        @if($relatedProduct->collections->isNotEmpty() || true)
+                                            <span class="flag-new">new</span>
+                                        @endif
+                                    </div>
+                                    <div class="product-info">
+                                        <div class="product-rating">
+                                            <div class="rating">
+                                                <i class="fa fa-star-o"></i>
+                                                <i class="fa fa-star-o"></i>
+                                                <i class="fa fa-star-o"></i>
+                                                <i class="fa fa-star-o"></i>
+                                                <i class="fa fa-star-half-o"></i>
+                                            </div>
+                                            <div class="reviews">150 reviews</div>
+                                        </div>
+                                        <h4 class="title"><a href="{{ route('shop.product.show', $relatedUrl) }}">{{ $relatedName }}</a></h4>
+                                        @if($relatedPrice)
+                                            <div class="prices">
+                                                <span class="price">{{ $relatedPrice->price->formatted }}</span>
+                                            </div>
+                                        @else
+                                            <div class="prices">
+                                                <span class="price">Price on request</span>
+                                            </div>
+                                        @endif
+                                        <div class="product-action">
+                                            <button type="button" class="product-action-btn action-btn-cart quick-add-to-cart" data-variant-id="{{ $relatedVariant?->id }}" data-product-name="{{ $relatedName }}">
+                                                <span>Add to cart</span>
+                                            </button>
+                                            <button type="button" class="product-action-btn action-btn-quick-view">
+                                                <i class="fa fa-expand"></i>
+                                            </button>
+                                            <button type="button" class="product-action-btn action-btn-wishlist" data-product-id="{{ $relatedProduct->id }}" data-product-name="{{ $relatedName }}">
+                                                <i class="fa fa-heart-o"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--== End Product Item ==-->
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@endif
+<!--== End Product Area Wrapper ==-->
 @endsection
 
 @push('scripts')
@@ -240,51 +449,39 @@ $(document).ready(function() {
     // Product variants data
     const variants = @json($variantData);
 
-    // Quantity buttons
-    $('.qtybtn').on('click', function() {
+    // Quantity increment/decrement (Brancy's main.js handles this, but we ensure it works)
+    $('.pro-qty').append('<div class="dec qty-btn">-</div>');
+    $('.pro-qty').append('<div class="inc qty-btn">+</div>');
+    
+    $('.qty-btn').on('click', function() {
+        const $button = $(this);
         const $input = $('#quantity-input');
-        let qty = parseInt($input.val()) || 1;
-
-        if ($(this).hasClass('inc')) {
-            qty++;
-        } else if ($(this).hasClass('dec') && qty > 1) {
-            qty--;
+        let oldValue = parseInt($input.val()) || 1;
+        
+        if ($button.hasClass('inc')) {
+            var newVal = oldValue + 1;
+        } else {
+            if (oldValue > 1) {
+                var newVal = oldValue - 1;
+            } else {
+                newVal = 1;
+            }
         }
-
-        $input.val(qty);
+        
+        // Format with leading zero if < 10
+        $input.val(newVal < 10 ? '0' + newVal : newVal);
     });
 
-    // Variant selection
-    $('.variant-option').on('change', function() {
-        const selectedOptions = {};
-
-        $('.variant-option').each(function() {
-            const optionName = $(this).data('option');
-            const optionValue = $(this).val();
-            if (optionValue) {
-                selectedOptions[optionName] = optionValue;
-            }
-        });
-
-        // Find matching variant
-        const matchingVariant = variants.find(variant => {
-            return Object.keys(selectedOptions).every(optionName => {
-                return variant.values[optionName] === selectedOptions[optionName];
-            });
-        });
-
-        if (matchingVariant) {
-            // Update price
-            if (matchingVariant.price) {
-                $('.product-details-action .price').text(matchingVariant.price);
-            }
-
-            // Update SKU
-            $('.product-details-meta li:first span:last').text(matchingVariant.sku || 'N/A');
-
-            // Update add to cart button
-            $('#add-to-cart-btn').data('variant-id', matchingVariant.id);
-        }
+    // Variant radio button selection
+    $('.variant-radio').on('change', function() {
+        const variantId = $(this).data('variant-id');
+        const price = $(this).data('price');
+        
+        // Update price
+        $('.product-details-action .price').text(price);
+        
+        // Update add to cart button
+        $('#add-to-cart-btn').data('variant-id', variantId);
     });
 
     // Add to cart
@@ -324,13 +521,13 @@ $(document).ready(function() {
 
                     // Reset button
                     $btn.prop('disabled', false);
-                    $btn.html('<i class="fa fa-shopping-cart me-2"></i>Add to Cart');
+                    $btn.html('Add to cart');
                 }
             },
             error: function(xhr) {
                 alert('Error adding product to cart. Please try again.');
                 $btn.prop('disabled', false);
-                $btn.html('<i class="fa fa-shopping-cart me-2"></i>Add to Cart');
+                $btn.html('Add to cart');
             }
         });
     });
