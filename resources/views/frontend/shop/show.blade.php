@@ -106,7 +106,17 @@
             <div class="col-lg-6">
                 <div class="product-details-thumb">
                     @php
-                        $mainImage = $product->thumbnail?->getUrl('large') ?? asset('brancy/images/shop/product-details/1.webp');
+                        // Use product thumbnail if available and valid, otherwise use demo image
+                        $productThumbnail = null;
+                        try {
+                            $productThumbnail = $product->thumbnail?->getUrl('large');
+                        } catch (\Exception $e) {
+                            // If thumbnail fails, use demo image
+                        }
+                        // Use demo image if no thumbnail or thumbnail is invalid
+                        $mainImage = (!empty($productThumbnail) && strpos($productThumbnail, 'http') !== false) 
+                            ? $productThumbnail 
+                            : asset('brancy/images/shop/product-details/1.webp');
                     @endphp
                     <img src="{{ $mainImage }}" width="570" height="693" alt="{{ $productName }}">
                     <span class="flag-new">new</span>
@@ -364,7 +374,18 @@
                             @php
                                 $relatedVariant = $relatedProduct->variants->first();
                                 $relatedPrice = $relatedVariant?->prices->first();
-                                $relatedThumbnail = $relatedProduct->thumbnail?->getUrl('medium') ?? asset('brancy/images/shop/8.webp');
+                                // Use product thumbnail if available and valid, otherwise use demo image
+                                $relatedProductThumbnail = null;
+                                try {
+                                    $relatedProductThumbnail = $relatedProduct->thumbnail?->getUrl('medium');
+                                } catch (\Exception $e) {
+                                    // If thumbnail fails, use demo image
+                                }
+                                // Cycle through demo images (1-6) based on product ID
+                                $demoImageIndex = (($relatedProduct->id ?? 1) % 6) + 1;
+                                $relatedThumbnail = (!empty($relatedProductThumbnail) && strpos($relatedProductThumbnail, 'http') !== false) 
+                                    ? $relatedProductThumbnail 
+                                    : asset("brancy/images/shop/{$demoImageIndex}.webp");
                                 $relatedName = $relatedProduct->translateAttribute('name');
                                 $relatedUrl = $relatedProduct->defaultUrl?->slug ?? $relatedProduct->id;
                             @endphp
