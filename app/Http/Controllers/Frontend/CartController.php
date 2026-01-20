@@ -39,6 +39,12 @@ class CartController extends Controller
                 ], 404);
             }
 
+            // Ensure cart exists
+            $cart = CartSession::current();
+            if (!$cart) {
+                $cart = CartSession::create();
+            }
+
             CartSession::add(
                 purchasable: $variant,
                 quantity: $request->quantity
@@ -49,8 +55,8 @@ class CartController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Product added to cart',
-                'cart_count' => $cart->lines->sum('quantity'),
-                'cart_total' => $cart->total->formatted
+                'cart_count' => $cart ? $cart->lines->sum('quantity') : 0,
+                'cart_total' => $cart ? $cart->total->formatted : '£0.00'
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
