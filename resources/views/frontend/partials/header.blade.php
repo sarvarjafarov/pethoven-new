@@ -1,16 +1,24 @@
 <!--== Start Header Wrapper ==-->
-<header class="header-area sticky-header header-transparent">
+@php
+    $isHomePage = request()->routeIs('home');
+    $headerClass = $isHomePage ? 'header-area sticky-header header-transparent' : 'header-area sticky-header';
+    $logoCols = $isHomePage ? 'col-5 col-lg-2 col-xl-1' : 'col-5 col-sm-6 col-lg-3';
+    $navCols = $isHomePage ? 'col-lg-7 col-xl-7' : 'col-lg-6';
+    $navPadding = $isHomePage ? 'ps-7' : '';
+    $actionCols = $isHomePage ? 'col-7 col-lg-3 col-xl-4' : 'col-7 col-sm-6 col-lg-3';
+@endphp
+<header class="{{ $headerClass }}">
     <div class="container">
         <div class="row align-items-center">
-            <div class="col-5 col-lg-2 col-xl-1">
+            <div class="{{ $logoCols }}">
                 <div class="header-logo">
                     <a href="{{ route('home') }}">
                         <img class="logo-main" src="{{ asset('brancy/images/logo.webp') }}" width="95" height="68" alt="{{ config('app.name') }}" />
                     </a>
                 </div>
             </div>
-            <div class="col-lg-7 col-xl-7 d-none d-lg-block">
-                <div class="header-navigation ps-7">
+            <div class="{{ $navCols }} d-none d-lg-block">
+                <div class="header-navigation {{ $navPadding }}">
                     <ul class="main-nav justify-content-start">
                         <li class="has-submenu"><a href="{{ route('home') }}">home</a>
                             <ul class="submenu-nav">
@@ -67,7 +75,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="col-7 col-lg-3 col-xl-4">
+            <div class="{{ $actionCols }}">
                 <div class="header-action justify-content-end">
                     <button class="header-action-btn ms-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#AsideOffcanvasSearch" aria-controls="AsideOffcanvasSearch">
                         <span class="icon">
