@@ -7,6 +7,10 @@ use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\CheckoutController;
 use App\Http\Controllers\Frontend\AccountController;
 use App\Http\Controllers\Frontend\BlogController;
+use App\Http\Controllers\Frontend\NewsletterController;
+use App\Http\Controllers\Frontend\QuickViewController;
+use App\Http\Controllers\Frontend\WishlistController;
+use App\Http\Controllers\Frontend\CompareController;
 
 // Homepage
 Route::get('/', function () {
@@ -46,10 +50,23 @@ Route::prefix('cart')->name('cart.')->group(function () {
     Route::get('/count', [CartController::class, 'count'])->name('count');
 });
 
-// Wishlist Route (placeholder)
-Route::get('/wishlist', function () {
-    return response('Wishlist - Coming soon');
-})->name('wishlist.index');
+// Wishlist Routes
+Route::prefix('wishlist')->name('wishlist.')->group(function () {
+    Route::get('/', [WishlistController::class, 'index'])->name('index');
+    Route::post('/add', [WishlistController::class, 'add'])->name('add');
+    Route::delete('/{productId}', [WishlistController::class, 'remove'])->name('remove');
+    Route::post('/clear', [WishlistController::class, 'clear'])->name('clear');
+    Route::get('/count', [WishlistController::class, 'count'])->name('count');
+});
+
+// Compare Routes
+Route::prefix('compare')->name('compare.')->group(function () {
+    Route::get('/', [CompareController::class, 'index'])->name('index');
+    Route::post('/add', [CompareController::class, 'add'])->name('add');
+    Route::delete('/{productId}', [CompareController::class, 'remove'])->name('remove');
+    Route::post('/clear', [CompareController::class, 'clear'])->name('clear');
+    Route::get('/count', [CompareController::class, 'count'])->name('count');
+});
 
 // Checkout Routes
 Route::prefix('checkout')->name('checkout.')->group(function () {
@@ -74,6 +91,13 @@ Route::prefix('blog')->name('blog.')->group(function () {
     Route::get('/', [BlogController::class, 'index'])->name('index');
     Route::get('/{slug}', [BlogController::class, 'show'])->name('show');
 });
+
+// Newsletter Routes
+Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
+Route::get('/newsletter/unsubscribe/{email}', [NewsletterController::class, 'unsubscribe'])->name('newsletter.unsubscribe');
+
+// Quick View Route
+Route::get('/product/quick-view/{slug}', [QuickViewController::class, 'show'])->name('product.quickview');
 
 // Include Breeze auth routes
 require __DIR__.'/auth.php';

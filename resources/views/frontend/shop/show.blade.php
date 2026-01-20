@@ -1,6 +1,81 @@
 @extends('frontend.layouts.app')
 
-@section('title', $product->name . ' - ' . config('app.name'))
+@section('title', $product->translateAttribute('name') . ' - ' . config('app.name'))
+
+@php
+    $productName = $product->translateAttribute('name');
+    $productDescription = $product->translateAttribute('description') ? strip_tags($product->translateAttribute('description')) : $productName;
+    $productImage = $product->thumbnail?->getUrl('large') ?? asset('brancy/images/shop/1.webp');
+    $productUrl = route('shop.product.show', $product->defaultUrl?->slug ?? $product->id);
+    $firstVariant = $product->variants->first();
+    $price = $firstVariant?->prices->first();
+@endphp
+
+@section('meta_description', Str::limit($productDescription, 160))
+@section('meta_keywords', implode(', ', array_merge(['product', $productName], $product->collections->pluck('name')->toArray())))
+
+@section('canonical', $productUrl)
+
+@section('og_type', 'product')
+@section('og_title', $productName)
+@section('og_description', Str::limit($productDescription, 200))
+@section('og_image', $productImage)
+@section('og_url', $productUrl)
+
+@section('twitter_title', $productName)
+@section('twitter_description', Str::limit($productDescription, 200))
+@section('twitter_image', $productImage)
+
+@push('structured_data')
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    "name": "{{ $productName }}",
+    "description": "{{ $productDescription }}",
+    "image": "{{ $productImage }}",
+    "sku": "{{ $firstVariant?->sku }}",
+    "brand": {
+        "@type": "Brand",
+        "name": "{{ config('app.name') }}"
+    },
+    "offers": {
+        "@type": "Offer",
+        "url": "{{ $productUrl }}",
+        "priceCurrency": "{{ $price?->currency->code ?? 'USD' }}",
+        "price": "{{ $price?->price->value ?? 0 }}",
+        "availability": "{{ $firstVariant && $firstVariant->stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock' }}",
+        "priceValidUntil": "{{ now()->addYear()->format('Y-m-d') }}"
+    }
+}
+</script>
+
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org/",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "{{ route('home') }}"
+        },
+        {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Shop",
+            "item": "{{ route('shop.index') }}"
+        },
+        {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "{{ $productName }}"
+        }
+    ]
+}
+</script>
+@endpush
 
 @section('content')
 <!--== Start Page Header Area ==-->

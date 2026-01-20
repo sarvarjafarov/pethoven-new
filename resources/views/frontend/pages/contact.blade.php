@@ -23,7 +23,8 @@
 
                 <!--== Start Contact Form ==-->
                 <div class="contact-form">
-                    <form id="contact-form" action="{{ route('contact.submit') }}" method="POST">
+                    {{-- Note: ID intentionally not "contact-form" so Brancy's JS AJAX handler does not override Laravel form submission --}}
+                    <form id="contact-form-laravel" action="{{ route('contact.submit') }}" method="POST">
                         @csrf
                         <div class="row">
                             <div class="col-12">

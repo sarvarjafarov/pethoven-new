@@ -54,9 +54,10 @@ class ProductController extends Controller
         }
 
         $products = $query->paginate(12);
-        $collections = Collection::all();
+        $collections = Collection::withCount('products')->get();
+        $totalProducts = Product::where('status', 'published')->count();
 
-        return view('frontend.shop.index', compact('products', 'collections', 'sort'));
+        return view('frontend.shop.index', compact('products', 'collections', 'sort', 'totalProducts'));
     }
 
     public function show($slug)

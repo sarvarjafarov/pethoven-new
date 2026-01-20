@@ -19,15 +19,32 @@ class PageController extends Controller
 
     public function contactSubmit(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email',
             'subject' => 'required|string|max:255',
             'message' => 'required|string',
         ]);
 
-        // TODO: Send email or store in database
-        // For now, just flash a success message
+        // Store in database (optional - create ContactSubmission model if needed)
+        // Or send email notification to admin
+        try {
+            \Illuminate\Support\Facades\Mail::send([], [], function ($message) use ($validated) {
+                $message->to(config('mail.from.address'))
+                    ->subject('Contact Form: ' . $validated['subject'])
+                    ->setBody(
+                        "Name: {$validated['name']}\n" .
+                        "Email: {$validated['email']}\n" .
+                        "Subject: {$validated['subject']}\n\n" .
+                        "Message:\n{$validated['message']}",
+                        'text/plain'
+                    )
+                    ->replyTo($validated['email'], $validated['name']);
+            });
+        } catch (\Exception $e) {
+            // Log error but don't show to user
+            \Illuminate\Support\Facades\Log::error('Contact form email failed: ' . $e->getMessage());
+        }
 
         return redirect()->route('contact')
             ->with('success', 'Thank you for contacting us! We will get back to you soon.');

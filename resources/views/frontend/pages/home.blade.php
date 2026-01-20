@@ -2,6 +2,43 @@
 
 @section('title', 'Home - ' . config('app.name'))
 
+@section('meta_description', 'Pethoven - Premium beauty and cosmetic salon offering quality skincare, makeup, and spa products. Shop now for the best beauty products.')
+@section('meta_keywords', 'beauty salon, cosmetic products, skincare, makeup, spa products, beauty care')
+
+@push('structured_data')
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org/",
+    "@type": "Organization",
+    "name": "{{ config('app.name') }}",
+    "url": "{{ url('/') }}",
+    "logo": "{{ asset('brancy/images/logo.png') }}",
+    "description": "Premium beauty and cosmetic salon",
+    "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "US"
+    }
+}
+</script>
+
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org/",
+    "@type": "WebSite",
+    "name": "{{ config('app.name') }}",
+    "url": "{{ url('/') }}",
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "{{ route('shop.index') }}?search={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+    }
+}
+</script>
+@endpush
+
 @section('content')
 <!--== Start Hero Area Wrapper ==-->
 <section class="hero-slider-area position-relative">
@@ -221,11 +258,12 @@
                 </div>
             </div>
             <div class="newsletter-form">
-                <form action="#" method="POST">
+                <form action="{{ route('newsletter.subscribe') }}" method="POST" id="newsletter-form">
                     @csrf
                     <input type="email" class="form-control" name="email" placeholder="enter your email" required>
                     <button class="btn-submit" type="submit"><i class="fa fa-paper-plane"></i></button>
                 </form>
+                <div id="newsletter-message" class="mt-3" style="display: none;"></div>
             </div>
         </div>
     </div>
