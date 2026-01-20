@@ -306,57 +306,6 @@
         });
     });
 
-    // Compare functionality
-    $(document).on('click', '.action-btn-compare', function(e) {
-        e.preventDefault();
-
-        const $btn = $(this);
-        const productId = $btn.data('product-id');
-        const productName = $btn.data('product-name');
-
-        if (!productId) {
-            console.error('Product ID not found');
-            return;
-        }
-
-        $btn.prop('disabled', true);
-
-        // Add to compare
-        $.ajax({
-            url: '/compare/add',
-            method: 'POST',
-            data: {
-                product_id: productId,
-                _token: '{{ csrf_token() }}'
-            },
-            success: function(response) {
-                if (response.success) {
-                    // Update compare count if exists
-                    if (response.count !== undefined) {
-                        $('.compare-count').text(response.count).show();
-                    }
-
-                    // Show success message
-                    alert(response.message || 'Product added to compare');
-
-                    // Optional: redirect to compare page if user wants
-                    if (response.count >= 2) {
-                        const goToCompare = confirm('Product added to compare! Would you like to view the comparison now?');
-                        if (goToCompare) {
-                            window.location.href = '/compare';
-                        }
-                    }
-                } else if (response.message) {
-                    alert(response.message);
-                }
-                $btn.prop('disabled', false);
-            },
-            error: function() {
-                alert('Failed to add to compare');
-                $btn.prop('disabled', false);
-            }
-        });
-    });
     </script>
 
     @stack('scripts')

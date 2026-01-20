@@ -107,10 +107,7 @@
                             <div class="col-12">
                                 <div class="shopping-cart-btn">
                                     <a class="btn btn-outline-dark" href="{{ route('shop.index') }}">Continue Shopping</a>
-                                    <form action="{{ route('cart.clear') }}" method="POST" class="d-inline" id="clear-cart-form">
-                                        @csrf
-                                        <button type="button" class="btn btn-outline-danger" id="clear-cart-btn">Clear Cart</button>
-                                    </form>
+                                    <button type="button" class="btn btn-theme" id="update-cart-btn">Update cart</button>
                                 </div>
                             </div>
                         </div>
@@ -121,45 +118,55 @@
             <div class="row">
                 <div class="col-lg-6">
                     <div class="shopping-cart-coupon mt-6">
-                        <h4 class="title">Coupon Code</h4>
+                        <h4 class="title">Coupon</h4>
                         <p>Enter your coupon code if you have one.</p>
-                        <form action="#" method="post">
+                        <form action="#" method="post" class="coupon-form-wrapper">
                             @csrf
-                            <div class="coupon-form">
+                            <div class="coupon-form d-flex gap-2">
                                 <input class="form-control" type="text" name="coupon" placeholder="Enter coupon code">
-                                <button type="submit" class="btn">Apply</button>
+                                <button type="submit" class="btn btn-theme">Apply coupon</button>
                             </div>
                         </form>
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <div class="shopping-cart-total mt-6">
-                        <h4 class="title">Cart Totals</h4>
+                        <h4 class="title">Cart totals</h4>
                         <table class="table">
                             <tbody>
                                 <tr>
                                     <td>Subtotal</td>
-                                    <td class="amount" id="cart-subtotal">{{ $cart->subTotal->formatted }}</td>
+                                    <td class="amount text-end" id="cart-subtotal">{{ $cart->subTotal->formatted }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Shipping</td>
+                                    <td class="amount text-end">
+                                        @if($cart->shippingTotal && $cart->shippingTotal->value > 0)
+                                            {{ $cart->shippingTotal->formatted }}
+                                        @else
+                                            <span class="text-muted">Free shipping</span>
+                                        @endif
+                                    </td>
                                 </tr>
                                 @if($cart->taxTotal->value > 0)
                                     <tr>
                                         <td>Tax</td>
-                                        <td class="amount" id="cart-tax">{{ $cart->taxTotal->formatted }}</td>
+                                        <td class="amount text-end" id="cart-tax">{{ $cart->taxTotal->formatted }}</td>
                                     </tr>
                                 @endif
                                 @if($cart->discountTotal && $cart->discountTotal->value > 0)
                                     <tr>
                                         <td>Discount</td>
-                                        <td class="amount text-success" id="cart-discount">-{{ $cart->discountTotal->formatted }}</td>
+                                        <td class="amount text-success text-end" id="cart-discount">-{{ $cart->discountTotal->formatted }}</td>
                                     </tr>
                                 @endif
-                                <tr>
-                                    <td class="total">Total</td>
-                                    <td class="total-amount" id="cart-total">{{ $cart->total->formatted }}</td>
+                                <tr class="order-total">
+                                    <td><strong>Total</strong></td>
+                                    <td class="total-amount text-end"><strong id="cart-total">{{ $cart->total->formatted }}</strong></td>
                                 </tr>
                             </tbody>
                         </table>
-                        <a class="btn btn-theme d-block w-100" href="{{ route('checkout.index') }}">Proceed To Checkout</a>
+                        <a class="btn btn-theme d-block w-100" href="{{ route('checkout.index') }}">Proceed to checkout</a>
                     </div>
                 </div>
             </div>
@@ -249,11 +256,9 @@ $(document).ready(function() {
         });
     });
 
-    // Clear cart
-    $('#clear-cart-btn').on('click', function() {
-        if (confirm('Are you sure you want to clear your entire cart?')) {
-            $('#clear-cart-form').submit();
-        }
+    // Update cart button (just refreshes to show updated quantities)
+    $('#update-cart-btn').on('click', function() {
+        location.reload();
     });
 });
 </script>

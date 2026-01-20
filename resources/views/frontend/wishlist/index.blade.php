@@ -39,20 +39,6 @@
         @endif
 
         @if($products && $products->count() > 0)
-            <div class="row mb-4">
-                <div class="col-12">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">{{ $products->count() }} {{ Str::plural('item', $products->count()) }} in your wishlist</h5>
-                        <form action="{{ route('wishlist.clear') }}" method="POST" class="d-inline" id="clear-wishlist-form">
-                            @csrf
-                            <button type="button" class="btn btn-outline-danger btn-sm" id="clear-wishlist-btn">
-                                <i class="fa fa-trash me-1"></i>Clear Wishlist
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
             <div class="row">
                 <div class="col-lg-12">
                     <div class="shopping-cart-form table-responsive">
@@ -61,9 +47,9 @@
                                 <tr>
                                     <th class="product-remove">&nbsp;</th>
                                     <th class="product-thumbnail">&nbsp;</th>
-                                    <th class="product-name">Product</th>
-                                    <th class="product-price">Price</th>
-                                    <th class="product-stock">Stock Status</th>
+                                    <th class="product-name">Product name</th>
+                                    <th class="product-price">Unit price</th>
+                                    <th class="product-stock">Stock status</th>
                                     <th class="product-add-cart">&nbsp;</th>
                                 </tr>
                             </thead>
@@ -108,12 +94,13 @@
                                         </td>
                                         <td class="product-add-cart">
                                             @if($inStock && $firstVariant)
-                                                <button type="button" class="btn btn-sm btn-dark add-to-cart-from-wishlist"
-                                                        data-variant-id="{{ $firstVariant->id }}"
-                                                        data-product-id="{{ $product->id }}"
-                                                        data-product-name="{{ $productName }}">
-                                                    <i class="fa fa-shopping-cart me-1"></i>Add to Cart
-                                                </button>
+                                                <a href="{{ route('cart.add') }}" 
+                                                   class="btn btn-sm btn-theme add-to-cart-from-wishlist"
+                                                   data-variant-id="{{ $firstVariant->id }}"
+                                                   data-product-id="{{ $product->id }}"
+                                                   data-product-name="{{ $productName }}">
+                                                    Add to Cart
+                                                </a>
                                             @else
                                                 <a href="{{ $productUrl }}" class="btn btn-sm btn-outline-secondary">View Details</a>
                                             @endif
@@ -203,7 +190,8 @@ $(document).ready(function() {
     });
 
     // Add to cart from wishlist
-    $('.add-to-cart-from-wishlist').on('click', function() {
+    $('.add-to-cart-from-wishlist').on('click', function(e) {
+        e.preventDefault();
         const $btn = $(this);
         const variantId = $btn.data('variant-id');
         const productId = $btn.data('product-id');
@@ -211,7 +199,7 @@ $(document).ready(function() {
         const originalHtml = $btn.html();
 
         $btn.prop('disabled', true);
-        $btn.html('<i class="fa fa-spinner fa-spin me-1"></i>Adding...');
+        $btn.html('Adding...');
 
         $.ajax({
             url: '{{ route("cart.add") }}',
@@ -224,35 +212,35 @@ $(document).ready(function() {
             success: function(response) {
                 if (response.success) {
                     // Update cart count in header
-                    $('.cart-count').text(response.cart_count).show();
+                    const $cartBadge = $('.cart-count');
+                    $cartBadge.text(response.cart_count);
+                    if (response.cart_count > 0) {
+                        $cartBadge.show();
+                    }
 
-                    // Show success message
-                    $btn.html('<i class="fa fa-check me-1"></i>Added!');
-                    $btn.removeClass('btn-dark').addClass('btn-success');
+                    // Get product image and URL for modal
+                    const productImage = $btn.closest('tr').find('.product-thumbnail img').attr('src') || '{{ asset('brancy/images/shop/1.webp') }}';
+                    const productUrl = $btn.closest('tr').find('.product-name a').attr('href') || '{{ route('shop.index') }}';
 
-                    // Optional: Remove from wishlist after adding to cart
-                    setTimeout(function() {
-                        $btn.closest('tr').find('.remove-wishlist-item').click();
-                    }, 1000);
+                    // Show success modal
+                    showAddToCartModal(productName, productImage, productUrl);
+
+                    // Reset button
+                    $btn.prop('disabled', false);
+                    $btn.html(originalHtml);
                 } else {
-                    alert('Failed to add product to cart');
+                    alert('Failed to add product to cart: ' + (response.message || 'Unknown error'));
                     $btn.prop('disabled', false);
                     $btn.html(originalHtml);
                 }
             },
-            error: function() {
-                alert('Error adding product to cart');
+            error: function(xhr) {
+                const errorMsg = xhr.responseJSON?.message || 'Error adding product to cart';
+                alert('Failed to add product to cart: ' + errorMsg);
                 $btn.prop('disabled', false);
                 $btn.html(originalHtml);
             }
         });
-    });
-
-    // Clear wishlist
-    $('#clear-wishlist-btn').on('click', function() {
-        if (confirm('Are you sure you want to clear your entire wishlist?')) {
-            $('#clear-wishlist-form').submit();
-        }
     });
 });
 </script>
