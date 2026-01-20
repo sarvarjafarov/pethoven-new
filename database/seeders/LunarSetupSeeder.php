@@ -9,6 +9,7 @@ use Lunar\Models\Language;
 use Lunar\Models\TaxZone;
 use Lunar\Models\TaxClass;
 use Lunar\Models\TaxRate;
+use Lunar\Models\TaxRateAmount;
 use Lunar\Models\Country;
 
 class LunarSetupSeeder extends Seeder
@@ -117,20 +118,30 @@ class LunarSetupSeeder extends Seeder
             $this->command->info('Created default tax class');
         }
 
-        // Ensure TaxRate exists for the tax class in the tax zone
-        $taxRate = TaxRate::where('tax_zone_id', $taxZone->id)
-            ->where('tax_class_id', $taxClass->id)
-            ->first();
+        // Ensure TaxRate exists for the tax zone
+        $taxRate = TaxRate::where('tax_zone_id', $taxZone->id)->first();
         
         if (!$taxRate) {
-            TaxRate::create([
+            $taxRate = TaxRate::create([
                 'tax_zone_id' => $taxZone->id,
-                'tax_class_id' => $taxClass->id,
                 'name' => 'Standard Rate',
-                'percentage' => 0, // 0% tax by default, can be changed in admin
                 'priority' => 1,
             ]);
             $this->command->info('Created default tax rate');
+        }
+
+        // Ensure TaxRateAmount exists linking TaxRate to TaxClass
+        $taxRateAmount = TaxRateAmount::where('tax_rate_id', $taxRate->id)
+            ->where('tax_class_id', $taxClass->id)
+            ->first();
+        
+        if (!$taxRateAmount) {
+            TaxRateAmount::create([
+                'tax_rate_id' => $taxRate->id,
+                'tax_class_id' => $taxClass->id,
+                'percentage' => 0, // 0% tax by default, can be changed in admin
+            ]);
+            $this->command->info('Created default tax rate amount');
         }
 
         // Verify associations

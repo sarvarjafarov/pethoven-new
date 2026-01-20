@@ -496,17 +496,26 @@ class CartController extends Controller
             }
             
             // Ensure TaxRate exists
-            $taxRate = TaxRate::where('tax_zone_id', $taxZone->id)
+            $taxRate = TaxRate::where('tax_zone_id', $taxZone->id)->first();
+            
+            if (!$taxRate) {
+                $taxRate = TaxRate::create([
+                    'tax_zone_id' => $taxZone->id,
+                    'name' => 'Standard Rate',
+                    'priority' => 1,
+                ]);
+            }
+
+            // Ensure TaxRateAmount exists linking TaxRate to TaxClass
+            $taxRateAmount = \Lunar\Models\TaxRateAmount::where('tax_rate_id', $taxRate->id)
                 ->where('tax_class_id', $taxClass->id)
                 ->first();
             
-            if (!$taxRate) {
-                TaxRate::create([
-                    'tax_zone_id' => $taxZone->id,
+            if (!$taxRateAmount) {
+                \Lunar\Models\TaxRateAmount::create([
+                    'tax_rate_id' => $taxRate->id,
                     'tax_class_id' => $taxClass->id,
-                    'name' => 'Standard Rate',
                     'percentage' => 0,
-                    'priority' => 1,
                 ]);
             }
         } catch (\Exception $e) {
