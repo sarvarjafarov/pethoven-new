@@ -439,7 +439,10 @@
                                             </div>
                                         @endif
                                         <div class="product-action">
-                                            <button type="button" class="product-action-btn action-btn-cart quick-add-to-cart" data-variant-id="{{ $relatedVariant?->id }}" data-product-name="{{ $relatedName }}">
+                                            @php
+                                                $relatedThumbnail = $relatedProduct->thumbnail?->getUrl('medium') ?? asset('brancy/images/shop/' . ((($relatedProduct->id ?? 1) % 6) + 1) . '.webp');
+                                            @endphp
+                                            <button type="button" class="product-action-btn action-btn-cart quick-add-to-cart" data-variant-id="{{ $relatedVariant?->id }}" data-product-name="{{ $relatedName }}" data-product-image="{{ $relatedThumbnail }}" data-product-url="{{ route('shop.product.show', $relatedUrl) }}">
                                                 <span>Add to cart</span>
                                             </button>
                                             <button type="button" class="product-action-btn action-btn-quick-view">
@@ -542,8 +545,13 @@ $(document).ready(function() {
                         $cartBadge.show();
                     }
 
-                    // Show success message
-                    alert('Product added to cart successfully!');
+                    // Show success modal
+                    @php
+                        $modalProductName = $product->translateAttribute('name');
+                        $modalProductImage = $product->thumbnail ? $product->thumbnail->getUrl('medium') : asset('brancy/images/shop/1.webp');
+                        $modalProductUrl = route('shop.product.show', $product->defaultUrl?->slug ?? $product->id);
+                    @endphp
+                    showAddToCartModal('{{ addslashes($modalProductName) }}', '{{ $modalProductImage }}', '{{ $modalProductUrl }}');
 
                     // Reset button
                     $btn.prop('disabled', false);

@@ -251,6 +251,8 @@
         const $btn = $(this);
         const variantId = $btn.data('variant-id');
         const productName = $btn.data('product-name');
+        const productImage = $btn.data('product-image');
+        const productUrl = $btn.data('product-url');
 
         if (!variantId) {
             alert('Product variant not available');
@@ -278,8 +280,8 @@
                         $cartBadge.show();
                     }
 
-                    // Show success message
-                    alert(productName ? (productName + ' added to cart!') : 'Product added to cart!');
+                    // Show success modal
+                    showAddToCartModal(productName, productImage, productUrl);
 
                     // Reset button
                     $btn.prop('disabled', false);
@@ -358,6 +360,64 @@
     </script>
 
     @stack('scripts')
+
+    <!-- Add to Cart Success Modal -->
+    <div class="modal fade" id="addToCartModal" tabindex="-1" role="dialog" aria-labelledby="addToCartModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 500px;">
+            <div class="modal-content" style="border-radius: 8px; overflow: hidden;">
+                <!-- Modal Header (Red) -->
+                <div class="modal-header" style="background-color: #dc3545; color: white; border: none; padding: 15px 20px;">
+                    <h5 class="modal-title" id="addToCartModalLabel" style="font-size: 16px; font-weight: 600;">Added To Cart Successfully!</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white; opacity: 1; text-shadow: none; font-size: 24px; line-height: 1;">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <!-- Modal Body -->
+                <div class="modal-body" style="padding: 20px; background: white;">
+                    <div class="text-center">
+                        <!-- Success Icon -->
+                        <div class="mb-3">
+                            <i class="fa fa-check-circle" style="font-size: 48px; color: #28a745;"></i>
+                        </div>
+                        <!-- Product Image Container -->
+                        <div style="background: linear-gradient(135deg, #e8d5ff 0%, #f8f0ff 100%); padding: 20px; border-radius: 8px; margin-bottom: 15px; min-height: 200px; display: flex; align-items: center; justify-content: center;">
+                            <img id="cart-modal-product-image" src="" alt="Product" style="max-width: 100%; max-height: 200px; object-fit: contain; border-radius: 4px;" onerror="this.src='{{ asset('brancy/images/shop/1.webp') }}'">
+                        </div>
+                        <!-- Product Name -->
+                        <h6 id="cart-modal-product-name" style="font-size: 16px; font-weight: 600; margin-bottom: 10px; color: #333;"></h6>
+                        <!-- Success Message -->
+                        <p style="color: #666; font-size: 14px; margin-bottom: 0;">Item has been added to your shopping cart.</p>
+                    </div>
+                </div>
+                <!-- Modal Footer -->
+                <div class="modal-footer" style="border-top: 1px solid #eee; padding: 15px 20px; background: #f8f9fa;">
+                    <a href="{{ route('cart.index') }}" class="btn btn-dark" style="flex: 1; margin-right: 10px; padding: 10px;">
+                        <i class="fa fa-shopping-cart me-2"></i>View Cart
+                    </a>
+                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal" style="flex: 1; padding: 10px;">
+                        Continue Shopping
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // Function to show add to cart success modal
+    function showAddToCartModal(productName, productImage, productUrl) {
+        // Set modal content
+        $('#cart-modal-product-name').text(productName || 'Product');
+        $('#cart-modal-product-image').attr('src', productImage || '{{ asset('brancy/images/shop/1.webp') }}');
+        
+        // Show modal
+        $('#addToCartModal').modal('show');
+        
+        // Auto-hide after 3 seconds (optional)
+        // setTimeout(function() {
+        //     $('#addToCartModal').modal('hide');
+        // }, 3000);
+    }
+    </script>
 
 </body>
 

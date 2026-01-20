@@ -6,6 +6,10 @@ use Illuminate\Database\Seeder;
 use Lunar\Models\Channel;
 use Lunar\Models\Currency;
 use Lunar\Models\Language;
+use Lunar\Models\TaxZone;
+use Lunar\Models\TaxClass;
+use Lunar\Models\TaxRate;
+use Lunar\Models\Country;
 
 class LunarSetupSeeder extends Seeder
 {
@@ -82,10 +86,59 @@ class LunarSetupSeeder extends Seeder
             }
         }
         
+        // Ensure default TaxZone exists (CRITICAL for tax calculation)
+        $taxZone = TaxZone::where('default', true)->first();
+        if (!$taxZone) {
+            $taxZone = TaxZone::create([
+                'name' => 'Default Tax Zone',
+                'zone_type' => 'country',
+                'price_display' => 'tax_exclusive',
+                'default' => true,
+                'active' => true,
+            ]);
+            
+            // Add all countries to the tax zone
+            if (class_exists(Country::class)) {
+                $taxZone->countries()->createMany(
+                    Country::get()->map(fn ($country) => [
+                        'country_id' => $country->id,
+                    ])
+                );
+            }
+            $this->command->info('Created default tax zone');
+        }
+
+        // Ensure TaxClass exists
+        $taxClass = TaxClass::first();
+        if (!$taxClass) {
+            $taxClass = TaxClass::create([
+                'name' => 'Default Tax',
+            ]);
+            $this->command->info('Created default tax class');
+        }
+
+        // Ensure TaxRate exists for the tax class in the tax zone
+        $taxRate = TaxRate::where('tax_zone_id', $taxZone->id)
+            ->where('tax_class_id', $taxClass->id)
+            ->first();
+        
+        if (!$taxRate) {
+            TaxRate::create([
+                'tax_zone_id' => $taxZone->id,
+                'tax_class_id' => $taxClass->id,
+                'name' => 'Standard Rate',
+                'percentage' => 0, // 0% tax by default, can be changed in admin
+                'priority' => 1,
+            ]);
+            $this->command->info('Created default tax rate');
+        }
+
         // Verify associations
         $this->command->info('Channel ID: ' . $channel->id);
         $this->command->info('Currency ID: ' . $currency->id);
         $this->command->info('Language ID: ' . $language->id);
+        $this->command->info('Tax Zone ID: ' . $taxZone->id);
+        $this->command->info('Tax Class ID: ' . $taxClass->id);
     }
 }
 

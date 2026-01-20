@@ -147,11 +147,21 @@ $(document).ready(function() {
                     // Update cart count
                     $('.cart-count').text(response.cart_count).show();
 
-                    // Show success
-                    alert(productName + ' added to cart!');
-
-                    // Close modal
+                    // Close quick view modal first
                     $('#quickViewModal').modal('hide');
+                    
+                    // Show add to cart success modal
+                    @php
+                        $quickViewImage = $product->thumbnail ? $product->thumbnail->getUrl('medium') : asset('brancy/images/shop/1.webp');
+                        $quickViewUrl = route('shop.product.show', $product->defaultUrl?->slug ?? $product->id);
+                    @endphp
+                    const productImage = '{{ $quickViewImage }}';
+                    const productUrl = '{{ $quickViewUrl }}';
+                    
+                    // Small delay to ensure quick view modal is closed
+                    setTimeout(function() {
+                        showAddToCartModal(productName, productImage, productUrl);
+                    }, 300);
 
                     // Reset button
                     $btn.prop('disabled', false);

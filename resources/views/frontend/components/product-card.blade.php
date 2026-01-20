@@ -41,7 +41,7 @@
             <button type="button" class="product-action-btn action-btn-quick-view">
                 <i class="fa fa-expand"></i>
             </button>
-            <button type="button" class="product-action-btn action-btn-cart quick-add-to-cart" data-variant-id="{{ $firstVariant?->id }}" data-product-name="{{ $productName }}">
+            <button type="button" class="product-action-btn action-btn-cart quick-add-to-cart" data-variant-id="{{ $firstVariant?->id }}" data-product-name="{{ $productName }}" data-product-image="{{ $thumbnail }}" data-product-url="{{ route('shop.product.show', $productUrl) }}">
                 <span>Add to cart</span>
             </button>
             <button type="button" class="product-action-btn action-btn-wishlist" data-product-id="{{ $product->id }}" data-product-name="{{ $productName }}">
@@ -84,7 +84,7 @@
         <button type="button" class="product-action-btn action-btn-compare" data-product-id="{{ $product->id }}" data-product-name="{{ $productName }}" title="Add to Compare">
             <i class="fa fa-random"></i>
         </button>
-        <button type="button" class="product-action-btn action-btn-cart quick-add-to-cart" data-variant-id="{{ $firstVariant?->id }}" data-product-name="{{ $productName }}">
+        <button type="button" class="product-action-btn action-btn-cart quick-add-to-cart" data-variant-id="{{ $firstVariant?->id }}" data-product-name="{{ $productName }}" data-product-image="{{ $thumbnail }}" data-product-url="{{ route('shop.product.show', $productUrl) }}">
             <span>Add to cart</span>
         </button>
     </div>
