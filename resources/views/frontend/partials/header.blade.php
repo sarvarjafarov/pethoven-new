@@ -56,10 +56,14 @@
                                 </defs>
                             </svg>
                         </span>
-                        @php
-                            $cart = \Lunar\Facades\CartSession::current();
-                            $cartCount = $cart ? $cart->lines->sum('quantity') : 0;
-                        @endphp
+                            @php
+                                try {
+                                    $cart = \Lunar\Facades\CartSession::current();
+                                    $cartCount = $cart ? $cart->lines->sum('quantity') : 0;
+                                } catch (\Exception $e) {
+                                    $cartCount = 0;
+                                }
+                            @endphp
                         @if($cartCount > 0)
                             <span class="badge cart-count">{{ $cartCount }}</span>
                         @else
@@ -142,9 +146,15 @@
     </div>
     <div class="offcanvas-body">
         @php
-            $cart = \Lunar\Facades\CartSession::current();
-            $cartLines = $cart ? $cart->lines : collect();
-            $cartTotal = $cart ? $cart->total : 0;
+            try {
+                $cart = \Lunar\Facades\CartSession::current();
+                $cartLines = $cart ? $cart->lines : collect();
+                $cartTotal = $cart ? $cart->total : 0;
+            } catch (\Exception $e) {
+                $cart = null;
+                $cartLines = collect();
+                $cartTotal = 0;
+            }
         @endphp
         @if($cartLines->isNotEmpty())
             <ul class="aside-cart-product-list">
