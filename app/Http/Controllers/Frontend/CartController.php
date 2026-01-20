@@ -45,12 +45,33 @@ class CartController extends Controller
             );
 
             $cart = CartSession::current();
+            
+            // Calculate cart count safely
+            $cartCount = 0;
+            if ($cart && $cart->lines) {
+                $cartCount = $cart->lines->sum('quantity');
+            }
+            
+            // Calculate cart total safely
+            $cartTotal = '£0.00';
+            if ($cart) {
+                try {
+                    // Calculate the cart total if it hasn't been calculated yet
+                    $total = $cart->total;
+                    if ($total) {
+                        $cartTotal = $total->formatted ?? '£0.00';
+                    }
+                } catch (\Exception $e) {
+                    // If total calculation fails, default to £0.00
+                    \Log::warning('Cart total calculation failed: ' . $e->getMessage());
+                }
+            }
 
             return response()->json([
                 'success' => true,
                 'message' => 'Product added to cart',
-                'cart_count' => $cart && $cart->lines ? $cart->lines->sum('quantity') : 0,
-                'cart_total' => ($cart && $cart->total) ? $cart->total->formatted : '£0.00'
+                'cart_count' => $cartCount,
+                'cart_total' => $cartTotal
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
