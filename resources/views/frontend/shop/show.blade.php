@@ -120,11 +120,13 @@
                             && strpos($productThumbnail, '/storage/') === false
                             && (strpos($productThumbnail, url('/')) === 0 || strpos($productThumbnail, '/') === 0);
                         // Use template CDN demo image if no local thumbnail
-                        $mainImage = $isValidLocalThumbnail 
-                            ? $productThumbnail 
+                        $mainImage = $isValidLocalThumbnail
+                            ? $productThumbnail
                             : 'https://template.hasthemes.com/brancy/brancy/assets/images/shop/product-details/1.webp';
+                        // Local fallback if external demo CDN is blocked in the browser.
+                        $mainImageFallback = asset('brancy/images/shop/product-details/1.webp');
                     @endphp
-                    <img src="{{ $mainImage }}" width="570" height="693" alt="{{ $productName }}">
+                    <img src="{{ $mainImage }}" width="570" height="693" alt="{{ $productName }}" onerror="this.onerror=null;this.src='{{ $mainImageFallback }}';">
                     <span class="flag-new">new</span>
                 </div>
             </div>
@@ -396,9 +398,11 @@
                                     && strpos($relatedProductThumbnail, '/storage/') === false
                                     && (strpos($relatedProductThumbnail, url('/')) === 0 || strpos($relatedProductThumbnail, '/') === 0);
                                 // Use template CDN demo images if no local thumbnail
-                                $relatedThumbnail = $isValidLocalThumbnail 
-                                    ? $relatedProductThumbnail 
+                                $relatedThumbnail = $isValidLocalThumbnail
+                                    ? $relatedProductThumbnail
                                     : "https://template.hasthemes.com/brancy/brancy/assets/images/shop/{$demoImageIndex}.webp";
+                                // Local fallback if external demo CDN is blocked in the browser.
+                                $relatedThumbnailFallback = asset("brancy/images/shop/{$demoImageIndex}.webp");
                                 $relatedName = $relatedProduct->translateAttribute('name');
                                 $relatedUrl = $relatedProduct->defaultUrl?->slug ?? $relatedProduct->id;
                             @endphp
@@ -407,7 +411,7 @@
                                 <div class="product-item product-st2-item">
                                     <div class="product-thumb">
                                         <a class="d-block" href="{{ route('shop.product.show', $relatedUrl) }}">
-                                            <img src="{{ $relatedThumbnail }}" width="370" height="450" alt="{{ $relatedName }}">
+                                            <img src="{{ $relatedThumbnail }}" width="370" height="450" alt="{{ $relatedName }}" onerror="this.onerror=null;this.src='{{ $relatedThumbnailFallback }}';">
                                         </a>
                                         @if($relatedProduct->collections->isNotEmpty() || true)
                                             <span class="flag-new">new</span>

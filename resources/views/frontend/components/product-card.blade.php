@@ -19,9 +19,11 @@
         && strpos($productThumbnail, '/storage/') === false
         && (strpos($productThumbnail, url('/')) === 0 || strpos($productThumbnail, '/') === 0);
     // Use template CDN demo images if no local thumbnail
-    $thumbnail = $isValidLocalThumbnail 
-        ? $productThumbnail 
+    $thumbnail = $isValidLocalThumbnail
+        ? $productThumbnail
         : "https://template.hasthemes.com/brancy/brancy/assets/images/shop/{$demoImageIndex}.webp";
+    // Local fallback if external demo CDN is blocked in the browser.
+    $thumbnailFallback = asset("brancy/images/shop/{$demoImageIndex}.webp");
     $productName = $product->translateAttribute('name');
     $productUrl = $product->defaultUrl?->slug ?? $product->id;
 @endphp
@@ -30,7 +32,7 @@
 <div class="product-item product-st3-item">
     <div class="product-thumb">
         <a class="d-block" href="{{ route('shop.product.show', $productUrl) }}">
-            <img src="{{ $thumbnail }}" width="370" height="450" alt="{{ $productName }}">
+            <img src="{{ $thumbnail }}" width="370" height="450" alt="{{ $productName }}" onerror="this.onerror=null;this.src='{{ $thumbnailFallback }}';">
         </a>
         @if($product->collections->isNotEmpty())
             <span class="flag-new">{{ $product->collections->first()->translateAttribute('name') }}</span>
