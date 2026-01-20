@@ -169,8 +169,52 @@
             </div>
         </div>
         <div class="row mb-n4 mb-sm-n10 g-3 g-sm-6">
-            @foreach($featuredProducts as $product)
+            @foreach($featuredProducts->take(6) as $product)
                 <div class="col-6 col-lg-4 mb-4 mb-sm-9">
+                    @include('frontend.components.product-card', ['product' => $product])
+                </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+<!--== End Product Area Wrapper ==-->
+
+<!--== Start Product Banner Area Wrapper ==-->
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6 col-lg-4">
+                <!--== Start Product Category Item ==-->
+                <a href="{{ route('shop.index') }}" class="product-banner-item">
+                    <img src="{{ asset('brancy/images/shop/banner/1.webp') }}" width="370" height="370" alt="Image-HasTech">
+                </a>
+                <!--== End Product Category Item ==-->
+            </div>
+            <div class="col-sm-6 col-lg-4 mt-sm-0 mt-6">
+                <!--== Start Product Category Item ==-->
+                <a href="{{ route('shop.index') }}" class="product-banner-item">
+                    <img src="{{ asset('brancy/images/shop/banner/2.webp') }}" width="370" height="370" alt="Image-HasTech">
+                </a>
+                <!--== End Product Category Item ==-->
+            </div>
+            <div class="col-sm-6 col-lg-4 mt-lg-0 mt-6">
+                <!--== Start Product Category Item ==-->
+                <a href="{{ route('shop.index') }}" class="product-banner-item">
+                    <img src="{{ asset('brancy/images/shop/banner/3.webp') }}" width="370" height="370" alt="Image-HasTech">
+                </a>
+                <!--== End Product Category Item ==-->
+            </div>
+        </div>
+    </div>
+</section>
+<!--== End Product Banner Area Wrapper ==-->
+
+<!--== Start Product Area Wrapper ==-->
+<section class="section-space pb-0">
+    <div class="container">
+        <div class="row mb-n4 mb-sm-n10 g-3 g-sm-6">
+            @foreach($featuredProducts->skip(3)->take(3) as $product)
+                <div class="col-6 col-lg-4 mb-4 mb-sm-8">
                     @include('frontend.components.product-card', ['product' => $product])
                 </div>
             @endforeach

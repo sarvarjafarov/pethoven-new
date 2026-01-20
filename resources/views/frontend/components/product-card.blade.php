@@ -3,7 +3,9 @@
 @php
     $firstVariant = $product->variants->first();
     $price = $firstVariant?->prices->first();
-    $thumbnail = $product->thumbnail?->getUrl('medium') ?? asset('brancy/images/shop/1.webp');
+    // Use product thumbnail if available, otherwise cycle through demo images (1-6)
+    $demoImageIndex = ($product->id % 6) + 1;
+    $thumbnail = $product->thumbnail?->getUrl('medium') ?? asset("brancy/images/shop/{$demoImageIndex}.webp");
     $productName = $product->translateAttribute('name');
     $productUrl = $product->defaultUrl?->slug ?? $product->id;
 @endphp
