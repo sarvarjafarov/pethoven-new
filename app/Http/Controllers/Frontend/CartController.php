@@ -39,12 +39,6 @@ class CartController extends Controller
                 ], 404);
             }
 
-            // Ensure cart exists
-            $cart = CartSession::current();
-            if (!$cart) {
-                $cart = CartSession::create();
-            }
-
             CartSession::add(
                 purchasable: $variant,
                 quantity: $request->quantity
