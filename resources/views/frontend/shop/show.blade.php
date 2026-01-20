@@ -449,11 +449,8 @@ $(document).ready(function() {
     // Product variants data
     const variants = @json($variantData);
 
-    // Quantity increment/decrement (Brancy's main.js handles this, but we ensure it works)
-    $('.pro-qty').append('<div class="dec qty-btn">-</div>');
-    $('.pro-qty').append('<div class="inc qty-btn">+</div>');
-    
-    $('.qty-btn').on('click', function() {
+    // Quantity increment/decrement (Brancy's main.js adds the buttons, we handle the formatting)
+    $(document).on('click', '.pro-qty .qty-btn', function() {
         const $button = $(this);
         const $input = $('#quantity-input');
         let oldValue = parseInt($input.val()) || 1;
@@ -468,8 +465,8 @@ $(document).ready(function() {
             }
         }
         
-        // Format with leading zero if < 10
-        $input.val(newVal < 10 ? '0' + newVal : newVal);
+        // Format with leading zero if < 10 (matching template format)
+        $input.val(newVal < 10 ? '0' + newVal : newVal.toString());
     });
 
     // Variant radio button selection
