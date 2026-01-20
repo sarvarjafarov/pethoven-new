@@ -26,20 +26,20 @@
                             </ul>
                         </li>
                         <li><a href="{{ route('about') }}">about</a></li>
-                        <li class="has-submenu position-static"><a href="{{ route('shop.index') }}">shop</a>
+                        <li class="has-submenu position-static"><a href="{{ route('products.index') }}">products</a>
                             <ul class="submenu-nav-mega">
                                 <li><a href="#/" class="mega-title">Shop Layout</a>
                                     <ul>
-                                        <li><a href="{{ route('shop.index') }}">Shop 3 Column</a></li>
-                                        <li><a href="{{ route('shop.index') }}">Shop 4 Column</a></li>
-                                        <li><a href="{{ route('shop.index') }}">Shop Left Sidebar</a></li>
-                                        <li><a href="{{ route('shop.index') }}">Shop Right Sidebar</a></li>
+                                        <li><a href="{{ route('products.index') }}">Shop 3 Column</a></li>
+                                        <li><a href="{{ route('products.index') }}">Shop 4 Column</a></li>
+                                        <li><a href="{{ route('products.index') }}">Shop Left Sidebar</a></li>
+                                        <li><a href="{{ route('products.index') }}">Shop Right Sidebar</a></li>
                                     </ul>
                                 </li>
                                 <li><a href="#/" class="mega-title">Single Product</a>
                                     <ul>
-                                        <li><a href="{{ route('shop.index') }}">Single Product Normal</a></li>
-                                        <li><a href="{{ route('shop.index') }}">Single Product Variable</a></li>
+                                        <li><a href="{{ route('products.index') }}">Single Product Normal</a></li>
+                                        <li><a href="{{ route('products.index') }}">Single Product Variable</a></li>
                                     </ul>
                                 </li>
                                 <li><a href="#/" class="mega-title">Others Pages</a>
@@ -168,7 +168,7 @@
                 <div class="search-note">
                     <p>Start typing and press Enter to search</p>
                 </div>
-                <form action="{{ route('shop.index') }}" method="get">
+                <form action="{{ route('products.index') }}" method="get">
                     <div class="aside-search-form position-relative">
                         <label for="SearchInput" class="visually-hidden">Search</label>
                         <input id="SearchInput" type="search" name="search" class="form-control" placeholder="Search products…" value="{{ request('search') }}">
@@ -220,7 +220,7 @@
         @else
             <div class="text-center py-5">
                 <p>Your cart is empty</p>
-                <a class="btn-total" href="{{ route('shop.index') }}">Continue Shopping</a>
+                <a class="btn-total" href="{{ route('products.index') }}">Continue Shopping</a>
             </div>
         @endif
     </div>
@@ -242,20 +242,20 @@
                     </ul>
                 </li>
                 <li class="offcanvas-nav-parent"><a class="offcanvas-nav-item" href="{{ route('about') }}">about</a></li>
-                <li class="offcanvas-nav-parent"><a class="offcanvas-nav-item" href="{{ route('shop.index') }}">shop</a>
+                <li class="offcanvas-nav-parent"><a class="offcanvas-nav-item" href="{{ route('products.index') }}">products</a>
                     <ul>
                         <li><a href="#" class="offcanvas-nav-item">Shop Layout</a>
                             <ul>
-                                <li><a href="{{ route('shop.index') }}">Shop 3 Column</a></li>
-                                <li><a href="{{ route('shop.index') }}">Shop 4 Column</a></li>
-                                <li><a href="{{ route('shop.index') }}">Shop Left Sidebar</a></li>
-                                <li><a href="{{ route('shop.index') }}">Shop Right Sidebar</a></li>
+                                <li><a href="{{ route('products.index') }}">Shop 3 Column</a></li>
+                                <li><a href="{{ route('products.index') }}">Shop 4 Column</a></li>
+                                <li><a href="{{ route('products.index') }}">Shop Left Sidebar</a></li>
+                                <li><a href="{{ route('products.index') }}">Shop Right Sidebar</a></li>
                             </ul>
                         </li>
                         <li><a href="#" class="offcanvas-nav-item">Single Product</a>
                             <ul>
-                                <li><a href="{{ route('shop.index') }}">Single Product Normal</a></li>
-                                <li><a href="{{ route('shop.index') }}">Single Product Variable</a></li>
+                                <li><a href="{{ route('products.index') }}">Single Product Normal</a></li>
+                                <li><a href="{{ route('products.index') }}">Single Product Variable</a></li>
                             </ul>
                         </li>
                         <li><a href="#" class="offcanvas-nav-item">Others Pages</a>
