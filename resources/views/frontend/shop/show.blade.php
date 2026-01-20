@@ -109,26 +109,20 @@
                         $mainImage = $product->thumbnail?->getUrl('large') ?? asset('brancy/images/shop/product-details/1.webp');
                     @endphp
                     <img src="{{ $mainImage }}" width="570" height="693" alt="{{ $productName }}">
-                    @if($product->collections->isNotEmpty() || true)
-                        <span class="flag-new">new</span>
-                    @endif
+                    <span class="flag-new">new</span>
                 </div>
             </div>
             <div class="col-lg-6">
                 <div class="product-details-content">
-                    @if($product->collections->isNotEmpty())
-                        <h5 class="product-details-collection">{{ $product->collections->first()->translateAttribute('name') }}</h5>
-                    @else
-                        <h5 class="product-details-collection">Premioum collection</h5>
-                    @endif
-                    <h3 class="product-details-title">{{ $product->translateAttribute('name') }}</h3>
+                    <h5 class="product-details-collection">Premioum collection</h5>
+                    <h3 class="product-details-title">Offbline Instant Age Rewind Eraser.</h3>
                     <div class="product-details-review">
                         <div class="product-review-icon">
                             <i class="fa fa-star-o"></i>
                             <i class="fa fa-star-o"></i>
                             <i class="fa fa-star-o"></i>
                             <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-half-o"></i>
+                            <i class="fa fa-star-o"></i>
                         </div>
                         <button type="button" class="product-review-show">150 reviews</button>
                     </div>
@@ -137,34 +131,23 @@
                         $variants = $product->variants;
                         $selectedVariant = $firstVariant;
                         $selectedPrice = $price;
+                        $shippingFee = 4.22;
                     @endphp
 
-                    @if($variants->count() > 1)
-                        <div class="product-details-qty-list">
-                            @foreach($variants as $index => $variant)
-                                @php
-                                    $variantPrice = $variant->prices->first();
-                                    $variantName = '';
-                                    foreach($variant->values as $value) {
-                                        $variantName .= ($variantName ? ' ' : '') . ($value->name ?? '');
-                                    }
-                                    if (!$variantName) {
-                                        $variantName = $variant->sku ?? 'Option ' . ($index + 1);
-                                    }
-                                @endphp
-                                <div class="qty-list-check">
-                                    <input class="form-check-input variant-radio" type="radio" name="productVariant" id="variant{{ $variant->id }}" value="{{ $variant->id }}" data-variant-id="{{ $variant->id }}" data-price="{{ $variantPrice?->price->formatted ?? '0.00' }}" {{ $index === 0 ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="variant{{ $variant->id }}">
-                                        {{ $variantName }}
-                                        <b>{{ $variantPrice ? $variantPrice->price->formatted : 'Price on request' }}</b>
-                                        @if($index === 1 && $variants->count() > 1)
-                                            <span class="extra-offer">extra 25%</span>
-                                        @endif
-                                    </label>
-                                </div>
-                            @endforeach
+                    <div class="product-details-qty-list">
+                        <div class="qty-list-check">
+                            <input class="form-check-input variant-radio" type="radio" name="productVariant" id="variant1" value="15ml" data-price="250.00" checked>
+                            <label class="form-check-label" for="variant1">
+                                15 ml bottol <b>$250.00</b>
+                            </label>
                         </div>
-                    @endif
+                        <div class="qty-list-check">
+                            <input class="form-check-input variant-radio" type="radio" name="productVariant" id="variant2" value="25ml" data-price="350.00">
+                            <label class="form-check-label" for="variant2">
+                                25 ml bottol <b>$350.00</b> <span class="extra-offer">extra 25%</span>
+                            </label>
+                        </div>
+                    </div>
 
                     <div class="product-details-pro-qty">
                         <div class="pro-qty">
@@ -178,7 +161,7 @@
                     </div>
 
                     <div class="product-details-action">
-                        <h4 class="price">{{ $selectedPrice ? $selectedPrice->price->formatted : 'Price on request' }}</h4>
+                        <h4 class="price" id="final-price">$254.22</h4>
                         <div class="product-details-cart-wishlist">
                             <button type="button" class="btn-wishlist action-btn-wishlist" data-product-id="{{ $product->id }}" data-product-name="{{ $productName }}">
                                 <i class="fa fa-heart-o"></i>
@@ -446,8 +429,16 @@
 @push('scripts')
 <script>
 $(document).ready(function() {
-    // Product variants data
-    const variants = @json($variantData);
+    const shippingFee = 4.22;
+    
+    // Calculate final price
+    function calculateFinalPrice() {
+        const selectedVariant = $('.variant-radio:checked');
+        const basePrice = parseFloat(selectedVariant.data('price')) || 250.00;
+        const shippingIncluded = $('#ShippingCost').is(':checked');
+        const finalPrice = basePrice + (shippingIncluded ? shippingFee : 0);
+        $('#final-price').text('$' + finalPrice.toFixed(2));
+    }
 
     // Quantity increment/decrement (Brancy's main.js adds the buttons, we handle the formatting)
     $(document).on('click', '.pro-qty .qty-btn', function() {
@@ -471,20 +462,21 @@ $(document).ready(function() {
 
     // Variant radio button selection
     $('.variant-radio').on('change', function() {
-        const variantId = $(this).data('variant-id');
-        const price = $(this).data('price');
-        
-        // Update price
-        $('.product-details-action .price').text(price);
-        
-        // Update add to cart button
-        $('#add-to-cart-btn').data('variant-id', variantId);
+        calculateFinalPrice();
     });
+
+    // Shipping checkbox change
+    $('#ShippingCost').on('change', function() {
+        calculateFinalPrice();
+    });
+
+    // Initialize price on page load
+    calculateFinalPrice();
 
     // Add to cart
     $('#add-to-cart-btn').on('click', function() {
         const $btn = $(this);
-        const variantId = $btn.data('variant-id');
+        const variantId = $btn.data('variant-id') || $('.variant-radio:checked').val();
         const quantity = parseInt($('#quantity-input').val()) || 1;
 
         if (!variantId) {
