@@ -40,6 +40,12 @@ Route::prefix('shop')->name('shop.')->group(function () {
     Route::get('/product/{slug}', [ProductController::class, 'show'])->name('product.show');
 });
 
+// Products Routes (alias for shop)
+Route::prefix('products')->name('products.')->group(function () {
+    Route::get('/', [ProductController::class, 'index'])->name('index');
+    Route::get('/product/{slug}', [ProductController::class, 'show'])->name('product.show');
+});
+
 // Cart Routes
 Route::prefix('cart')->name('cart.')->group(function () {
     Route::get('/', [CartController::class, 'index'])->name('index');
