@@ -101,11 +101,11 @@
                         </form>
                     </div>
 
-                    <div class="shopping-cart-footer">
+                    <div class="shopping-cart-footer" style="margin-top: 30px;">
                         <div class="row align-items-center">
                             <div class="col-12">
                                 <div class="shopping-cart-btn text-end">
-                                    <button type="button" class="btn btn-secondary" id="update-cart-btn">Update Cart</button>
+                                    <button type="button" class="btn-update-cart" id="update-cart-btn">Update Cart</button>
                                 </div>
                             </div>
                         </div>
@@ -115,78 +115,76 @@
 
             <div class="row">
                 <div class="col-lg-6">
-                    <div class="shopping-cart-coupon mt-6">
-                        <h4 class="title" style="text-transform: uppercase; font-weight: 600; margin-bottom: 15px;">COUPON</h4>
-                        <p style="margin-bottom: 15px;">Enter your coupon code if you have one.</p>
-                        <form action="#" method="post" class="coupon-form-wrapper">
+                    <div class="coupon-wrap mt-6">
+                        <h4 class="title">COUPON</h4>
+                        <p class="desc">Enter your coupon code if you have one.</p>
+                        <form action="#" method="post">
                             @csrf
-                            <div class="coupon-form">
-                                <input class="form-control mb-2" type="text" name="coupon" placeholder="Coupon code" style="margin-bottom: 10px;">
-                                <button type="submit" class="btn btn-theme" style="text-transform: uppercase; width: 100%;">APPLY COUPON</button>
-                            </div>
+                            <input class="form-control" type="text" name="coupon" placeholder="Coupon code">
+                            <button type="submit" class="btn-coupon">APPLY COUPON</button>
                         </form>
                     </div>
                 </div>
                 <div class="col-lg-6">
-                    <div class="shopping-cart-total mt-6">
-                        <h4 class="title" style="text-transform: uppercase; font-weight: 600; margin-bottom: 20px;">CART TOTALS</h4>
-                        <table class="table">
+                    <div class="cart-totals-wrap mt-6">
+                        <h4 class="title">CART TOTALS</h4>
+                        <table>
                             <tbody>
                                 <tr>
-                                    <td style="text-transform: uppercase; font-weight: 600;">SUBTOTAL</td>
-                                    <td class="amount text-end" id="cart-subtotal">{{ $cart->subTotal->formatted }}</td>
+                                    <th>SUBTOTAL</th>
+                                    <td class="amount" id="cart-subtotal">{{ $cart->subTotal->formatted }}</td>
                                 </tr>
                                 <tr>
-                                    <td style="text-transform: uppercase; font-weight: 600;">SHIPPING</td>
-                                    <td class="amount">
-                                        <div>
-                                            <div class="form-check mb-2">
-                                                <input class="form-check-input" type="radio" name="shipping_method" id="shipping_flat_rate" value="flat_rate" {{ ($cart->shippingTotal && $cart->shippingTotal->value > 0) ? 'checked' : '' }}>
-                                                <label class="form-check-label" for="shipping_flat_rate">
+                                    <th>SHIPPING</th>
+                                    <td>
+                                        <ul class="shipping-list" style="list-style: none; padding: 0; margin: 2px 0 20px 0;">
+                                            <li>
+                                                <input type="radio" name="shipping_method" id="shipping_flat_rate" value="flat_rate" {{ ($cart->shippingTotal && $cart->shippingTotal->value > 0) ? 'checked' : '' }}>
+                                                <label for="shipping_flat_rate" style="margin-left: 8px; font-weight: normal; text-transform: none;">
                                                     Flat rate: @if($cart->shippingTotal && $cart->shippingTotal->value > 0)
                                                         {{ $cart->shippingTotal->formatted }}
                                                     @else
                                                         $3.00
                                                     @endif
                                                 </label>
-                                            </div>
-                                            <div class="form-check mb-2">
-                                                <input class="form-check-input" type="radio" name="shipping_method" id="shipping_free" value="free" {{ (!$cart->shippingTotal || $cart->shippingTotal->value == 0) ? 'checked' : '' }}>
-                                                <label class="form-check-label" for="shipping_free">
+                                            </li>
+                                            <li>
+                                                <input type="radio" name="shipping_method" id="shipping_free" value="free" {{ (!$cart->shippingTotal || $cart->shippingTotal->value == 0) ? 'checked' : '' }}>
+                                                <label for="shipping_free" style="margin-left: 8px; font-weight: normal; text-transform: none;">
                                                     Free shipping
                                                 </label>
-                                            </div>
-                                            <div class="form-check mb-2">
-                                                <input class="form-check-input" type="radio" name="shipping_method" id="shipping_local" value="local">
-                                                <label class="form-check-label" for="shipping_local">
+                                            </li>
+                                            <li>
+                                                <input type="radio" name="shipping_method" id="shipping_local" value="local">
+                                                <label for="shipping_local" style="margin-left: 8px; font-weight: normal; text-transform: none;">
                                                     Local pickup
                                                 </label>
-                                            </div>
-                                        </div>
-                                        <div style="margin-top: 10px;">
-                                            Shipping to <strong>USA</strong>. <a href="javascript:void(0)" class="text-decoration-underline">Change address</a>
-                                        </div>
+                                            </li>
+                                        </ul>
+                                        <span style="font-size: 14px; color: #888;">
+                                            Shipping to <strong>USA</strong>. <a href="javascript:void(0)" style="text-decoration: underline; color: #323232;">Change address</a>
+                                        </span>
                                     </td>
                                 </tr>
                                 @if($cart->taxTotal->value > 0)
                                     <tr>
-                                        <td style="text-transform: uppercase; font-weight: 600;">TAX</td>
-                                        <td class="amount text-end" id="cart-tax">{{ $cart->taxTotal->formatted }}</td>
+                                        <th>TAX</th>
+                                        <td class="amount" id="cart-tax">{{ $cart->taxTotal->formatted }}</td>
                                     </tr>
                                 @endif
                                 @if($cart->discountTotal && $cart->discountTotal->value > 0)
                                     <tr>
-                                        <td style="text-transform: uppercase; font-weight: 600;">DISCOUNT</td>
-                                        <td class="amount text-success text-end" id="cart-discount">-{{ $cart->discountTotal->formatted }}</td>
+                                        <th>DISCOUNT</th>
+                                        <td class="amount" style="color: #FF6565;" id="cart-discount">-{{ $cart->discountTotal->formatted }}</td>
                                     </tr>
                                 @endif
                                 <tr class="order-total">
-                                    <td style="text-transform: uppercase; font-weight: 600;"><strong>TOTAL</strong></td>
-                                    <td class="total-amount text-end"><strong id="cart-total">{{ $cart->total->formatted }}</strong></td>
+                                    <th><strong>TOTAL</strong></th>
+                                    <td class="amount"><strong id="cart-total">{{ $cart->total->formatted }}</strong></td>
                                 </tr>
                             </tbody>
                         </table>
-                        <a class="btn btn-theme d-block w-100" href="{{ route('checkout.index') }}" style="text-transform: uppercase; padding: 12px; font-weight: 600;">PROCEED TO CHECKOUT</a>
+                        <a class="btn btn-theme d-block w-100" href="{{ route('checkout.index') }}" style="text-transform: uppercase; padding: 12px; font-weight: 600; margin-top: 30px;">PROCEED TO CHECKOUT</a>
                     </div>
                 </div>
             </div>
