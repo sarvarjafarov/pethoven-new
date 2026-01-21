@@ -143,7 +143,11 @@
                                             <div class="form-check mb-2">
                                                 <input class="form-check-input" type="radio" name="shipping_method" id="shipping_flat_rate" value="flat_rate" {{ ($cart->shippingTotal && $cart->shippingTotal->value > 0) ? 'checked' : '' }}>
                                                 <label class="form-check-label" for="shipping_flat_rate">
-                                                    Flat rate: @if($cart->shippingTotal && $cart->shippingTotal->value > 0){{ $cart->shippingTotal->formatted }}@else$3.00@endif
+                                                    Flat rate: @if($cart->shippingTotal && $cart->shippingTotal->value > 0)
+                                                        {{ $cart->shippingTotal->formatted }}
+                                                    @else
+                                                        $3.00
+                                                    @endif
                                                 </label>
                                             </div>
                                             <div class="form-check mb-2">
