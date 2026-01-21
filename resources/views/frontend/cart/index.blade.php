@@ -41,71 +41,70 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="shopping-cart-form table-responsive">
-                        <form action="#" method="post">
-                            @csrf
-                            <table class="table text-center">
-                                <thead>
-                                    <tr>
-                                        <th class="product-remove">&nbsp;</th>
-                                        <th class="product-thumbnail">&nbsp;</th>
-                                        <th class="product-name">PRODUCT</th>
-                                        <th class="product-price">PRICE</th>
-                                        <th class="product-quantity">QUANTITY</th>
-                                        <th class="product-subtotal">TOTAL</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($cart->lines as $line)
-                                        @php
-                                            $purchasable = $line->purchasable;
-                                            $product = $purchasable->product ?? null;
-                                            $image = $product?->thumbnail?->getUrl('small') ?? asset('brancy/images/shop/1.webp');
-                                            $productUrl = $product ? route('shop.product.show', $product->defaultUrl?->slug ?? $product->id) : '#';
-                                        @endphp
-                                        <tr data-line-id="{{ $line->id }}">
-                                            <td class="product-remove">
-                                                <button type="button" class="btn-close remove-item" data-line-id="{{ $line->id }}" aria-label="Close">×</button>
-                                            </td>
-                                            <td class="product-thumbnail">
-                                                <a class="d-block" href="{{ $productUrl }}">
-                                                    <img src="{{ $image }}" width="80" height="90" alt="{{ $line->description }}">
-                                                </a>
-                                            </td>
-                                            <td class="product-name">
-                                                <h5 class="title"><a href="{{ $productUrl }}">{{ $line->description }}</a></h5>
-                                                @if($purchasable->values && $purchasable->values->count() > 0)
-                                                    <div class="mt-1">
-                                                        @foreach($purchasable->values as $value)
-                                                            <small class="text-muted">{{ $value->option->name ?? '' }}: {{ $value->name ?? '' }}</small><br>
-                                                        @endforeach
-                                                    </div>
-                                                @endif
-                                            </td>
-                                            <td class="product-price">
-                                                <span class="price">{{ $line->unitPrice->formatted }}</span>
-                                            </td>
-                                            <td class="product-quantity">
-                                                <div class="pro-qty">
-                                                    <button type="button" class="dec qtybtn" data-line-id="{{ $line->id }}">-</button>
-                                                    <input type="text" class="quantity-input" value="{{ $line->quantity }}" readonly>
-                                                    <button type="button" class="inc qtybtn" data-line-id="{{ $line->id }}">+</button>
+                        <table class="table text-center">
+                            <thead>
+                                <tr>
+                                    <th class="product-remove">&nbsp;</th>
+                                    <th class="product-thumbnail">&nbsp;</th>
+                                    <th class="product-name">Product</th>
+                                    <th class="product-price">Price</th>
+                                    <th class="product-quantity">Quantity</th>
+                                    <th class="product-subtotal">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($cart->lines as $line)
+                                    @php
+                                        $purchasable = $line->purchasable;
+                                        $product = $purchasable->product ?? null;
+                                        // Use template CDN image with fallback
+                                        $imageIndex = ($product ? ($product->id % 6) : 0) + 1;
+                                        $image = $product?->thumbnail?->getUrl('small') ?? "https://template.hasthemes.com/brancy/brancy/assets/images/shop/{$imageIndex}.webp";
+                                        $productUrl = $product ? route('shop.product.show', $product->defaultUrl?->slug ?? $product->id) : '#';
+                                    @endphp
+                                    <tr data-line-id="{{ $line->id }}">
+                                        <td class="product-remove">
+                                            <a href="javascript:void(0)" class="remove-item" data-line-id="{{ $line->id }}">×</a>
+                                        </td>
+                                        <td class="product-thumbnail">
+                                            <a href="{{ $productUrl }}">
+                                                <img src="{{ $image }}" width="80" height="90" alt="{{ $line->description }}" onerror="this.src='{{ asset('brancy/images/shop/' . $imageIndex . '.webp') }}'">
+                                            </a>
+                                        </td>
+                                        <td class="product-name">
+                                            <a href="{{ $productUrl }}">{{ $line->description }}</a>
+                                            @if($purchasable->values && $purchasable->values->count() > 0)
+                                                <div class="mt-1">
+                                                    @foreach($purchasable->values as $value)
+                                                        <small class="text-muted">{{ $value->option->name ?? '' }}: {{ $value->name ?? '' }}</small>@if(!$loop->last)<br>@endif
+                                                    @endforeach
                                                 </div>
-                                            </td>
-                                            <td class="product-subtotal">
-                                                <span class="price line-total">{{ $line->subTotal->formatted }}</span>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </form>
+                                            @endif
+                                        </td>
+                                        <td class="product-price">
+                                            <span class="price">{{ $line->unitPrice->formatted }}</span>
+                                        </td>
+                                        <td class="product-quantity">
+                                            <div class="pro-qty">
+                                                <button type="button" class="dec qtybtn" data-line-id="{{ $line->id }}">-</button>
+                                                <input type="text" class="quantity-input" value="{{ $line->quantity }}" readonly>
+                                                <button type="button" class="inc qtybtn" data-line-id="{{ $line->id }}">+</button>
+                                            </div>
+                                        </td>
+                                        <td class="product-subtotal">
+                                            <span class="price line-total">{{ $line->subTotal->formatted }}</span>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
 
                     <div class="shopping-cart-footer" style="margin-top: 30px;">
                         <div class="row align-items-center">
                             <div class="col-12">
-                                <div class="shopping-cart-btn text-end">
-                                    <button type="button" class="btn-update-cart" id="update-cart-btn">Update Cart</button>
+                                <div class="shopping-cart-btn text-start">
+                                    <button type="button" class="btn btn-sm" id="update-cart-btn">Update cart</button>
                                 </div>
                             </div>
                         </div>
@@ -116,29 +115,31 @@
             <div class="row">
                 <div class="col-lg-6">
                     <div class="coupon-wrap mt-6">
-                        <h4 class="title">COUPON</h4>
+                        <h4 class="title">Coupon</h4>
                         <p class="desc">Enter your coupon code if you have one.</p>
-                        <form action="#" method="post">
+                        <form action="#" method="post" id="coupon-form">
                             @csrf
-                            <input class="form-control" type="text" name="coupon" placeholder="Coupon code">
-                            <button type="submit" class="btn-coupon">APPLY COUPON</button>
+                            <div class="form-group">
+                                <input class="form-control" type="text" name="coupon" placeholder="Coupon code">
+                            </div>
+                            <button type="submit" class="btn btn-sm">Apply coupon</button>
                         </form>
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <div class="cart-totals-wrap mt-6">
-                        <h4 class="title">CART TOTALS</h4>
+                        <h4 class="title">Cart totals</h4>
                         <table>
                             <tbody>
                                 <tr>
-                                    <th>SUBTOTAL</th>
+                                    <th>Subtotal</th>
                                     <td class="amount" id="cart-subtotal">{{ $cart->subTotal->formatted }}</td>
                                 </tr>
                                 <tr>
-                                    <th>SHIPPING</th>
+                                    <th>Shipping</th>
                                     <td>
-                                        <ul class="shipping-list" style="list-style: none; padding: 0; margin: 2px 0 20px 0;">
-                                            <li>
+                                        <ul class="shipping-list" style="list-style: none; padding: 0; margin: 0;">
+                                            <li style="margin-bottom: 10px;">
                                                 <input type="radio" name="shipping_method" id="shipping_flat_rate" value="flat_rate" {{ ($cart->shippingTotal && $cart->shippingTotal->value > 0) ? 'checked' : '' }}>
                                                 <label for="shipping_flat_rate" style="margin-left: 8px; font-weight: normal; text-transform: none;">
                                                     Flat rate: @if($cart->shippingTotal && $cart->shippingTotal->value > 0)
@@ -148,43 +149,43 @@
                                                     @endif
                                                 </label>
                                             </li>
-                                            <li>
+                                            <li style="margin-bottom: 10px;">
                                                 <input type="radio" name="shipping_method" id="shipping_free" value="free" {{ (!$cart->shippingTotal || $cart->shippingTotal->value == 0) ? 'checked' : '' }}>
                                                 <label for="shipping_free" style="margin-left: 8px; font-weight: normal; text-transform: none;">
                                                     Free shipping
                                                 </label>
                                             </li>
-                                            <li>
+                                            <li style="margin-bottom: 10px;">
                                                 <input type="radio" name="shipping_method" id="shipping_local" value="local">
                                                 <label for="shipping_local" style="margin-left: 8px; font-weight: normal; text-transform: none;">
                                                     Local pickup
                                                 </label>
                                             </li>
                                         </ul>
-                                        <span style="font-size: 14px; color: #888;">
+                                        <p style="font-size: 14px; color: #888; margin-top: 10px; margin-bottom: 0;">
                                             Shipping to <strong>USA</strong>. <a href="javascript:void(0)" style="text-decoration: underline; color: #323232;">Change address</a>
-                                        </span>
+                                        </p>
                                     </td>
                                 </tr>
-                                @if($cart->taxTotal->value > 0)
+                                @if($cart->taxTotal && $cart->taxTotal->value > 0)
                                     <tr>
-                                        <th>TAX</th>
+                                        <th>Tax</th>
                                         <td class="amount" id="cart-tax">{{ $cart->taxTotal->formatted }}</td>
                                     </tr>
                                 @endif
                                 @if($cart->discountTotal && $cart->discountTotal->value > 0)
                                     <tr>
-                                        <th>DISCOUNT</th>
+                                        <th>Discount</th>
                                         <td class="amount" style="color: #FF6565;" id="cart-discount">-{{ $cart->discountTotal->formatted }}</td>
                                     </tr>
                                 @endif
                                 <tr class="order-total">
-                                    <th><strong>TOTAL</strong></th>
+                                    <th><strong>Total</strong></th>
                                     <td class="amount"><strong id="cart-total">{{ $cart->total->formatted }}</strong></td>
                                 </tr>
                             </tbody>
                         </table>
-                        <a class="btn btn-theme d-block w-100" href="{{ route('checkout.index') }}" style="text-transform: uppercase; padding: 12px; font-weight: 600; margin-top: 30px;">PROCEED TO CHECKOUT</a>
+                        <a class="btn btn-theme d-block w-100" href="{{ route('checkout.index') }}" style="text-transform: uppercase; padding: 12px; font-weight: 600; margin-top: 30px;">Proceed to checkout</a>
                     </div>
                 </div>
             </div>
@@ -250,12 +251,15 @@ $(document).ready(function() {
     });
 
     // Remove item
-    $('.remove-item').on('click', function() {
+    $(document).on('click', '.remove-item', function(e) {
+        e.preventDefault();
+        
         if (!confirm('Are you sure you want to remove this item?')) {
             return;
         }
 
         const lineId = $(this).data('line-id');
+        const $row = $(this).closest('tr');
 
         $.ajax({
             url: '/cart/' + lineId,
@@ -266,10 +270,13 @@ $(document).ready(function() {
             success: function(response) {
                 if (response.success) {
                     location.reload();
+                } else {
+                    alert(response.message || 'Failed to remove item');
                 }
             },
-            error: function() {
-                alert('Failed to remove item');
+            error: function(xhr) {
+                alert(xhr.responseJSON?.message || 'Failed to remove item');
+                location.reload();
             }
         });
     });
