@@ -10,10 +10,9 @@
             <div class="col-md-12">
                 <div class="page-header-st3-content text-center">
                     <ol class="breadcrumb justify-content-center">
-                        <li class="breadcrumb-item"><a class="text-dark" href="{{ route('home') }}">1. Home</a></li>
-                        <li class="breadcrumb-item active text-dark" aria-current="page">2. Cart</li>
+                        <li class="breadcrumb-item"><a class="text-dark" href="{{ route('home') }}">Home</a></li>
+                        <li class="breadcrumb-item active text-dark" aria-current="page">Cart</li>
                     </ol>
-                    <h2 class="page-header-st3-title">Shopping Cart</h2>
                 </div>
             </div>
         </div>
@@ -49,10 +48,10 @@
                                     <tr>
                                         <th class="product-remove">&nbsp;</th>
                                         <th class="product-thumbnail">&nbsp;</th>
-                                        <th class="product-name">Product</th>
-                                        <th class="product-price">Price</th>
-                                        <th class="product-quantity">Quantity</th>
-                                        <th class="product-subtotal">Total</th>
+                                        <th class="product-name">PRODUCT</th>
+                                        <th class="product-price">PRICE</th>
+                                        <th class="product-quantity">QUANTITY</th>
+                                        <th class="product-subtotal">TOTAL</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -105,9 +104,8 @@
                     <div class="shopping-cart-footer">
                         <div class="row align-items-center">
                             <div class="col-12">
-                                <div class="shopping-cart-btn">
-                                    <a class="btn btn-outline-dark" href="{{ route('shop.index') }}">Continue Shopping</a>
-                                    <button type="button" class="btn btn-theme" id="update-cart-btn">Update cart</button>
+                                <div class="shopping-cart-btn text-end">
+                                    <button type="button" class="btn btn-secondary" id="update-cart-btn">Update Cart</button>
                                 </div>
                             </div>
                         </div>
@@ -118,55 +116,73 @@
             <div class="row">
                 <div class="col-lg-6">
                     <div class="shopping-cart-coupon mt-6">
-                        <h4 class="title">Coupon</h4>
-                        <p>Enter your coupon code if you have one.</p>
+                        <h4 class="title" style="text-transform: uppercase; font-weight: 600; margin-bottom: 15px;">COUPON</h4>
+                        <p style="margin-bottom: 15px;">Enter your coupon code if you have one.</p>
                         <form action="#" method="post" class="coupon-form-wrapper">
                             @csrf
-                            <div class="coupon-form d-flex gap-2">
-                                <input class="form-control" type="text" name="coupon" placeholder="Enter coupon code">
-                                <button type="submit" class="btn btn-theme">Apply coupon</button>
+                            <div class="coupon-form">
+                                <input class="form-control mb-2" type="text" name="coupon" placeholder="Coupon code" style="margin-bottom: 10px;">
+                                <button type="submit" class="btn btn-theme" style="text-transform: uppercase; width: 100%;">APPLY COUPON</button>
                             </div>
                         </form>
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <div class="shopping-cart-total mt-6">
-                        <h4 class="title">Cart totals</h4>
+                        <h4 class="title" style="text-transform: uppercase; font-weight: 600; margin-bottom: 20px;">CART TOTALS</h4>
                         <table class="table">
                             <tbody>
                                 <tr>
-                                    <td>Subtotal</td>
-                                    <td class="amount" id="cart-subtotal">{{ $cart->subTotal->formatted }}</td>
+                                    <td style="text-transform: uppercase; font-weight: 600;">SUBTOTAL</td>
+                                    <td class="amount text-end" id="cart-subtotal">{{ $cart->subTotal->formatted }}</td>
                                 </tr>
                                 <tr>
-                                    <td>Shipping</td>
+                                    <td style="text-transform: uppercase; font-weight: 600;">SHIPPING</td>
                                     <td class="amount">
-                                        @if($cart->shippingTotal && $cart->shippingTotal->value > 0)
-                                            Flat rate: {{ $cart->shippingTotal->formatted }} Free shipping Local pickup Shipping to <strong>USA</strong>. <a href="javascript:void(0)" class="text-decoration-underline">Change address</a>
-                                        @else
-                                            Flat rate: Free shipping Local pickup Shipping to <strong>USA</strong>. <a href="javascript:void(0)" class="text-decoration-underline">Change address</a>
-                                        @endif
+                                        <div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="radio" name="shipping_method" id="shipping_flat_rate" value="flat_rate" {{ ($cart->shippingTotal && $cart->shippingTotal->value > 0) ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="shipping_flat_rate">
+                                                    Flat rate: @if($cart->shippingTotal && $cart->shippingTotal->value > 0){{ $cart->shippingTotal->formatted }}@else$3.00@endif
+                                                </label>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="radio" name="shipping_method" id="shipping_free" value="free" {{ (!$cart->shippingTotal || $cart->shippingTotal->value == 0) ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="shipping_free">
+                                                    Free shipping
+                                                </label>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="radio" name="shipping_method" id="shipping_local" value="local">
+                                                <label class="form-check-label" for="shipping_local">
+                                                    Local pickup
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div style="margin-top: 10px;">
+                                            Shipping to <strong>USA</strong>. <a href="javascript:void(0)" class="text-decoration-underline">Change address</a>
+                                        </div>
                                     </td>
                                 </tr>
                                 @if($cart->taxTotal->value > 0)
                                     <tr>
-                                        <td>Tax</td>
-                                        <td class="amount" id="cart-tax">{{ $cart->taxTotal->formatted }}</td>
+                                        <td style="text-transform: uppercase; font-weight: 600;">TAX</td>
+                                        <td class="amount text-end" id="cart-tax">{{ $cart->taxTotal->formatted }}</td>
                                     </tr>
                                 @endif
                                 @if($cart->discountTotal && $cart->discountTotal->value > 0)
                                     <tr>
-                                        <td>Discount</td>
-                                        <td class="amount text-success" id="cart-discount">-{{ $cart->discountTotal->formatted }}</td>
+                                        <td style="text-transform: uppercase; font-weight: 600;">DISCOUNT</td>
+                                        <td class="amount text-success text-end" id="cart-discount">-{{ $cart->discountTotal->formatted }}</td>
                                     </tr>
                                 @endif
                                 <tr class="order-total">
-                                    <td><strong>Total</strong></td>
-                                    <td class="total-amount"><strong id="cart-total">{{ $cart->total->formatted }}</strong></td>
+                                    <td style="text-transform: uppercase; font-weight: 600;"><strong>TOTAL</strong></td>
+                                    <td class="total-amount text-end"><strong id="cart-total">{{ $cart->total->formatted }}</strong></td>
                                 </tr>
                             </tbody>
                         </table>
-                        <a class="btn btn-theme d-block w-100" href="{{ route('checkout.index') }}">Proceed to checkout</a>
+                        <a class="btn btn-theme d-block w-100" href="{{ route('checkout.index') }}" style="text-transform: uppercase; padding: 12px; font-weight: 600;">PROCEED TO CHECKOUT</a>
                     </div>
                 </div>
             </div>
