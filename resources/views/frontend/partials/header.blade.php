@@ -44,33 +44,6 @@
                         </span>
                     </button>
 
-                    <button class="header-action-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#AsideOffcanvasCart" aria-controls="AsideOffcanvasCart">
-                        <span class="icon">
-                            <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                                <rect class="icon-rect" width="30" height="30" fill="url(#pattern2)"/>
-                                <defs>
-                                    <pattern id="pattern2" patternContentUnits="objectBoundingBox" width="1" height="1">
-                                        <use xlink:href="#image0_504:9" transform="scale(0.0333333)"/>
-                                    </pattern>
-                                    <image id="image0_504:9" width="30" height="30" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAABFUlEQVRIie2VMU7DMBSGvwAqawaYuAmKxCW4A1I5Qg4AA93KBbp1ZUVUlQJSVVbCDVhgzcTQdLEVx7WDQ2xLRfzSvzzb+d6zn2MYrkugBBYevuWsHKiFn2JBMwH8Bq6Aw1jgBwHOYwGlPgT4LDZ4I8BJDNiEppl034UEJ8DMAJ0DByHBACPgUYEugePQUKkUWAmnsaB/Ry/YO9aXCwlT72AdrqaWEohwBWxSwc8ReIVtYIr5bM5pXqO+Men7rozGlkVSv4lJj1WQfsbvXVkNVNk1eEK4ik9/yuwzAPhLh5iuU4jtftMDR4ZJJXChxTJ2H3zXGDgWc43/X2Wro8G81a8u2fXU2nXiLVAxvNIKuPGW/r/2SltF+a3Rkw4pmwAAAABJRU5ErkJggg=="/>
-                                </defs>
-                            </svg>
-                        </span>
-                            @php
-                                try {
-                                    $cart = \Lunar\Facades\CartSession::current();
-                                    $cartCount = $cart ? $cart->lines->sum('quantity') : 0;
-                                } catch (\Exception $e) {
-                                    $cartCount = 0;
-                                }
-                            @endphp
-                        @if($cartCount > 0)
-                            <span class="badge cart-count">{{ $cartCount }}</span>
-                        @else
-                            <span class="badge cart-count" style="display: none;">0</span>
-                        @endif
-                    </button>
-
                     @auth
                         <a class="header-action-btn" href="{{ route('account.dashboard') }}">
                             <span class="icon">
@@ -100,6 +73,43 @@
                             </span>
                         </a>
                     @endauth
+
+                    <a class="header-action-btn" href="{{ route('wishlist.index') }}">
+                        <span class="icon">
+                            <i class="fa fa-heart-o"></i>
+                        </span>
+                        @php
+                            $wishlistCount = auth()->check() 
+                                ? \App\Models\Wishlist::where('user_id', auth()->id())->count()
+                                : \App\Models\Wishlist::where('session_id', session()->getId())->count();
+                        @endphp
+                        @if($wishlistCount > 0)
+                            <span class="badge wishlist-count">{{ $wishlistCount }}</span>
+                        @endif
+                    </a>
+
+                    <button class="header-action-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#AsideOffcanvasCart" aria-controls="AsideOffcanvasCart">
+                        <span class="icon">
+                            <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                <rect class="icon-rect" width="30" height="30" fill="url(#pattern2)"/>
+                                <defs>
+                                    <pattern id="pattern2" patternContentUnits="objectBoundingBox" width="1" height="1">
+                                        <use xlink:href="#image0_504:9" transform="scale(0.0333333)"/>
+                                    </pattern>
+                                    <image id="image0_504:9" width="30" height="30" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAABFUlEQVRIie2VMU7DMBSGvwAqawaYuAmKxCW4A1I5Qg4AA93KBbp1ZUVUlQJSVVbCDVhgzcTQdLEVx7WDQ2xLRfzSvzzb+d6zn2MYrkugBBYevuWsHKiFn2JBMwH8Bq6Aw1jgBwHOYwGlPgT4LDZ4I8BJDNiEppl034UEJ8DMAJ0DByHBACPgUYEugePQUKkUWAmnsaB/Ry/YO9aXCwlT72AdrqaWEohwBWxSwc8ReIVtYIr5bM5pXqO+Men7rozGlkVSv4lJj1WQfsbvXVkNVNk1eEK4ik9/yuwzAPhLh5iuU4jtftMDR4ZJJXChxTJ2H3zXGDgWc43/X2Wro8G81a8u2fXU2nXiLVAxvNIKuPGW/r/2SltF+a3Rkw4pmwAAAABJRU5ErkJggg=="/>
+                                </defs>
+                            </svg>
+                        </span>
+                        @php
+                            try {
+                                $cart = \Lunar\Facades\CartSession::current();
+                                $cartCount = $cart ? $cart->lines->sum('quantity') : 0;
+                            } catch (\Exception $e) {
+                                $cartCount = 0;
+                            }
+                        @endphp
+                        <span class="badge cart-count">{{ $cartCount }}</span>
+                    </button>
 
                     <button class="header-menu-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#AsideOffcanvasMenu" aria-controls="AsideOffcanvasMenu">
                         <span></span>
