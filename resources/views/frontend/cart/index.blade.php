@@ -157,8 +157,9 @@
                                             </li>
                                         </ul>
                                         <p class="destination">
-                                            Shipping to <strong>USA</strong>. <a href="javascript:void(0)" class="btn-shipping-address">Change address</a>
+                                            Shipping to <strong>USA</strong>.
                                         </p>
+                                        <a href="javascript:void(0)" class="btn-shipping-address">Change address</a>
                                     </td>
                                 </tr>
                                 @if($cart->taxTotal && $cart->taxTotal->value > 0)
@@ -179,7 +180,9 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <a class="checkout-button d-block w-100" href="{{ route('checkout.index') }}">PROCEED TO CHECKOUT</a>
+                        <div class="text-end">
+                            <a class="checkout-button" href="{{ route('checkout.index') }}">PROCEED TO CHECKOUT</a>
+                        </div>
                     </div>
                 </div>
             </div>
