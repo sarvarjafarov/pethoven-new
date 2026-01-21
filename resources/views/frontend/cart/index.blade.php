@@ -62,9 +62,9 @@
                                         $image = $product?->thumbnail?->getUrl('small') ?? "https://template.hasthemes.com/brancy/brancy/assets/images/shop/{$imageIndex}.webp";
                                         $productUrl = $product ? route('shop.product.show', $product->defaultUrl?->slug ?? $product->id) : '#';
                                     @endphp
-                                    <tr data-line-id="{{ $line->id }}">
+                                    <tr class="tbody-item" data-line-id="{{ $line->id }}">
                                         <td class="product-remove">
-                                            <a href="javascript:void(0)" class="remove-item" data-line-id="{{ $line->id }}">×</a>
+                                            <a href="javascript:void(0)" class="remove" data-line-id="{{ $line->id }}">×</a>
                                         </td>
                                         <td class="product-thumbnail">
                                             <a href="{{ $productUrl }}">
@@ -72,13 +72,11 @@
                                             </a>
                                         </td>
                                         <td class="product-name">
-                                            <a href="{{ $productUrl }}">{{ $line->description }}</a>
+                                            <h5 class="title"><a href="{{ $productUrl }}">{{ $line->description }}</a></h5>
                                             @if($purchasable->values && $purchasable->values->count() > 0)
-                                                <div class="mt-1">
-                                                    @foreach($purchasable->values as $value)
-                                                        <small class="text-muted">{{ $value->option->name ?? '' }}: {{ $value->name ?? '' }}</small>@if(!$loop->last)<br>@endif
-                                                    @endforeach
-                                                </div>
+                                                @foreach($purchasable->values as $value)
+                                                    <small class="text-muted">{{ $value->option->name ?? '' }}: {{ $value->name ?? '' }}</small>@if(!$loop->last)<br>@endif
+                                                @endforeach
                                             @endif
                                         </td>
                                         <td class="product-price">
@@ -100,11 +98,11 @@
                         </table>
                     </div>
 
-                    <div class="shopping-cart-footer" style="margin-top: 30px;">
+                    <div class="shopping-cart-footer">
                         <div class="row align-items-center">
                             <div class="col-12">
                                 <div class="shopping-cart-btn text-start">
-                                    <button type="button" class="btn btn-sm" id="update-cart-btn">Update cart</button>
+                                    <button type="button" class="btn-update-cart" id="update-cart-btn">Update cart</button>
                                 </div>
                             </div>
                         </div>
@@ -119,10 +117,8 @@
                         <p class="desc">Enter your coupon code if you have one.</p>
                         <form action="#" method="post" id="coupon-form">
                             @csrf
-                            <div class="form-group">
-                                <input class="form-control" type="text" name="coupon" placeholder="Coupon code">
-                            </div>
-                            <button type="submit" class="btn btn-sm">Apply coupon</button>
+                            <input class="form-control" type="text" name="coupon" placeholder="Coupon code">
+                            <button type="submit" class="btn-coupon">Apply coupon</button>
                         </form>
                     </div>
                 </div>
@@ -138,10 +134,10 @@
                                 <tr>
                                     <th>Shipping</th>
                                     <td>
-                                        <ul class="shipping-list" style="list-style: none; padding: 0; margin: 0;">
-                                            <li style="margin-bottom: 10px;">
+                                        <ul class="shipping-list">
+                                            <li>
                                                 <input type="radio" name="shipping_method" id="shipping_flat_rate" value="flat_rate" {{ ($cart->shippingTotal && $cart->shippingTotal->value > 0) ? 'checked' : '' }}>
-                                                <label for="shipping_flat_rate" style="margin-left: 8px; font-weight: normal; text-transform: none;">
+                                                <label for="shipping_flat_rate">
                                                     Flat rate: @if($cart->shippingTotal && $cart->shippingTotal->value > 0)
                                                         {{ $cart->shippingTotal->formatted }}
                                                     @else
@@ -149,21 +145,21 @@
                                                     @endif
                                                 </label>
                                             </li>
-                                            <li style="margin-bottom: 10px;">
+                                            <li>
                                                 <input type="radio" name="shipping_method" id="shipping_free" value="free" {{ (!$cart->shippingTotal || $cart->shippingTotal->value == 0) ? 'checked' : '' }}>
-                                                <label for="shipping_free" style="margin-left: 8px; font-weight: normal; text-transform: none;">
+                                                <label for="shipping_free">
                                                     Free shipping
                                                 </label>
                                             </li>
-                                            <li style="margin-bottom: 10px;">
+                                            <li>
                                                 <input type="radio" name="shipping_method" id="shipping_local" value="local">
-                                                <label for="shipping_local" style="margin-left: 8px; font-weight: normal; text-transform: none;">
+                                                <label for="shipping_local">
                                                     Local pickup
                                                 </label>
                                             </li>
                                         </ul>
-                                        <p style="font-size: 14px; color: #888; margin-top: 10px; margin-bottom: 0;">
-                                            Shipping to <strong>USA</strong>. <a href="javascript:void(0)" style="text-decoration: underline; color: #323232;">Change address</a>
+                                        <p class="destination">
+                                            Shipping to <strong>USA</strong>. <a href="javascript:void(0)" class="btn-shipping-address">Change address</a>
                                         </p>
                                     </td>
                                 </tr>
@@ -185,7 +181,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <a class="btn btn-theme d-block w-100" href="{{ route('checkout.index') }}" style="text-transform: uppercase; padding: 12px; font-weight: 600; margin-top: 30px;">Proceed to checkout</a>
+                        <a class="checkout-button d-block w-100" href="{{ route('checkout.index') }}">Proceed to checkout</a>
                     </div>
                 </div>
             </div>
@@ -251,7 +247,7 @@ $(document).ready(function() {
     });
 
     // Remove item
-    $(document).on('click', '.remove-item', function(e) {
+    $(document).on('click', '.product-remove .remove', function(e) {
         e.preventDefault();
         
         if (!confirm('Are you sure you want to remove this item?')) {
