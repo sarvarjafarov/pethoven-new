@@ -84,9 +84,7 @@
                                         </td>
                                         <td class="product-quantity">
                                             <div class="pro-qty">
-                                                <button type="button" class="dec qty-btn" data-line-id="{{ $line->id }}">-</button>
-                                                <input type="text" class="quantity-input" value="{{ $line->quantity }}" readonly>
-                                                <button type="button" class="inc qty-btn" data-line-id="{{ $line->id }}">+</button>
+                                                <input type="text" class="quantity-input" value="{{ $line->quantity }}" data-line-id="{{ $line->id }}" readonly>
                                             </div>
                                         </td>
                                         <td class="product-subtotal">
@@ -207,12 +205,33 @@
 @push('scripts')
 <script>
 $(document).ready(function() {
-    // Update quantity
-    $('.qty-btn').on('click', function() {
+    // Override Brancy's quantity handler for cart page to use AJAX
+    // Brancy's main.js adds the buttons, we intercept the clicks
+    $(document).off('click', '.pro-qty .qty-btn').on('click', '.pro-qty .qty-btn', function(e) {
+        e.preventDefault();
+        
         const $btn = $(this);
-        const lineId = $btn.data('line-id');
+        const $proQty = $btn.closest('.pro-qty');
+        const $input = $proQty.find('.quantity-input');
+        const lineId = $input.data('line-id');
         const $row = $btn.closest('tr');
-        const $input = $row.find('.quantity-input');
+        
+        if (!lineId) {
+            // Fallback to Brancy's default behavior for non-cart pages
+            var oldValue = $input.val();
+            if ($btn.hasClass('inc')) {
+                var newVal = parseFloat(oldValue) + 1;
+            } else {
+                if (oldValue > 1) {
+                    var newVal = parseFloat(oldValue) - 1;
+                } else {
+                    newVal = 1;
+                }
+            }
+            $input.val(newVal);
+            return;
+        }
+
         let qty = parseInt($input.val()) || 1;
 
         if ($btn.hasClass('inc')) {
