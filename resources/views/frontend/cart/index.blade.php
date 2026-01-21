@@ -46,10 +46,10 @@
                                 <tr>
                                     <th class="product-remove">&nbsp;</th>
                                     <th class="product-thumbnail">&nbsp;</th>
-                                    <th class="product-name">Product</th>
-                                    <th class="product-price">Price</th>
-                                    <th class="product-quantity">Quantity</th>
-                                    <th class="product-subtotal">Total</th>
+                                    <th class="product-name">PRODUCT</th>
+                                    <th class="product-price">PRICE</th>
+                                    <th class="product-quantity">QUANTITY</th>
+                                    <th class="product-subtotal">TOTAL</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -101,7 +101,7 @@
                     <div class="shopping-cart-footer">
                         <div class="row align-items-center">
                             <div class="col-12">
-                                <div class="shopping-cart-btn text-start">
+                                <div class="shopping-cart-btn text-end">
                                     <button type="button" class="btn-update-cart" id="update-cart-btn">Update cart</button>
                                 </div>
                             </div>
@@ -113,26 +113,26 @@
             <div class="row">
                 <div class="col-lg-6">
                     <div class="coupon-wrap mt-6">
-                        <h4 class="title">Coupon</h4>
+                        <h4 class="title">COUPON</h4>
                         <p class="desc">Enter your coupon code if you have one.</p>
                         <form action="#" method="post" id="coupon-form">
                             @csrf
                             <input class="form-control" type="text" name="coupon" placeholder="Coupon code">
-                            <button type="submit" class="btn-coupon">Apply coupon</button>
+                            <button type="submit" class="btn-coupon">APPLY COUPON</button>
                         </form>
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <div class="cart-totals-wrap mt-6">
-                        <h4 class="title">Cart totals</h4>
+                        <h4 class="title">CART TOTALS</h4>
                         <table>
                             <tbody>
                                 <tr>
-                                    <th>Subtotal</th>
+                                    <th>SUBTOTAL</th>
                                     <td class="amount" id="cart-subtotal">{{ $cart->subTotal->formatted }}</td>
                                 </tr>
                                 <tr>
-                                    <th>Shipping</th>
+                                    <th>SHIPPING</th>
                                     <td>
                                         <ul class="shipping-list">
                                             <li>
@@ -165,23 +165,23 @@
                                 </tr>
                                 @if($cart->taxTotal && $cart->taxTotal->value > 0)
                                     <tr>
-                                        <th>Tax</th>
+                                        <th>TAX</th>
                                         <td class="amount" id="cart-tax">{{ $cart->taxTotal->formatted }}</td>
                                     </tr>
                                 @endif
                                 @if($cart->discountTotal && $cart->discountTotal->value > 0)
                                     <tr>
-                                        <th>Discount</th>
+                                        <th>DISCOUNT</th>
                                         <td class="amount" style="color: #FF6565;" id="cart-discount">-{{ $cart->discountTotal->formatted }}</td>
                                     </tr>
                                 @endif
                                 <tr class="order-total">
-                                    <th><strong>Total</strong></th>
+                                    <th><strong>TOTAL</strong></th>
                                     <td class="amount"><strong id="cart-total">{{ $cart->total->formatted }}</strong></td>
                                 </tr>
                             </tbody>
                         </table>
-                        <a class="checkout-button d-block w-100" href="{{ route('checkout.index') }}">Proceed to checkout</a>
+                        <a class="checkout-button d-block w-100" href="{{ route('checkout.index') }}">PROCEED TO CHECKOUT</a>
                     </div>
                 </div>
             </div>
