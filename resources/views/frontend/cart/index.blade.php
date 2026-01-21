@@ -84,9 +84,9 @@
                                         </td>
                                         <td class="product-quantity">
                                             <div class="pro-qty">
-                                                <button type="button" class="dec qtybtn" data-line-id="{{ $line->id }}">-</button>
+                                                <button type="button" class="dec qty-btn" data-line-id="{{ $line->id }}">-</button>
                                                 <input type="text" class="quantity-input" value="{{ $line->quantity }}" readonly>
-                                                <button type="button" class="inc qtybtn" data-line-id="{{ $line->id }}">+</button>
+                                                <button type="button" class="inc qty-btn" data-line-id="{{ $line->id }}">+</button>
                                             </div>
                                         </td>
                                         <td class="product-subtotal">
@@ -102,7 +102,7 @@
                         <div class="row align-items-center">
                             <div class="col-12">
                                 <div class="shopping-cart-btn text-end">
-                                    <button type="button" class="btn-update-cart" id="update-cart-btn">Update cart</button>
+                                    <button type="button" class="btn-update-cart" id="update-cart-btn">Update Cart</button>
                                 </div>
                             </div>
                         </div>
@@ -208,7 +208,7 @@
 <script>
 $(document).ready(function() {
     // Update quantity
-    $('.qtybtn').on('click', function() {
+    $('.qty-btn').on('click', function() {
         const $btn = $(this);
         const lineId = $btn.data('line-id');
         const $row = $btn.closest('tr');

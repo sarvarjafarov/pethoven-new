@@ -20,11 +20,11 @@
             <div class="{{ $navCols }} d-none d-lg-block">
                 <div class="header-navigation {{ $navPadding }}">
                     <ul class="main-nav justify-content-start">
-                        <li><a href="{{ route('home') }}">home</a></li>
-                        <li><a href="{{ route('about') }}">about</a></li>
-                        <li><a href="{{ route('products.index') }}">products</a></li>
-                        <li><a href="{{ route('blog.index') }}">blog</a></li>
-                        <li><a href="{{ route('contact') }}">contact</a></li>
+                        <li class="{{ request()->routeIs('home') ? 'active' : '' }}"><a href="{{ route('home') }}">home</a></li>
+                        <li class="{{ request()->routeIs('about') ? 'active' : '' }}"><a href="{{ route('about') }}">about</a></li>
+                        <li class="{{ request()->routeIs(['products.*', 'shop.*', 'cart.*']) ? 'active' : '' }}"><a href="{{ route('products.index') }}">products</a></li>
+                        <li class="{{ request()->routeIs('blog.*') ? 'active' : '' }}"><a href="{{ route('blog.index') }}">blog</a></li>
+                        <li class="{{ request()->routeIs('contact') ? 'active' : '' }}"><a href="{{ route('contact') }}">contact</a></li>
                     </ul>
                 </div>
             </div>
