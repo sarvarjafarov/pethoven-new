@@ -3,24 +3,18 @@
 @section('title', 'Shopping Cart - ' . config('app.name'))
 
 @section('content')
-<!--== Start Page Header Area ==-->
-<section class="page-header-area" data-bg-img="{{ asset('brancy/images/photos/breadcrumb1.webp') }}">
+<!--== Start Page Header Area Wrapper ==-->
+<nav aria-label="breadcrumb" class="breadcrumb-style1">
     <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="page-header-st3-content text-center">
-                    <ol class="breadcrumb justify-content-center">
-                        <li class="breadcrumb-item"><a class="text-dark" href="{{ route('home') }}">Home</a></li>
-                        <li class="breadcrumb-item active text-dark" aria-current="page">Cart</li>
-                    </ol>
-                </div>
-            </div>
-        </div>
+        <ol class="breadcrumb justify-content-center">
+            <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Cart</li>
+        </ol>
     </div>
-</section>
-<!--== End Page Header Area ==-->
+</nav>
+<!--== End Page Header Area Wrapper ==-->
 
-<!--== Start Shopping Cart Area ==-->
+<!--== Start Product Area Wrapper ==-->
 <section class="section-space">
     <div class="container">
         @if(session('success'))
@@ -38,150 +32,138 @@
         @endif
 
         @if($cart && $cart->lines->count() > 0)
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="shopping-cart-form table-responsive">
-                        <table class="table text-center">
-                            <thead>
-                                <tr>
-                                    <th class="product-remove">&nbsp;</th>
-                                    <th class="product-thumbnail">&nbsp;</th>
-                                    <th class="product-name">PRODUCT</th>
-                                    <th class="product-price">PRICE</th>
-                                    <th class="product-quantity">QUANTITY</th>
-                                    <th class="product-subtotal">TOTAL</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($cart->lines as $line)
-                                    @php
-                                        $purchasable = $line->purchasable;
-                                        $product = $purchasable->product ?? null;
-                                        // Use template CDN image with fallback
-                                        $imageIndex = ($product ? ($product->id % 6) : 0) + 1;
-                                        $image = $product?->thumbnail?->getUrl('small') ?? "https://template.hasthemes.com/brancy/brancy/assets/images/shop/{$imageIndex}.webp";
-                                        $productUrl = $product ? route('shop.product.show', $product->defaultUrl?->slug ?? $product->id) : '#';
-                                    @endphp
-                                    <tr class="tbody-item" data-line-id="{{ $line->id }}">
-                                        <td class="product-remove">
-                                            <a href="javascript:void(0)" class="remove" data-line-id="{{ $line->id }}">×</a>
-                                        </td>
-                                        <td class="product-thumbnail">
+            <div class="shopping-cart-form table-responsive">
+                <form action="#" method="post">
+                    <table class="table text-center">
+                        <thead>
+                            <tr>
+                                <th class="product-remove">&nbsp;</th>
+                                <th class="product-thumbnail">&nbsp;</th>
+                                <th class="product-name">Product</th>
+                                <th class="product-price">Price</th>
+                                <th class="product-quantity">Quantity</th>
+                                <th class="product-subtotal">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($cart->lines as $line)
+                                @php
+                                    $purchasable = $line->purchasable;
+                                    $product = $purchasable->product ?? null;
+                                    $imageIndex = ($product ? ($product->id % 6) : 0) + 1;
+                                    $image = $product?->thumbnail?->getUrl('small') ?? "https://template.hasthemes.com/brancy/brancy/assets/images/shop/{$imageIndex}.webp";
+                                    $productUrl = $product ? route('shop.product.show', $product->defaultUrl?->slug ?? $product->id) : '#';
+                                @endphp
+                                <tr class="tbody-item" data-line-id="{{ $line->id }}">
+                                    <td class="product-remove">
+                                        <a class="remove" href="javascript:void(0)" data-line-id="{{ $line->id }}">×</a>
+                                    </td>
+                                    <td class="product-thumbnail">
+                                        <div class="thumb">
                                             <a href="{{ $productUrl }}">
-                                                <img src="{{ $image }}" width="80" height="90" alt="{{ $line->description }}" onerror="this.src='{{ asset('brancy/images/shop/' . $imageIndex . '.webp') }}'">
+                                                <img src="{{ $image }}" width="68" height="84" alt="{{ $line->description }}" onerror="this.src='{{ asset('brancy/images/shop/' . $imageIndex . '.webp') }}'">
                                             </a>
-                                        </td>
-                                        <td class="product-name">
-                                            <h5 class="title"><a href="{{ $productUrl }}">{{ $line->description }}</a></h5>
-                                            @if($purchasable->values && $purchasable->values->count() > 0)
-                                                @foreach($purchasable->values as $value)
-                                                    <small class="text-muted">{{ $value->option->name ?? '' }}: {{ $value->name ?? '' }}</small>@if(!$loop->last)<br>@endif
-                                                @endforeach
-                                            @endif
-                                        </td>
-                                        <td class="product-price">
-                                            <span class="price">{{ $line->unitPrice->formatted }}</span>
-                                        </td>
-                                        <td class="product-quantity">
-                                            <div class="pro-qty">
-                                                <input type="text" class="quantity-input" value="{{ $line->quantity }}" data-line-id="{{ $line->id }}" readonly>
-                                            </div>
-                                        </td>
-                                        <td class="product-subtotal">
-                                            <span class="price line-total">{{ $line->subTotal->formatted }}</span>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="shopping-cart-footer">
-                        <div class="row align-items-center">
-                            <div class="col-12">
-                                <div class="shopping-cart-btn text-end">
-                                    <button type="button" class="btn-update-cart" id="update-cart-btn">Update Cart</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                                        </div>
+                                    </td>
+                                    <td class="product-name">
+                                        <a class="title" href="{{ $productUrl }}">{{ $line->description }}</a>
+                                        @if($purchasable->values && $purchasable->values->count() > 0)
+                                            <br>
+                                            @foreach($purchasable->values as $value)
+                                                <small class="text-muted">{{ $value->option->name ?? '' }}: {{ $value->name ?? '' }}</small>@if(!$loop->last), @endif
+                                            @endforeach
+                                        @endif
+                                    </td>
+                                    <td class="product-price">
+                                        <span class="price">{{ $line->unitPrice->formatted }}</span>
+                                    </td>
+                                    <td class="product-quantity">
+                                        <div class="pro-qty">
+                                            <input type="text" class="quantity" title="Quantity" value="{{ $line->quantity }}" data-line-id="{{ $line->id }}" readonly>
+                                        </div>
+                                    </td>
+                                    <td class="product-subtotal">
+                                        <span class="price line-total">{{ $line->subTotal->formatted }}</span>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            <tr class="tbody-item-actions">
+                                <td colspan="6">
+                                    <button type="button" class="btn-update-cart" id="update-cart-btn">Update cart</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
             </div>
-
+            
             <div class="row">
-                <div class="col-lg-6">
-                    <div class="coupon-wrap mt-6">
-                        <h4 class="title">COUPON</h4>
+                <div class="col-12 col-lg-6">
+                    <div class="coupon-wrap">
+                        <h4 class="title">Coupon</h4>
                         <p class="desc">Enter your coupon code if you have one.</p>
-                        <form action="#" method="post" id="coupon-form">
-                            @csrf
-                            <input class="form-control" type="text" name="coupon" placeholder="Coupon code">
-                            <button type="submit" class="btn-coupon">APPLY COUPON</button>
-                        </form>
+                        <input type="text" class="form-control" placeholder="Coupon code">
+                        <button type="button" class="btn-coupon">Apply coupon</button>
                     </div>
                 </div>
-                <div class="col-lg-6">
-                    <div class="cart-totals-wrap mt-6">
-                        <h4 class="title">CART TOTALS</h4>
+                <div class="col-12 col-lg-6">
+                    <div class="cart-totals-wrap">
+                        <h2 class="title">Cart totals</h2>
                         <table>
                             <tbody>
-                                <tr>
-                                    <th>SUBTOTAL</th>
-                                    <td class="amount" id="cart-subtotal">{{ $cart->subTotal->formatted }}</td>
+                                <tr class="cart-subtotal">
+                                    <th>Subtotal</th>
+                                    <td>
+                                        <span class="amount" id="cart-subtotal">{{ $cart->subTotal->formatted }}</span>
+                                    </td>
                                 </tr>
-                                <tr>
-                                    <th>SHIPPING</th>
+                                <tr class="shipping-totals">
+                                    <th>Shipping</th>
                                     <td>
                                         <ul class="shipping-list">
-                                            <li>
+                                            <li class="radio">
                                                 <input type="radio" name="shipping_method" id="shipping_flat_rate" value="flat_rate" {{ ($cart->shippingTotal && $cart->shippingTotal->value > 0) ? 'checked' : '' }}>
-                                                <label for="shipping_flat_rate">
-                                                    Flat rate: @if($cart->shippingTotal && $cart->shippingTotal->value > 0)
-                                                        {{ $cart->shippingTotal->formatted }}
-                                                    @else
-                                                        $3.00
-                                                    @endif
-                                                </label>
+                                                <label for="shipping_flat_rate">Flat rate: <span>@if($cart->shippingTotal && $cart->shippingTotal->value > 0)
+                                                    {{ $cart->shippingTotal->formatted }}
+                                                @else
+                                                    $3.00
+                                                @endif</span></label>
                                             </li>
-                                            <li>
+                                            <li class="radio">
                                                 <input type="radio" name="shipping_method" id="shipping_free" value="free" {{ (!$cart->shippingTotal || $cart->shippingTotal->value == 0) ? 'checked' : '' }}>
-                                                <label for="shipping_free">
-                                                    Free shipping
-                                                </label>
+                                                <label for="shipping_free">Free shipping</label>
                                             </li>
-                                            <li>
+                                            <li class="radio">
                                                 <input type="radio" name="shipping_method" id="shipping_local" value="local">
-                                                <label for="shipping_local">
-                                                    Local pickup
-                                                </label>
+                                                <label for="shipping_local">Local pickup</label>
                                             </li>
                                         </ul>
-                                        <p class="destination">
-                                            Shipping to <strong>USA</strong>.
-                                        </p>
+                                        <p class="destination">Shipping to <strong>USA</strong>.</p>
                                         <a href="javascript:void(0)" class="btn-shipping-address">Change address</a>
                                     </td>
                                 </tr>
                                 @if($cart->taxTotal && $cart->taxTotal->value > 0)
                                     <tr>
-                                        <th>TAX</th>
+                                        <th>Tax</th>
                                         <td class="amount" id="cart-tax">{{ $cart->taxTotal->formatted }}</td>
                                     </tr>
                                 @endif
                                 @if($cart->discountTotal && $cart->discountTotal->value > 0)
                                     <tr>
-                                        <th>DISCOUNT</th>
+                                        <th>Discount</th>
                                         <td class="amount" style="color: #FF6565;" id="cart-discount">-{{ $cart->discountTotal->formatted }}</td>
                                     </tr>
                                 @endif
                                 <tr class="order-total">
-                                    <th><strong>TOTAL</strong></th>
-                                    <td class="amount"><strong id="cart-total">{{ $cart->total->formatted }}</strong></td>
+                                    <th>Total</th>
+                                    <td>
+                                        <span class="amount" id="cart-total">{{ $cart->total->formatted }}</span>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
                         <div class="text-end">
-                            <a class="checkout-button" href="{{ route('checkout.index') }}">PROCEED TO CHECKOUT</a>
+                            <a href="{{ route('checkout.index') }}" class="checkout-button">Proceed to checkout</a>
                         </div>
                     </div>
                 </div>
@@ -202,7 +184,7 @@
         @endif
     </div>
 </section>
-<!--== End Shopping Cart Area ==-->
+<!--== End Product Area Wrapper ==-->
 @endsection
 
 @push('scripts')
@@ -215,7 +197,7 @@ $(document).ready(function() {
         
         const $btn = $(this);
         const $proQty = $btn.closest('.pro-qty');
-        const $input = $proQty.find('.quantity-input');
+        const $input = $proQty.find('input');
         const lineId = $input.data('line-id');
         const $row = $btn.closest('tr');
         
