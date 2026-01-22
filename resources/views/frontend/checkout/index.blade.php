@@ -3,70 +3,73 @@
 @section('title', 'Checkout - ' . config('app.name'))
 
 @section('content')
-<!--== Start Page Header Area ==-->
-<section class="page-header-area" data-bg-img="{{ asset('brancy/images/photos/breadcrumb1.webp') }}">
+<!--== Start Page Header Area Wrapper ==-->
+<nav aria-label="breadcrumb" class="breadcrumb-style1">
     <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="page-header-st3-content text-center">
-                    <ol class="breadcrumb justify-content-center">
-                        <li class="breadcrumb-item"><a class="text-dark" href="{{ route('home') }}">Home</a></li>
-                        <li class="breadcrumb-item active text-dark" aria-current="page">Checkout</li>
-                    </ol>
-                    <h2 class="page-header-st3-title">Checkout</h2>
-                </div>
-            </div>
-        </div>
+        <ol class="breadcrumb justify-content-center">
+            <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+        </ol>
     </div>
-</section>
-<!--== End Page Header Area ==-->
+</nav>
+<!--== End Page Header Area Wrapper ==-->
 
-<!--== Start Checkout Area ==-->
-<section class="section-space">
+<!--== Start Shopping Checkout Area Wrapper ==-->
+<section class="shopping-checkout-wrap section-space">
     <div class="container">
-        @if(session('error'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                {{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
+        <div class="checkout-page-coupon-wrap">
+            @if(session('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ session('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
 
-        <form action="{{ route('checkout.process') }}" method="POST" id="checkout-form">
-            @csrf
-
-            <!-- Coupon Section -->
-            <div class="row mb-6">
-                <div class="col-12">
-                    <div class="checkout-coupon-wrapper">
-                        <h5 class="mb-3">
-                            <span class="text-decoration-underline cursor-pointer" id="toggle-coupon" style="cursor: pointer;">Have a Coupon?</span>
-                            <span class="text-decoration-underline cursor-pointer" id="toggle-coupon-text">Click here to enter your code</span>
-                        </h5>
-                        <div id="coupon-form-wrapper" style="display: none;" class="mt-3">
-                            <p>If you have a coupon code, please apply it below.</p>
-                            <form action="#" method="post" class="coupon-form-wrapper">
-                                @csrf
-                                <div class="coupon-form d-flex gap-2">
-                                    <input class="form-control" type="text" name="coupon" placeholder="Enter coupon code">
-                                    <button type="submit" class="btn btn-theme">Apply coupon</button>
-                                </div>
-                            </form>
+            <!--== Start Checkout Coupon Accordion ==-->
+            <div class="coupon-accordion" id="CouponAccordion">
+                <div class="card">
+                    <h3>
+                        <i class="fa fa-info-circle"></i>
+                        Have a Coupon?
+                        <a href="#/" data-bs-toggle="collapse" data-bs-target="#couponaccordion">Click here to enter your code</a>
+                    </h3>
+                    <div id="couponaccordion" class="collapse" data-bs-parent="#CouponAccordion">
+                        <div class="card-body">
+                            <div class="apply-coupon-wrap">
+                                <p>If you have a coupon code, please apply it below.</p>
+                                <form action="#" method="post">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <input class="form-control" type="text" placeholder="Coupon code">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <button type="button" class="btn-coupon">Apply coupon</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <!--== End Checkout Coupon Accordion ==-->
+        </div>
 
+        <form action="{{ route('checkout.process') }}" method="POST" id="checkout-form">
+            @csrf
             <div class="row">
-                <div class="col-lg-8">
-                    <!-- Billing Information -->
-                    <div class="checkout-billing-details mb-8">
-                        <h4 class="mb-5">Billing details</h4>
-
-                        <div class="row g-3">
+                <div class="col-lg-6">
+                    <!--== Start Billing Accordion ==-->
+                    <div class="checkout-billing-details-wrap">
+                        <h2 class="title">Billing details</h2>
+                        <div class="billing-form-wrap">
+                            <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="shipping_first_name" class="form-label">First name <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control @error('shipping_first_name') is-invalid @enderror" id="shipping_first_name" name="shipping_first_name" value="{{ old('shipping_first_name') }}" required>
+                                        <label for="shipping_first_name">First name <abbr class="required" title="required">*</abbr></label>
+                                        <input id="shipping_first_name" name="shipping_first_name" type="text" class="form-control @error('shipping_first_name') is-invalid @enderror" value="{{ old('shipping_first_name') }}" required>
                                         @error('shipping_first_name')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
@@ -74,8 +77,8 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="shipping_last_name" class="form-label">Last name <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control @error('shipping_last_name') is-invalid @enderror" id="shipping_last_name" name="shipping_last_name" value="{{ old('shipping_last_name') }}" required>
+                                        <label for="shipping_last_name">Last name <abbr class="required" title="required">*</abbr></label>
+                                        <input id="shipping_last_name" name="shipping_last_name" type="text" class="form-control @error('shipping_last_name') is-invalid @enderror" value="{{ old('shipping_last_name') }}" required>
                                         @error('shipping_last_name')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
@@ -83,17 +86,14 @@
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="shipping_company" class="form-label">Company name (optional)</label>
-                                        <input type="text" class="form-control @error('shipping_company') is-invalid @enderror" id="shipping_company" name="shipping_company" value="{{ old('shipping_company') }}">
-                                        @error('shipping_company')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                        <label for="shipping_company">Company name (optional)</label>
+                                        <input id="shipping_company" name="shipping_company" type="text" class="form-control" value="{{ old('shipping_company') }}">
                                     </div>
                                 </div>
-                                <div class="col-md-12">
+                                <div class="col-md-12 mb-4">
                                     <div class="form-group">
-                                        <label for="shipping_country_id" class="form-label">Country <span class="text-danger">*</span></label>
-                                        <select class="form-select @error('shipping_country_id') is-invalid @enderror" id="shipping_country_id" name="shipping_country_id" required>
+                                        <label for="shipping_country_id">Country <abbr class="required" title="required">*</abbr></label>
+                                        <select id="shipping_country_id" name="shipping_country_id" class="form-control wide @error('shipping_country_id') is-invalid @enderror" required>
                                             <option value="">Select Country</option>
                                             @foreach($countries as $country)
                                                 <option value="{{ $country->id }}" {{ old('shipping_country_id') == $country->id ? 'selected' : '' }}>
@@ -106,286 +106,251 @@
                                         @enderror
                                     </div>
                                 </div>
-                                <div class="col-12">
+                                <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="shipping_line_one" class="form-label">Street address <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control @error('shipping_line_one') is-invalid @enderror" id="shipping_line_one" name="shipping_line_one" value="{{ old('shipping_line_one') }}" placeholder="House number and street name" required>
+                                        <label for="shipping_line_one">Street address <abbr class="required" title="required">*</abbr></label>
+                                        <input id="shipping_line_one" name="shipping_line_one" type="text" class="form-control @error('shipping_line_one') is-invalid @enderror" placeholder="House number and street name" value="{{ old('shipping_line_one') }}" required>
                                         @error('shipping_line_one')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
-                                </div>
-                                <div class="col-12">
                                     <div class="form-group">
-                                        <label for="shipping_line_two" class="form-label">Street address 2 <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control @error('shipping_line_two') is-invalid @enderror" id="shipping_line_two" name="shipping_line_two" value="{{ old('shipping_line_two') }}" placeholder="Apartment, suite, unit, etc. (optional)">
-                                        @error('shipping_line_two')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                        <label for="shipping_line_two" class="visually-hidden">Street address 2 <abbr class="required" title="required">*</abbr></label>
+                                        <input id="shipping_line_two" name="shipping_line_two" type="text" class="form-control" placeholder="Apartment, suite, unit etc. (optional)" value="{{ old('shipping_line_two') }}">
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="shipping_city" class="form-label">Town / City <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control @error('shipping_city') is-invalid @enderror" id="shipping_city" name="shipping_city" value="{{ old('shipping_city') }}" required>
+                                        <label for="shipping_city">Town / City <abbr class="required" title="required">*</abbr></label>
+                                        <input id="shipping_city" name="shipping_city" type="text" class="form-control @error('shipping_city') is-invalid @enderror" value="{{ old('shipping_city') }}" required>
                                         @error('shipping_city')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
                                 </div>
-                                <div class="col-md-12">
+                                <div class="col-md-12 mb-4">
                                     <div class="form-group">
-                                        <label for="shipping_state" class="form-label">District <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control @error('shipping_state') is-invalid @enderror" id="shipping_state" name="shipping_state" value="{{ old('shipping_state') }}">
-                                        @error('shipping_state')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                        <label for="shipping_state">District <abbr class="required" title="required">*</abbr></label>
+                                        <input id="shipping_state" name="shipping_state" type="text" class="form-control" value="{{ old('shipping_state') }}">
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="shipping_postcode" class="form-label">Postcode / ZIP (optional)</label>
-                                        <input type="text" class="form-control @error('shipping_postcode') is-invalid @enderror" id="shipping_postcode" name="shipping_postcode" value="{{ old('shipping_postcode') }}">
-                                        @error('shipping_postcode')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                        <label for="shipping_postcode">Postcode / ZIP (optional)</label>
+                                        <input id="shipping_postcode" name="shipping_postcode" type="text" class="form-control" value="{{ old('shipping_postcode') }}">
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="shipping_phone" class="form-label">Phone (optional)</label>
-                                        <input type="tel" class="form-control @error('shipping_phone') is-invalid @enderror" id="shipping_phone" name="shipping_phone" value="{{ old('shipping_phone') }}">
-                                        @error('shipping_phone')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                        <label for="shipping_phone">Phone (optional)</label>
+                                        <input id="shipping_phone" name="shipping_phone" type="text" class="form-control" value="{{ old('shipping_phone') }}">
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="shipping_email" class="form-label">Email address <span class="text-danger">*</span></label>
-                                        <input type="email" class="form-control @error('shipping_email') is-invalid @enderror" id="shipping_email" name="shipping_email" value="{{ old('shipping_email') }}" required>
+                                        <label for="shipping_email">Email address <abbr class="required" title="required">*</abbr></label>
+                                        <input id="shipping_email" name="shipping_email" type="text" class="form-control @error('shipping_email') is-invalid @enderror" value="{{ old('shipping_email') }}" required>
                                         @error('shipping_email')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
                                 </div>
-                        </div>
-                    </div>
-
-                    <!-- Shipping Address (Different from billing) -->
-                    <div class="checkout-billing-details mb-8">
-                        <div class="form-check mb-4">
-                            <input class="form-check-input" type="checkbox" id="billing_same_as_shipping" name="billing_same_as_shipping" value="1" {{ old('billing_same_as_shipping', true) ? 'checked' : '' }}>
-                            <label class="form-check-label" for="billing_same_as_shipping">
-                                Ship to a different address?
-                            </label>
-                        </div>
-
-                        <div id="billing-address-fields" style="{{ old('billing_same_as_shipping', true) ? 'display: none;' : '' }}">
-                            <h4 class="mb-5">Shipping Address</h4>
-
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="billing_first_name" class="form-label">First name <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control @error('billing_first_name') is-invalid @enderror" id="billing_first_name" name="billing_first_name" value="{{ old('billing_first_name') }}">
-                                        @error('billing_first_name')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                <div id="CheckoutBillingAccordion2" class="col-md-12">
+                                    <div class="checkout-box" data-bs-toggle="collapse" data-bs-target="#CheckoutTwo" aria-expanded="{{ old('billing_same_as_shipping') === '1' ? 'true' : 'false' }}" role="toolbar">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input visually-hidden" id="ship-to-different-address" name="billing_same_as_shipping" value="1" {{ old('billing_same_as_shipping') === '1' ? 'checked' : '' }}>
+                                            <label class="custom-control-label" for="ship-to-different-address">Ship to a different address?</label>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="billing_last_name" class="form-label">Last name <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control @error('billing_last_name') is-invalid @enderror" id="billing_last_name" name="billing_last_name" value="{{ old('billing_last_name') }}">
-                                        @error('billing_last_name')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label for="billing_company" class="form-label">Company name (optional)</label>
-                                        <input type="text" class="form-control @error('billing_company') is-invalid @enderror" id="billing_company" name="billing_company" value="{{ old('billing_company') }}">
-                                        @error('billing_company')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label for="billing_country_id" class="form-label">Country <span class="text-danger">*</span></label>
-                                        <select class="form-select @error('billing_country_id') is-invalid @enderror" id="billing_country_id" name="billing_country_id">
-                                            <option value="">Select Country</option>
-                                            @foreach($countries as $country)
-                                                <option value="{{ $country->id }}" {{ old('billing_country_id') == $country->id ? 'selected' : '' }}>
-                                                    {{ $country->name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                        @error('billing_country_id')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="form-group">
-                                        <label for="billing_line_one" class="form-label">Street address <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control @error('billing_line_one') is-invalid @enderror" id="billing_line_one" name="billing_line_one" value="{{ old('billing_line_one') }}" placeholder="House number and street name">
-                                        @error('billing_line_one')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="form-group">
-                                        <label for="billing_line_two" class="form-label">Street address 2 <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control @error('billing_line_two') is-invalid @enderror" id="billing_line_two" name="billing_line_two" value="{{ old('billing_line_two') }}" placeholder="Apartment, suite, unit, etc. (optional)">
-                                        @error('billing_line_two')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                    <div id="CheckoutTwo" class="collapse {{ old('billing_same_as_shipping') === '1' ? 'show' : '' }}" data-bs-parent="#CheckoutBillingAccordion2">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="billing_first_name">First name <abbr class="required" title="required">*</abbr></label>
+                                                    <input id="billing_first_name" name="billing_first_name" type="text" class="form-control" value="{{ old('billing_first_name') }}">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="billing_last_name">Last name <abbr class="required" title="required">*</abbr></label>
+                                                    <input id="billing_last_name" name="billing_last_name" type="text" class="form-control" value="{{ old('billing_last_name') }}">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label for="billing_company">Company name (optional)</label>
+                                                    <input id="billing_company" name="billing_company" type="text" class="form-control" value="{{ old('billing_company') }}">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12 mb-4">
+                                                <div class="form-group">
+                                                    <label for="billing_country_id">Country <abbr class="required" title="required">*</abbr></label>
+                                                    <select id="billing_country_id" name="billing_country_id" class="form-control wide">
+                                                        <option value="">Select Country</option>
+                                                        @foreach($countries as $country)
+                                                            <option value="{{ $country->id }}" {{ old('billing_country_id') == $country->id ? 'selected' : '' }}>
+                                                                {{ $country->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label for="billing_line_one">Street address <abbr class="required" title="required">*</abbr></label>
+                                                    <input id="billing_line_one" name="billing_line_one" type="text" class="form-control" placeholder="House number and street name" value="{{ old('billing_line_one') }}">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="billing_line_two" class="visually-hidden">Street address 2 <abbr class="required" title="required">*</abbr></label>
+                                                    <input id="billing_line_two" name="billing_line_two" type="text" class="form-control" placeholder="Apartment, suite, unit etc. (optional)" value="{{ old('billing_line_two') }}">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label for="billing_city">Town / City <abbr class="required" title="required">*</abbr></label>
+                                                    <input id="billing_city" name="billing_city" type="text" class="form-control" value="{{ old('billing_city') }}">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12 mb-4">
+                                                <div class="form-group">
+                                                    <label for="billing_state">District <abbr class="required" title="required">*</abbr></label>
+                                                    <input id="billing_state" name="billing_state" type="text" class="form-control" value="{{ old('billing_state') }}">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label for="billing_postcode">Postcode / ZIP (optional)</label>
+                                                    <input id="billing_postcode" name="billing_postcode" type="text" class="form-control" value="{{ old('billing_postcode') }}">
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label for="billing_city" class="form-label">Town / City <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control @error('billing_city') is-invalid @enderror" id="billing_city" name="billing_city" value="{{ old('billing_city') }}">
-                                        @error('billing_city')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label for="billing_state" class="form-label">District <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control @error('billing_state') is-invalid @enderror" id="billing_state" name="billing_state" value="{{ old('billing_state') }}">
-                                        @error('billing_state')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label for="billing_postcode" class="form-label">Postcode / ZIP (optional)</label>
-                                        <input type="text" class="form-control @error('billing_postcode') is-invalid @enderror" id="billing_postcode" name="billing_postcode" value="{{ old('billing_postcode') }}">
-                                        @error('billing_postcode')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                    <div class="form-group mb-0">
+                                        <label for="notes">Order notes (optional)</label>
+                                        <textarea id="notes" name="notes" class="form-control" placeholder="Notes about your order, e.g. special notes for delivery.">{{ old('notes') }}</textarea>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Order Notes -->
-                    <div class="checkout-order-notes">
-                        <label for="notes" class="form-label">Order notes (optional)</label>
-                        <textarea class="form-control" id="notes" name="notes" rows="4" placeholder="Notes about your order, e.g. special notes for delivery">{{ old('notes') }}</textarea>
-                    </div>
+                    <!--== End Billing Accordion ==-->
                 </div>
-
-                <div class="col-lg-4">
-                    <!-- Order Summary -->
-                    <div class="checkout-order-summary">
-                        <h4 class="mb-5">Your order</h4>
-
-                        <table class="table table-borderless">
-                            <thead>
-                                <tr>
-                                    <th>Product</th>
-                                    <th class="text-end">Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($cart->lines as $line)
+                <div class="col-lg-6">
+                    <!--== Start Order Details Accordion ==-->
+                    <div class="checkout-order-details-wrap">
+                        <div class="order-details-table-wrap table-responsive">
+                            <h2 class="title mb-25">Your order</h2>
+                            <table class="table">
+                                <thead>
                                     <tr>
+                                        <th class="product-name">Product</th>
+                                        <th class="product-total">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="table-body">
+                                    @foreach($cart->lines as $line)
+                                        <tr class="cart-item">
+                                            <td class="product-name">{{ $line->description }} <span class="product-quantity">× {{ $line->quantity }}</span></td>
+                                            <td class="product-total">{{ $line->subTotal->formatted }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                                <tfoot class="table-foot">
+                                    <tr class="cart-subtotal">
+                                        <th>Subtotal</th>
+                                        <td>{{ $cart->subTotal->formatted }}</td>
+                                    </tr>
+                                    <tr class="shipping">
+                                        <th>Shipping</th>
                                         <td>
-                                            {{ $line->description }} × {{ $line->quantity }}
+                                            @if($cart->shippingTotal && $cart->shippingTotal->value > 0)
+                                                Flat rate: {{ $cart->shippingTotal->formatted }}
+                                            @else
+                                                Free shipping
+                                            @endif
                                         </td>
-                                        <td class="text-end">{{ $line->subTotal->formatted }}</td>
                                     </tr>
-                                @endforeach
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th>Subtotal</th>
-                                    <td class="text-end">{{ $cart->subTotal->formatted }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Shipping</th>
-                                    <td class="text-end">
-                                        @if($cart->shippingTotal && $cart->shippingTotal->value > 0)
-                                            {{ $cart->shippingTotal->formatted }}
-                                        @else
-                                            <span class="text-muted">Free shipping</span>
-                                        @endif
-                                    </td>
-                                </tr>
-                                @if($cart->taxTotal->value > 0)
-                                    <tr>
-                                        <th>Tax</th>
-                                        <td class="text-end">{{ $cart->taxTotal->formatted }}</td>
+                                    @if($cart->taxTotal && $cart->taxTotal->value > 0)
+                                        <tr class="tax">
+                                            <th>Tax</th>
+                                            <td>{{ $cart->taxTotal->formatted }}</td>
+                                        </tr>
+                                    @endif
+                                    @if($cart->discountTotal && $cart->discountTotal->value > 0)
+                                        <tr class="discount">
+                                            <th>Discount</th>
+                                            <td style="color: #FF6565;">-{{ $cart->discountTotal->formatted }}</td>
+                                        </tr>
+                                    @endif
+                                    <tr class="order-total">
+                                        <th>Total</th>
+                                        <td>{{ $cart->total->formatted }}</td>
                                     </tr>
-                                @endif
-                                <tr class="order-total">
-                                    <th>Total</th>
-                                    <td class="text-end"><strong>{{ $cart->total->formatted }}</strong></td>
-                                </tr>
-                            </tfoot>
-                        </table>
-
-                        <!-- Payment Methods -->
-                        <div class="payment-methods mt-4">
-                            <div class="form-check mb-3">
-                                <input class="form-check-input" type="radio" name="payment_method" id="payment_direct_bank" value="direct_bank" checked>
-                                <label class="form-check-label" for="payment_direct_bank">
-                                    <strong>Direct bank transfer</strong>
-                                </label>
-                                <p class="small text-muted mt-1 mb-0">Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order will not be shipped until the funds have cleared in our account.</p>
-                            </div>
-
-                            <div class="form-check mb-3">
-                                <input class="form-check-input" type="radio" name="payment_method" id="payment_check" value="check">
-                                <label class="form-check-label" for="payment_check">
-                                    <strong>Check payments</strong>
-                                </label>
-                                <p class="small text-muted mt-1 mb-0">Please send a check to Store Name, Store Street, Store Town, Store State / County, Store Postcode.</p>
-                            </div>
-
-                            <div class="form-check mb-3">
-                                <input class="form-check-input" type="radio" name="payment_method" id="payment_cod" value="cod">
-                                <label class="form-check-label" for="payment_cod">
-                                    <strong>Cash on delivery</strong>
-                                </label>
-                                <p class="small text-muted mt-1 mb-0">Pay with cash upon delivery.</p>
-                            </div>
-
-                            <div class="form-check mb-3">
-                                <input class="form-check-input" type="radio" name="payment_method" id="payment_paypal" value="paypal">
-                                <label class="form-check-label" for="payment_paypal">
-                                    <strong>PayPal Express Checkout</strong>
-                                </label>
-                                <p class="small text-muted mt-1 mb-0">Pay via PayPal; you can pay with your credit card if you don't have a PayPal account.</p>
+                                </tfoot>
+                            </table>
+                            <div class="shop-payment-method">
+                                <div id="PaymentMethodAccordion">
+                                    <div class="card">
+                                        <div class="card-header" id="check_payments">
+                                            <h5 class="title" data-bs-toggle="collapse" data-bs-target="#itemOne" aria-controls="itemOne" aria-expanded="true">Direct bank transfer</h5>
+                                        </div>
+                                        <div id="itemOne" class="collapse show" aria-labelledby="check_payments" data-bs-parent="#PaymentMethodAccordion">
+                                            <div class="card-body">
+                                                <p>Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order will not be shipped until the funds have cleared in our account.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card">
+                                        <div class="card-header" id="check_payments2">
+                                            <h5 class="title" data-bs-toggle="collapse" data-bs-target="#itemTwo" aria-controls="itemTwo" aria-expanded="false">Check payments</h5>
+                                        </div>
+                                        <div id="itemTwo" class="collapse" aria-labelledby="check_payments2" data-bs-parent="#PaymentMethodAccordion">
+                                            <div class="card-body">
+                                                <p>Please send a check to Store Name, Store Street, Store Town, Store State / County, Store Postcode.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card">
+                                        <div class="card-header" id="check_payments3">
+                                            <h5 class="title" data-bs-toggle="collapse" data-bs-target="#itemThree" aria-controls="itemThree" aria-expanded="false">Cash on delivery</h5>
+                                        </div>
+                                        <div id="itemThree" class="collapse" aria-labelledby="check_payments3" data-bs-parent="#PaymentMethodAccordion">
+                                            <div class="card-body">
+                                                <p>Pay with cash upon delivery.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card">
+                                        <div class="card-header" id="check_payments4">
+                                            <h5 class="title" data-bs-toggle="collapse" data-bs-target="#itemFour" aria-controls="itemFour" aria-expanded="false">PayPal Express Checkout</h5>
+                                        </div>
+                                        <div id="itemFour" class="collapse" aria-labelledby="check_payments4" data-bs-parent="#PaymentMethodAccordion">
+                                            <div class="card-body">
+                                                <p>Pay via PayPal; you can pay with your credit card if you don’t have a PayPal account.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="p-text">Your personal data will be used to process your order, support your experience throughout this website, and for other purposes described in our <a href="#/">privacy policy.</a></p>
+                                <div class="agree-policy">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" id="privacy" class="custom-control-input visually-hidden" required>
+                                        <label for="privacy" class="custom-control-label">I have read and agree to the website terms and conditions <span class="required">*</span></label>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn-place-order">Place order</button>
                             </div>
                         </div>
-
-                        <div class="form-check mt-4 mb-4">
-                            <input class="form-check-input" type="checkbox" id="terms_agreement" name="terms_agreement" value="1" required>
-                            <label class="form-check-label" for="terms_agreement">
-                                I have read and agree to the website <a href="#" class="text-decoration-underline">terms and conditions</a> <span class="text-danger">*</span>
-                            </label>
-                        </div>
-
-                        <button type="submit" class="btn btn-theme w-100">
-                            Place order
-                        </button>
                     </div>
+                    <!--== End Order Details Accordion ==-->
                 </div>
             </div>
         </form>
     </div>
 </section>
-<!--== End Checkout Area ==-->
+<!--== End Shopping Checkout Area Wrapper ==-->
 @endsection
 
 @push('scripts')
