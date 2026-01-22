@@ -131,7 +131,10 @@
                                 <div class="col-md-12 mb-4">
                                     <div class="form-group">
                                         <label for="shipping_state">District <abbr class="required" title="required">*</abbr></label>
-                                        <input id="shipping_state" name="shipping_state" type="text" class="form-control" value="{{ old('shipping_state') }}">
+                                        <input id="shipping_state" name="shipping_state" type="text" class="form-control @error('shipping_state') is-invalid @enderror" value="{{ old('shipping_state') }}" required>
+                                        @error('shipping_state')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                 </div>
                                 <div class="col-md-12">
