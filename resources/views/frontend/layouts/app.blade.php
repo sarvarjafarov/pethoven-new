@@ -61,6 +61,20 @@
         .nice-select.is-invalid .current {
             color: #dc3545;
         }
+
+        .nice-select .list {
+            max-height: 320px;
+            overflow-y: auto;
+        }
+
+        .nice-select .list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .nice-select .list::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.15);
+            border-radius: 3px;
+        }
     </style>
 
     @stack('styles')
