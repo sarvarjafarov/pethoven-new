@@ -97,7 +97,7 @@
                                         <input id="billing_company" name="billing_company" type="text" class="form-control" value="{{ old('billing_company') }}">
                                     </div>
                                 </div>
-                                <div class="col-md-12 mb-4">
+                                <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="billing_country_id">Country <abbr class="required" title="required">*</abbr></label>
                                         <select id="billing_country_id" name="billing_country_id" class="form-control wide @error('billing_country_id') is-invalid @enderror" required>
@@ -135,7 +135,7 @@
                                         @enderror
                                     </div>
                                 </div>
-                                <div class="col-md-6 mb-4">
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="billing_state">District <abbr class="required" title="required">*</abbr></label>
                                         <input id="billing_state" name="billing_state" type="text" class="form-control @error('billing_state') is-invalid @enderror" value="{{ old('billing_state') }}" required>
@@ -201,7 +201,7 @@
                                                     @enderror
                                                 </div>
                                             </div>
-                                            <div class="col-md-12 mb-4">
+                                            <div class="col-md-12">
                                                 <div class="form-group">
                                                     <label for="shipping_country_id">Country <abbr class="required" title="required">*</abbr></label>
                                                     <select id="shipping_country_id" name="shipping_country_id" class="form-control wide @error('shipping_country_id') is-invalid @enderror">
@@ -242,7 +242,7 @@
                                                     @enderror
                                                 </div>
                                             </div>
-                                            <div class="col-md-12 mb-4">
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="shipping_state">District <abbr class="required" title="required">*</abbr></label>
                                                     <input id="shipping_state" name="shipping_state" type="text" class="form-control @error('shipping_state') is-invalid @enderror" value="{{ old('shipping_state') }}">
@@ -278,7 +278,7 @@
                     <!--== Start Order Details Accordion ==-->
                     <div class="checkout-order-details-wrap">
                         <div class="order-details-table-wrap table-responsive">
-                            <h2 class="title mb-25">Your order</h2>
+                            <h2 class="title">Your order</h2>
                             <table class="table">
                                 <thead>
                                     <tr>
@@ -469,7 +469,9 @@
     .checkout-order-details-wrap {
         margin-left: 40px;
     }
-    @media (max-width: 991px) {
+    @media only screen and (min-width: 992px) and (max-width: 1199px), 
+           only screen and (min-width: 768px) and (max-width: 991px), 
+           only screen and (max-width: 767px) {
         .checkout-order-details-wrap {
             margin-left: 0;
             margin-top: 40px;
@@ -479,10 +481,14 @@
         border: 2px solid rgba(52, 53, 56, 0.1);
         padding: 48px 50px 54px;
         position: relative;
+        margin-bottom: 50px;
     }
-    @media (max-width: 991px) {
+    @media only screen and (min-width: 768px) and (max-width: 991px), 
+           only screen and (max-width: 767px) {
         .order-details-table-wrap {
             padding: 20px 20px 20px;
+            margin-top: 40px;
+            margin-bottom: 0;
         }
     }
     .order-details-table-wrap .title {
