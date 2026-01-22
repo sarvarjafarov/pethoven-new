@@ -207,8 +207,48 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Redirect to success page
-                    window.location.href = data.redirect;
+                    // Handle 3D Secure authentication if required
+                    if (data.requires_action && data.client_secret) {
+                        stripe.handleCardAction(data.client_secret).then(function(result) {
+                            if (result.error) {
+                                // Show error
+                                document.getElementById('payment-message').textContent = result.error.message;
+                                document.getElementById('payment-message').style.display = 'block';
+                                
+                                // Re-enable button
+                                submitButton.disabled = false;
+                                spinner.style.display = 'none';
+                                buttonText.textContent = 'Pay {{ $cart->total->formatted }}';
+                            } else {
+                                // 3D Secure succeeded, confirm payment intent
+                                fetch('{{ route("checkout.process-payment") }}', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                    },
+                                    body: JSON.stringify({
+                                        payment_intent_id: result.paymentIntent.id
+                                    })
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        window.location.href = data.redirect;
+                                    } else {
+                                        document.getElementById('payment-message').textContent = data.message || 'Payment failed';
+                                        document.getElementById('payment-message').style.display = 'block';
+                                        submitButton.disabled = false;
+                                        spinner.style.display = 'none';
+                                        buttonText.textContent = 'Pay {{ $cart->total->formatted }}';
+                                    }
+                                });
+                            }
+                        });
+                    } else {
+                        // Redirect to success page
+                        window.location.href = data.redirect;
+                    }
                 } else {
                     // Show error
                     document.getElementById('payment-message').textContent = data.message || 'Payment failed';

@@ -209,7 +209,8 @@ class CheckoutController extends Controller
     public function processPayment(Request $request)
     {
         $request->validate([
-            'payment_method_id' => 'required|string',
+            'payment_method_id' => 'required_without:payment_intent_id|string',
+            'payment_intent_id' => 'nullable|string',
         ]);
 
         $cartId = session('checkout_cart_id');
@@ -233,19 +234,26 @@ class CheckoutController extends Controller
         try {
             \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
 
-            // Create payment intent
-            $paymentIntent = \Stripe\PaymentIntent::create([
-                'amount' => $cart->total->value, // Amount in cents
-                'currency' => strtolower($cart->currency->code),
-                'payment_method' => $request->payment_method_id,
-                'confirmation_method' => 'manual',
-                'confirm' => true,
-                'return_url' => route('checkout.success', ['cart' => $cart->id]),
-                'metadata' => [
-                    'cart_id' => $cart->id,
-                ]
-            ]);
+            // If payment_intent_id is provided, confirm existing intent (after 3D Secure)
+            if ($request->payment_intent_id) {
+                $paymentIntent = \Stripe\PaymentIntent::retrieve($request->payment_intent_id);
+                $paymentIntent->confirm();
+            } else {
+                // Create new payment intent
+                $paymentIntent = \Stripe\PaymentIntent::create([
+                    'amount' => $cart->total->value, // Amount in cents
+                    'currency' => strtolower($cart->currency->code),
+                    'payment_method' => $request->payment_method_id,
+                    'confirmation_method' => 'manual',
+                    'confirm' => true,
+                    'return_url' => route('checkout.payment'), // Return to payment page if 3D Secure required
+                    'metadata' => [
+                        'cart_id' => $cart->id,
+                    ]
+                ]);
+            }
 
+            // Handle different payment intent statuses
             if ($paymentIntent->status === 'succeeded') {
                 // Create order from cart
                 $order = $cart->createOrder();
@@ -276,11 +284,25 @@ class CheckoutController extends Controller
                     'success' => true,
                     'redirect' => route('checkout.success', ['order' => $order->id])
                 ]);
+            } elseif ($paymentIntent->status === 'requires_action') {
+                // 3D Secure authentication required
+                return response()->json([
+                    'success' => true,
+                    'requires_action' => true,
+                    'client_secret' => $paymentIntent->client_secret
+                ]);
+            } elseif ($paymentIntent->status === 'requires_payment_method') {
+                // Payment method was declined
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Your card was declined. Please try a different payment method.'
+                ], 400);
             }
 
+            // Other statuses (processing, requires_capture, etc.)
             return response()->json([
                 'success' => false,
-                'message' => 'Payment failed. Please try again.'
+                'message' => 'Payment is being processed. Please check back later.'
             ], 400);
 
         } catch (\Stripe\Exception\CardException $e) {

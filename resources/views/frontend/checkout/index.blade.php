@@ -760,8 +760,84 @@ $(document).ready(function() {
         });
     });
 
+    // Handle shipping address toggle checkbox
+    // Sync checkbox state with Bootstrap collapse state
+    $('#ship-to-different-address').on('change', function() {
+        var isChecked = $(this).is(':checked');
+        var $collapse = $('#CheckoutTwo');
+        
+        if (isChecked) {
+            $collapse.collapse('show');
+        } else {
+            $collapse.collapse('hide');
+        }
+    });
+    
+    // Sync collapse state with checkbox when collapse is toggled via Bootstrap
+    $('#CheckoutTwo').on('show.bs.collapse', function() {
+        $('#ship-to-different-address').prop('checked', true);
+    });
+    
+    $('#CheckoutTwo').on('hide.bs.collapse', function() {
+        $('#ship-to-different-address').prop('checked', false);
+    });
+    
+    // Initialize nice-select for all selects in checkout form (if not already initialized)
+    // This ensures selects are properly initialized even if main.js hasn't run yet
+    setTimeout(function() {
+        $('#checkout-form select:not(.no-nice-select)').each(function() {
+            if (!$(this).next('.nice-select').length) {
+                $(this).niceSelect();
+            }
+        });
+    }, 100);
+    
+    // Ensure form validation works with nice-select
+    $('#checkout-form').on('submit', function(e) {
+        var isValid = true;
+        
+        // Check all required fields
+        $('#checkout-form [required]').each(function() {
+            var $field = $(this);
+            var $niceSelect = $field.next('.nice-select');
+            
+            // Handle nice-select fields
+            if ($niceSelect.length) {
+                var value = $field.val();
+                if (!value || value === '') {
+                    isValid = false;
+                    $niceSelect.addClass('is-invalid');
+                    $field.addClass('is-invalid');
+                } else {
+                    $niceSelect.removeClass('is-invalid');
+                    $field.removeClass('is-invalid');
+                }
+            }
+            // Handle regular inputs
+            else if (!$field.val() || $field.val() === '') {
+                isValid = false;
+                $field.addClass('is-invalid');
+            } else {
+                $field.removeClass('is-invalid');
+            }
+        });
+        
+        // If validation fails, prevent submission and show errors
+        if (!isValid) {
+            e.preventDefault();
+            // Scroll to first invalid field
+            var $firstInvalid = $('#checkout-form .is-invalid').first();
+            if ($firstInvalid.length) {
+                $('html, body').animate({
+                    scrollTop: $firstInvalid.offset().top - 100
+                }, 500);
+            }
+            return false;
+        }
+    });
+
     // Debugging: Log initialization
-    console.log('Checkout script version 3.0 loaded');
+    console.log('Checkout script version 4.0 loaded');
 });
 </script>
 @endpush
