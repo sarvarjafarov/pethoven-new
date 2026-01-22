@@ -499,22 +499,17 @@
         var greenLogoUrl = '{{ asset('brancy/images/logo.png') }}';
         var whiteLogoUrl = '{{ asset('brancy/images/logo-white.png') }}';
         
+        // Keep green logo by default - only switch to white if header becomes transparent again after being sticky
+        // (This shouldn't normally happen, but just in case)
         if (isHomePage && $logo.length) {
             // Function to update logo based on sticky state
             function updateLogo() {
                 var isSticky = $header.hasClass('sticky');
                 var currentSrc = $logo.attr('src');
                 
-                if (isSticky) {
-                    // Header is sticky (white background) - use green logo
-                    if (currentSrc.indexOf('logo-white') !== -1) {
-                        $logo.attr('src', greenLogoUrl);
-                    }
-                } else {
-                    // Header is not sticky (transparent background) - use white logo for visibility
-                    if (currentSrc.indexOf('logo-white') === -1) {
-                        $logo.attr('src', whiteLogoUrl);
-                    }
+                // Always use green logo - never switch to white automatically
+                if (currentSrc.indexOf('logo-white') !== -1) {
+                    $logo.attr('src', greenLogoUrl);
                 }
             }
             
@@ -539,7 +534,7 @@
                 updateLogo();
             });
             
-            // Initial check
+            // Initial check - ensure green logo
             updateLogo();
         }
     });
