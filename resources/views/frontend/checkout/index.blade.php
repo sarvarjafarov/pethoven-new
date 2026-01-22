@@ -170,25 +170,34 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="shipping_first_name">First name <abbr class="required" title="required">*</abbr></label>
-                                                    <input id="shipping_first_name" name="shipping_first_name" type="text" class="form-control" value="{{ old('shipping_first_name') }}">
+                                                    <input id="shipping_first_name" name="shipping_first_name" type="text" class="form-control @error('shipping_first_name') is-invalid @enderror" value="{{ old('shipping_first_name') }}">
+                                                    @error('shipping_first_name')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="shipping_last_name">Last name <abbr class="required" title="required">*</abbr></label>
-                                                    <input id="shipping_last_name" name="shipping_last_name" type="text" class="form-control" value="{{ old('shipping_last_name') }}">
+                                                    <input id="shipping_last_name" name="shipping_last_name" type="text" class="form-control @error('shipping_last_name') is-invalid @enderror" value="{{ old('shipping_last_name') }}">
+                                                    @error('shipping_last_name')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
                                                 <div class="form-group">
                                                     <label for="shipping_company">Company name (optional)</label>
-                                                    <input id="shipping_company" name="shipping_company" type="text" class="form-control" value="{{ old('shipping_company') }}">
+                                                    <input id="shipping_company" name="shipping_company" type="text" class="form-control @error('shipping_company') is-invalid @enderror" value="{{ old('shipping_company') }}">
+                                                    @error('shipping_company')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                             </div>
                                             <div class="col-md-12 mb-4">
                                                 <div class="form-group">
                                                     <label for="shipping_country_id">Country <abbr class="required" title="required">*</abbr></label>
-                                                    <select id="shipping_country_id" name="shipping_country_id" class="form-control wide">
+                                                    <select id="shipping_country_id" name="shipping_country_id" class="form-control wide @error('shipping_country_id') is-invalid @enderror">
                                                         <option value="">Select Country</option>
                                                         @foreach($countries as $country)
                                                             <option value="{{ $country->id }}" {{ old('shipping_country_id') == $country->id ? 'selected' : '' }}>
@@ -196,34 +205,52 @@
                                                             </option>
                                                         @endforeach
                                                     </select>
+                                                    @error('shipping_country_id')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
                                                 <div class="form-group">
                                                     <label for="shipping_line_one">Street address <abbr class="required" title="required">*</abbr></label>
-                                                    <input id="shipping_line_one" name="shipping_line_one" type="text" class="form-control" placeholder="House number and street name" value="{{ old('shipping_line_one') }}">
+                                                    <input id="shipping_line_one" name="shipping_line_one" type="text" class="form-control @error('shipping_line_one') is-invalid @enderror" placeholder="House number and street name" value="{{ old('shipping_line_one') }}">
+                                                    @error('shipping_line_one')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="shipping_line_two" class="visually-hidden">Street address 2 <abbr class="required" title="required">*</abbr></label>
-                                                    <input id="shipping_line_two" name="shipping_line_two" type="text" class="form-control" placeholder="Apartment, suite, unit etc. (optional)" value="{{ old('shipping_line_two') }}">
+                                                    <input id="shipping_line_two" name="shipping_line_two" type="text" class="form-control @error('shipping_line_two') is-invalid @enderror" placeholder="Apartment, suite, unit etc. (optional)" value="{{ old('shipping_line_two') }}">
+                                                    @error('shipping_line_two')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
                                                 <div class="form-group">
                                                     <label for="shipping_city">Town / City <abbr class="required" title="required">*</abbr></label>
-                                                    <input id="shipping_city" name="shipping_city" type="text" class="form-control" value="{{ old('shipping_city') }}">
+                                                    <input id="shipping_city" name="shipping_city" type="text" class="form-control @error('shipping_city') is-invalid @enderror" value="{{ old('shipping_city') }}">
+                                                    @error('shipping_city')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                             </div>
                                             <div class="col-md-12 mb-4">
                                                 <div class="form-group">
                                                     <label for="shipping_state">District <abbr class="required" title="required">*</abbr></label>
-                                                    <input id="shipping_state" name="shipping_state" type="text" class="form-control" value="{{ old('shipping_state') }}">
+                                                    <input id="shipping_state" name="shipping_state" type="text" class="form-control @error('shipping_state') is-invalid @enderror" value="{{ old('shipping_state') }}">
+                                                    @error('shipping_state')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
                                                 <div class="form-group">
                                                     <label for="shipping_postcode">Postcode / ZIP (optional)</label>
-                                                    <input id="shipping_postcode" name="shipping_postcode" type="text" class="form-control" value="{{ old('shipping_postcode') }}">
+                                                    <input id="shipping_postcode" name="shipping_postcode" type="text" class="form-control @error('shipping_postcode') is-invalid @enderror" value="{{ old('shipping_postcode') }}">
+                                                    @error('shipping_postcode')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                             </div>
                                         </div>
