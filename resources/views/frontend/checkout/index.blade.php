@@ -412,6 +412,16 @@
         border-radius: 0;
         margin-top: 1px;
     }
+
+    /* Style nice-select selected option */
+    .nice-select .option.selected {
+        font-weight: normal; /* Override Brancy bold */
+        background-color: #f7f7f7;
+    }
+    
+    .nice-select .option:hover {
+        background-color: #f7f7f7;
+    }
     
     /* Ensure placeholder color matches theme */
     .nice-select .current {
