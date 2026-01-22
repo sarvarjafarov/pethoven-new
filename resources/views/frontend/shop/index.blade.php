@@ -117,9 +117,9 @@
                         <div class="product-widget-range-slider">
                             <div id="slider-range" class="noUi-target"></div>
                             <div class="slider-labels">
-                                <span id="slider-range-value1">${{ number_format(request('min_price', $minPrice), 0) }}</span>
+                                <span id="slider-range-value1">${{ number_format(request('min_price') ?: $minPrice, 0) }}</span>
                                 <span> — </span>
-                                <span id="slider-range-value2">${{ number_format(request('max_price', $maxPrice), 0) }}</span>
+                                <span id="slider-range-value2">${{ number_format(request('max_price') ?: $maxPrice, 0) }}</span>
                             </div>
                             <form action="{{ route('shop.index') }}" method="GET" id="price-filter-form" style="display: none;">
                                 <input type="hidden" name="min_price" id="min-price-input" value="{{ request('min_price') ?: $minPrice }}">
@@ -300,168 +300,166 @@
 
 @push('scripts')
 <script>
-// Temporarily hide the slider element to prevent original auto-init
+// CRITICAL: Prevent original range-slider.js auto-init by removing the element temporarily
+// The original script runs $(document).ready() immediately when loaded, so we need to
+// prevent it from finding the element OR override its ready handler BEFORE it executes
 (function() {
-    var sliderElement = document.getElementById('slider-range');
-    if (sliderElement) {
-        sliderElement.style.display = 'none';
-        sliderElement.setAttribute('data-temp-hidden', 'true');
+    // Store reference to element
+    var sliderEl = document.getElementById('slider-range');
+    if (sliderEl) {
+        // Remove from DOM temporarily to prevent original script from finding it
+        var parent = sliderEl.parentNode;
+        var nextSibling = sliderEl.nextSibling;
+        parent.removeChild(sliderEl);
+        window._sliderRangeElement = sliderEl;
+        window._sliderRangeParent = parent;
+        window._sliderRangeNextSibling = nextSibling;
     }
 })();
 </script>
 <script src="{{ asset('brancy/js/plugins/range-slider.js') }}"></script>
 <script>
-// Override the original auto-init by intercepting the ready handler
+// Restore element and initialize with our values
 (function() {
-    // The original script uses $(document).ready(), so we need to run after it
-    // but before it can initialize. We'll check and destroy immediately.
-    var checkAndDestroy = function() {
-        var sliderRange = document.getElementById('slider-range');
-        if (sliderRange && sliderRange.noUiSlider) {
-            try {
-                sliderRange.noUiSlider.destroy();
-            } catch(e) {
-                // Ignore
-            }
+    // Restore the element to DOM
+    if (window._sliderRangeElement && window._sliderRangeParent) {
+        if (window._sliderRangeNextSibling) {
+            window._sliderRangeParent.insertBefore(window._sliderRangeElement, window._sliderRangeNextSibling);
+        } else {
+            window._sliderRangeParent.appendChild(window._sliderRangeElement);
         }
-    };
+    }
     
-    // Check immediately and also on ready
-    checkAndDestroy();
+    // Wait for DOM and jQuery to be ready
     if (typeof $ !== 'undefined') {
         $(document).ready(function() {
-            setTimeout(checkAndDestroy, 10);
+            // Small delay to ensure everything is loaded
+            setTimeout(function() {
+                var sliderRange = document.getElementById('slider-range');
+                
+                if (!sliderRange) {
+                    console.error('[Price Filter] Slider element not found');
+                    return;
+                }
+                
+                if (typeof noUiSlider === 'undefined') {
+                    console.error('[Price Filter] noUiSlider library not found');
+                    return;
+                }
+                
+                // Destroy any existing instance (from original script if it somehow ran)
+                if (sliderRange.noUiSlider) {
+                    try {
+                        sliderRange.noUiSlider.destroy();
+                    } catch(e) {
+                        console.warn('[Price Filter] Error destroying existing slider:', e);
+                    }
+                }
+                
+                // Get price values from PHP - ensure they are numbers
+                var minPrice = {{ $minPrice ?? 430 }};
+                var maxPrice = {{ $maxPrice ?? 2500 }};
+                var currentMin = {{ request('min_price') ? (int)request('min_price') : ($minPrice ?? 430) }};
+                var currentMax = {{ request('max_price') ? (int)request('max_price') : ($maxPrice ?? 2500) }};
+                
+                // Validate values
+                minPrice = parseInt(minPrice) || 430;
+                maxPrice = parseInt(maxPrice) || 2500;
+                currentMin = parseInt(currentMin) || minPrice;
+                currentMax = parseInt(currentMax) || maxPrice;
+                
+                // Ensure values are within valid range
+                if (minPrice <= 0) minPrice = 430;
+                if (maxPrice <= minPrice) maxPrice = 2500;
+                currentMin = Math.max(minPrice, Math.min(currentMin, maxPrice));
+                currentMax = Math.max(minPrice, Math.min(currentMax, maxPrice));
+                if (currentMin > currentMax) {
+                    currentMin = minPrice;
+                    currentMax = maxPrice;
+                }
+                
+                // Create money formatter
+                var moneyFormat;
+                if (typeof wNumb !== 'undefined') {
+                    moneyFormat = wNumb({
+                        decimals: 0,
+                        thousand: ',',
+                        prefix: '$'
+                    });
+                } else {
+                    moneyFormat = {
+                        to: function(value) {
+                            return '$' + Math.round(value);
+                        },
+                        from: function(value) {
+                            return Number(value);
+                        }
+                    };
+                }
+                
+                try {
+                    // Create the slider
+                    noUiSlider.create(sliderRange, {
+                        start: [currentMin, currentMax],
+                        step: 10,
+                        range: {
+                            'min': minPrice,
+                            'max': maxPrice
+                        },
+                        connect: true,
+                        format: moneyFormat
+                    });
+                    
+                    // Update display labels on slider change
+                    sliderRange.noUiSlider.on('update', function(values, handle) {
+                        var formattedValue = moneyFormat.to(values[handle]);
+                        var numericValue = moneyFormat.from(values[handle]);
+                        
+                        if (handle === 0) {
+                            var el1 = document.getElementById('slider-range-value1');
+                            var input1 = document.getElementById('min-price-input');
+                            if (el1) el1.textContent = formattedValue;
+                            if (input1) input1.value = numericValue;
+                        } else {
+                            var el2 = document.getElementById('slider-range-value2');
+                            var input2 = document.getElementById('max-price-input');
+                            if (el2) el2.textContent = formattedValue;
+                            if (input2) input2.value = numericValue;
+                        }
+                    });
+                    
+                    // Auto-submit form when slider changes (debounced)
+                    var submitTimeout;
+                    sliderRange.noUiSlider.on('change', function(values) {
+                        clearTimeout(submitTimeout);
+                        submitTimeout = setTimeout(function() {
+                            var form = document.getElementById('price-filter-form');
+                            if (form) {
+                                var minVal = moneyFormat.from(values[0]);
+                                var maxVal = moneyFormat.from(values[1]);
+                                var minInput = document.getElementById('min-price-input');
+                                var maxInput = document.getElementById('max-price-input');
+                                if (minInput) minInput.value = minVal;
+                                if (maxInput) maxInput.value = maxVal;
+                                form.submit();
+                            }
+                        }, 500);
+                    });
+                    
+                    console.log('[Price Filter] Successfully initialized:', {
+                        min: minPrice,
+                        max: maxPrice,
+                        current: [currentMin, currentMax]
+                    });
+                } catch (e) {
+                    console.error('[Price Filter] Error initializing slider:', e);
+                }
+            }, 50);
         });
+    } else {
+        console.error('[Price Filter] jQuery not available');
     }
 })();
-
-// Our custom initialization
-$(document).ready(function() {
-    setTimeout(function() {
-        var sliderRange = document.getElementById('slider-range');
-        
-        if (!sliderRange) {
-            console.error('Slider element not found');
-            return;
-        }
-        
-        // Restore visibility
-        if (sliderRange.getAttribute('data-temp-hidden') === 'true') {
-            sliderRange.style.display = '';
-            sliderRange.removeAttribute('data-temp-hidden');
-        }
-        
-        if (typeof noUiSlider === 'undefined') {
-            console.error('noUiSlider not found');
-            return;
-        }
-        
-        // Destroy any existing instance
-        if (sliderRange.noUiSlider) {
-            try {
-                sliderRange.noUiSlider.destroy();
-            } catch(e) {
-                console.warn('Error destroying slider:', e);
-            }
-        }
-        
-        // Get price values from PHP
-        var minPrice = parseInt({{ $minPrice }}) || 430;
-        var maxPrice = parseInt({{ $maxPrice }}) || 2500;
-        var currentMin = parseInt({{ request('min_price') ? request('min_price') : $minPrice }}) || minPrice;
-        var currentMax = parseInt({{ request('max_price') ? request('max_price') : $maxPrice }}) || maxPrice;
-        
-        // Validate and clamp values
-        if (isNaN(minPrice)) minPrice = 430;
-        if (isNaN(maxPrice)) maxPrice = 2500;
-        if (isNaN(currentMin)) currentMin = minPrice;
-        if (isNaN(currentMax)) currentMax = maxPrice;
-        
-        currentMin = Math.max(minPrice, Math.min(currentMin, maxPrice));
-        currentMax = Math.max(minPrice, Math.min(currentMax, maxPrice));
-        if (currentMin > currentMax) {
-            currentMin = minPrice;
-            currentMax = maxPrice;
-        }
-        
-        // Create money formatter
-        var moneyFormat;
-        if (typeof wNumb !== 'undefined') {
-            moneyFormat = wNumb({
-                decimals: 0,
-                thousand: ',',
-                prefix: '$'
-            });
-        } else {
-            moneyFormat = {
-                to: function(value) {
-                    return '$' + Math.round(value);
-                },
-                from: function(value) {
-                    return Number(value);
-                }
-            };
-        }
-        
-        try {
-            // Create the slider
-            noUiSlider.create(sliderRange, {
-                start: [currentMin, currentMax],
-                step: 10,
-                range: {
-                    'min': minPrice,
-                    'max': maxPrice
-                },
-                connect: true,
-                format: moneyFormat
-            });
-            
-            // Update display on slider change
-            sliderRange.noUiSlider.on('update', function(values, handle) {
-                var formattedValue = moneyFormat.to(values[handle]);
-                var numericValue = moneyFormat.from(values[handle]);
-                
-                if (handle === 0) {
-                    var el1 = document.getElementById('slider-range-value1');
-                    var input1 = document.getElementById('min-price-input');
-                    if (el1) el1.textContent = formattedValue;
-                    if (input1) input1.value = numericValue;
-                } else {
-                    var el2 = document.getElementById('slider-range-value2');
-                    var input2 = document.getElementById('max-price-input');
-                    if (el2) el2.textContent = formattedValue;
-                    if (input2) input2.value = numericValue;
-                }
-            });
-            
-            // Auto-submit on change (debounced)
-            var submitTimeout;
-            sliderRange.noUiSlider.on('change', function(values) {
-                clearTimeout(submitTimeout);
-                submitTimeout = setTimeout(function() {
-                    var form = document.getElementById('price-filter-form');
-                    if (form) {
-                        var minVal = moneyFormat.from(values[0]);
-                        var maxVal = moneyFormat.from(values[1]);
-                        var minInput = document.getElementById('min-price-input');
-                        var maxInput = document.getElementById('max-price-input');
-                        if (minInput) minInput.value = minVal;
-                        if (maxInput) maxInput.value = maxVal;
-                        form.submit();
-                    }
-                }, 500);
-            });
-            
-            console.log('Price filter slider initialized:', {
-                min: minPrice,
-                max: maxPrice,
-                current: [currentMin, currentMax]
-            });
-        } catch (e) {
-            console.error('Error initializing price filter slider:', e);
-        }
-    }, 100);
-});
 </script>
 @endpush
 
