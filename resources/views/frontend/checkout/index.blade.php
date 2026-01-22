@@ -97,7 +97,7 @@
                                         <input id="billing_company" name="billing_company" type="text" class="form-control" value="{{ old('billing_company') }}">
                                     </div>
                                 </div>
-                                <div class="col-md-12">
+                                <div class="col-md-12 mb-4">
                                     <div class="form-group">
                                         <label for="billing_country_id">Country <abbr class="required" title="required">*</abbr></label>
                                         <select id="billing_country_id" name="billing_country_id" class="form-control wide @error('billing_country_id') is-invalid @enderror" required>
@@ -135,28 +135,33 @@
                                         @enderror
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-12 mb-4">
                                     <div class="form-group">
                                         <label for="billing_state">District <abbr class="required" title="required">*</abbr></label>
-                                        <input id="billing_state" name="billing_state" type="text" class="form-control @error('billing_state') is-invalid @enderror" value="{{ old('billing_state') }}" required>
+                                        <select id="billing_state" name="billing_state" class="form-control wide @error('billing_state') is-invalid @enderror" required>
+                                            <option value="">Select District</option>
+                                            <option value="District 1" {{ old('billing_state') == 'District 1' ? 'selected' : '' }}>District 1</option>
+                                            <option value="District 2" {{ old('billing_state') == 'District 2' ? 'selected' : '' }}>District 2</option>
+                                            <option value="District 3" {{ old('billing_state') == 'District 3' ? 'selected' : '' }}>District 3</option>
+                                        </select>
                                         @error('billing_state')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="billing_postcode">Postcode / ZIP (optional)</label>
                                         <input id="billing_postcode" name="billing_postcode" type="text" class="form-control" value="{{ old('billing_postcode') }}">
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="billing_phone">Phone (optional)</label>
                                         <input id="billing_phone" name="billing_phone" type="text" class="form-control" value="{{ old('billing_phone') }}">
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="billing_email">Email address <abbr class="required" title="required">*</abbr></label>
                                         <input id="billing_email" name="billing_email" type="text" class="form-control @error('billing_email') is-invalid @enderror" value="{{ old('billing_email') }}" required>
@@ -201,7 +206,7 @@
                                                     @enderror
                                                 </div>
                                             </div>
-                                            <div class="col-md-12">
+                                            <div class="col-md-12 mb-4">
                                                 <div class="form-group">
                                                     <label for="shipping_country_id">Country <abbr class="required" title="required">*</abbr></label>
                                                     <select id="shipping_country_id" name="shipping_country_id" class="form-control wide @error('shipping_country_id') is-invalid @enderror">
@@ -242,16 +247,21 @@
                                                     @enderror
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-md-12 mb-4">
                                                 <div class="form-group">
                                                     <label for="shipping_state">District <abbr class="required" title="required">*</abbr></label>
-                                                    <input id="shipping_state" name="shipping_state" type="text" class="form-control @error('shipping_state') is-invalid @enderror" value="{{ old('shipping_state') }}">
+                                                    <select id="shipping_state" name="shipping_state" class="form-control wide @error('shipping_state') is-invalid @enderror">
+                                                        <option value="">Select District</option>
+                                                        <option value="District 1" {{ old('shipping_state') == 'District 1' ? 'selected' : '' }}>District 1</option>
+                                                        <option value="District 2" {{ old('shipping_state') == 'District 2' ? 'selected' : '' }}>District 2</option>
+                                                        <option value="District 3" {{ old('shipping_state') == 'District 3' ? 'selected' : '' }}>District 3</option>
+                                                    </select>
                                                     @error('shipping_state')
                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-md-12">
                                                 <div class="form-group">
                                                     <label for="shipping_postcode">Postcode / ZIP (optional)</label>
                                                     <input id="shipping_postcode" name="shipping_postcode" type="text" class="form-control @error('shipping_postcode') is-invalid @enderror" value="{{ old('shipping_postcode') }}">
@@ -278,7 +288,7 @@
                     <!--== Start Order Details Accordion ==-->
                     <div class="checkout-order-details-wrap">
                         <div class="order-details-table-wrap table-responsive">
-                            <h2 class="title">Your order</h2>
+                            <h2 class="title mb-25">Your order</h2>
                             <table class="table">
                                 <thead>
                                     <tr>
@@ -332,7 +342,7 @@
                                     <input type="hidden" name="payment_method" id="payment_method_input" value="bank_transfer">
                                     <div class="card">
                                         <div class="card-header" id="check_payments">
-                                            <h5 class="title" data-bs-toggle="collapse" data-bs-target="#itemOne" aria-controls="itemOne" aria-expanded="true" data-payment-value="bank_transfer">Direct bank transfer</h5>
+                                            <h5 class="title" data-bs-toggle="collapse" data-bs-target="#itemOne" aria-controls="itemOne" aria-expanded="true">Direct bank transfer</h5>
                                         </div>
                                         <div id="itemOne" class="collapse show" aria-labelledby="check_payments" data-bs-parent="#PaymentMethodAccordion">
                                             <div class="card-body">
@@ -342,7 +352,7 @@
                                     </div>
                                     <div class="card">
                                         <div class="card-header" id="check_payments2">
-                                            <h5 class="title" data-bs-toggle="collapse" data-bs-target="#itemTwo" aria-controls="itemTwo" aria-expanded="false" data-payment-value="check_payment">Check payments</h5>
+                                            <h5 class="title" data-bs-toggle="collapse" data-bs-target="#itemTwo" aria-controls="itemTwo" aria-expanded="false">Check payments</h5>
                                         </div>
                                         <div id="itemTwo" class="collapse" aria-labelledby="check_payments2" data-bs-parent="#PaymentMethodAccordion">
                                             <div class="card-body">
@@ -352,7 +362,7 @@
                                     </div>
                                     <div class="card">
                                         <div class="card-header" id="check_payments3">
-                                            <h5 class="title" data-bs-toggle="collapse" data-bs-target="#itemThree" aria-controls="itemThree" aria-expanded="false" data-payment-value="cod">Cash on delivery</h5>
+                                            <h5 class="title" data-bs-toggle="collapse" data-bs-target="#itemThree" aria-controls="itemThree" aria-expanded="false">Cash on delivery</h5>
                                         </div>
                                         <div id="itemThree" class="collapse" aria-labelledby="check_payments3" data-bs-parent="#PaymentMethodAccordion">
                                             <div class="card-body">
@@ -362,11 +372,11 @@
                                     </div>
                                     <div class="card">
                                         <div class="card-header" id="check_payments4">
-                                            <h5 class="title" data-bs-toggle="collapse" data-bs-target="#itemFour" aria-controls="itemFour" aria-expanded="false" data-payment-value="stripe">Credit Card (Stripe)</h5>
+                                            <h5 class="title" data-bs-toggle="collapse" data-bs-target="#itemFour" aria-controls="itemFour" aria-expanded="false">PayPal Express Checkout</h5>
                                         </div>
                                         <div id="itemFour" class="collapse" aria-labelledby="check_payments4" data-bs-parent="#PaymentMethodAccordion">
                                             <div class="card-body">
-                                                <p>Pay via Stripe; you can pay with your credit card.</p>
+                                                <p>Pay via PayPal; you can pay with your credit card if you don't have a PayPal account.</p>
                                             </div>
                                         </div>
                                     </div>
@@ -524,6 +534,28 @@
     .product-total {
         text-align: right;
     }
+    
+    /* Place Order Button */
+    .btn-place-order {
+        display: block;
+        text-align: center;
+        width: 100%;
+        border-radius: 0;
+        padding: 18px 20px 16px;
+        margin-top: 32px;
+        font-size: 16px;
+        background-color: #FF6565;
+        border: 1px solid #FF6565;
+        color: #fff;
+        text-transform: uppercase;
+        font-weight: 600;
+        transition: all 0.3s ease-out;
+    }
+    .btn-place-order:hover {
+        background-color: #000000;
+        border-color: #000000;
+        color: #fff;
+    }
 
     /* Style nice-select selected option */
     .nice-select .option.selected {
@@ -561,6 +593,11 @@
         font-size: 0.875em;
         color: #dc3545;
     }
+    
+    /* mb-25 class for order details title */
+    .mb-25 {
+        margin-bottom: 25px;
+    }
 </style>
 @endpush
 
@@ -577,16 +614,26 @@ $(document).ready(function() {
         // Find the trigger that controls this collapse
         var targetId = '#' + $(this).attr('id');
         var trigger = $('[data-bs-target="' + targetId + '"]');
-        var value = trigger.data('payment-value');
+        var titleText = trigger.text().trim().toLowerCase();
+        var value = 'bank_transfer'; // default
         
-        if(value) {
-            $('#payment_method_input').val(value);
-            // Change button text based on payment method
-            if(value === 'stripe') {
-                $('.btn-place-order').text('Continue to Payment');
-            } else {
-                $('.btn-place-order').text('Place Order');
-            }
+        // Determine payment method from title text
+        if(titleText.includes('direct bank transfer')) {
+            value = 'bank_transfer';
+        } else if(titleText.includes('check payment')) {
+            value = 'check_payment';
+        } else if(titleText.includes('cash on delivery')) {
+            value = 'cod';
+        } else if(titleText.includes('paypal') || titleText.includes('stripe')) {
+            value = 'stripe';
+        }
+        
+        $('#payment_method_input').val(value);
+        // Change button text based on payment method
+        if(value === 'stripe') {
+            $('.btn-place-order').text('Continue to Payment');
+        } else {
+            $('.btn-place-order').text('Place order');
         }
     });
 
@@ -595,10 +642,20 @@ $(document).ready(function() {
     if(defaultOpen.length) {
          var targetId = '#' + defaultOpen.attr('id');
          var trigger = $('[data-bs-target="' + targetId + '"]');
-         var value = trigger.data('payment-value');
-         if(value) {
-             $('#payment_method_input').val(value);
+         var titleText = trigger.text().trim().toLowerCase();
+         var value = 'bank_transfer'; // default
+         
+         if(titleText.includes('direct bank transfer')) {
+             value = 'bank_transfer';
+         } else if(titleText.includes('check payment')) {
+             value = 'check_payment';
+         } else if(titleText.includes('cash on delivery')) {
+             value = 'cod';
+         } else if(titleText.includes('paypal') || titleText.includes('stripe')) {
+             value = 'stripe';
          }
+         
+         $('#payment_method_input').val(value);
     }
 
     // Fix for nice-select not updating the underlying select value properly
