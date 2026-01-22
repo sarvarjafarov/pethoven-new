@@ -230,46 +230,28 @@
         width: 11px;
         transform: translate(0px, -50%);
     }
-    /* Price Filter icon - make it solid/filled green to match original */
-    .product-sidebar-widget .product-widget-title:before {
-        background-color: #22C55E !important;
-        border: none !important;
-    }
-    
-    /* Update slider colors to match image - light blue track, blue handles */
+    /* Price Filter - match original template exactly */
     .product-sidebar-widget .product-widget-range-slider .noUi-connect {
-        background-color: #A8DADC !important;
-    }
-    .product-sidebar-widget .product-widget-range-slider .noUi-background {
-        background-color: #e8e8e8 !important;
+        background-color: #A8DADC;
     }
     .product-sidebar-widget .product-widget-range-slider .noUi-horizontal {
-        height: 4px !important;
+        height: 4px;
     }
     .product-sidebar-widget .product-widget-range-slider .noUi-horizontal .noUi-handle {
-        background-color: #457B9D !important;
-        width: 10px !important;
-        height: 10px !important;
-        border-radius: 50% !important;
-        left: -5px !important;
-        top: -3px !important;
-        border: none !important;
-        box-shadow: none !important;
-        cursor: pointer !important;
-    }
-    .product-sidebar-widget .product-widget-range-slider .noUi-horizontal .noUi-handle:before,
-    .product-sidebar-widget .product-widget-range-slider .noUi-horizontal .noUi-handle:after {
-        display: none !important;
-    }
-    .product-sidebar-widget .product-widget-range-slider .noUi-base {
-        background-color: transparent;
-    }
-    .product-sidebar-widget .product-widget-range-slider .noUi-origin {
-        border-radius: 0;
+        background-color: #457B9D;
+        cursor: pointer;
+        width: 10px;
+        height: 10px;
+        top: 50%;
+        transform: translate(0px, -50%);
+        -webkit-transform: translate(0px, -50%);
+        -moz-transform: translate(0px, -50%);
+        -ms-transform: translate(0px, -50%);
+        -o-transform: translate(0px, -50%);
     }
     .product-sidebar-widget .product-widget-range-slider .noUi-target {
         border-radius: 0;
-        background-color: transparent;
+        width: 100%;
     }
     .product-sidebar-widget .product-widget-range-slider .slider-labels {
         margin-top: 14px;
