@@ -401,7 +401,7 @@
 <!--== End Shopping Checkout Area Wrapper ==-->
 @endsection
 
-@push('css')
+@push('styles')
 <style>
     /* Title styling to match template */
     .checkout-billing-details-wrap .title,
