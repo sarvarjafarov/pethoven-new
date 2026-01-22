@@ -245,17 +245,24 @@
         width: 10px !important;
         height: 10px !important;
         border-radius: 50% !important;
-        top: 50% !important;
-        transform: translate(0px, -50%) !important;
-        -webkit-transform: translate(0px, -50%) !important;
-        -moz-transform: translate(0px, -50%) !important;
-        -ms-transform: translate(0px, -50%) !important;
-        -o-transform: translate(0px, -50%) !important;
         left: -5px !important;
+        top: -3px !important;
         border: none !important;
         box-shadow: none !important;
+        cursor: pointer !important;
+    }
+    .product-sidebar-widget .product-widget-range-slider .noUi-horizontal .noUi-handle:before,
+    .product-sidebar-widget .product-widget-range-slider .noUi-horizontal .noUi-handle:after {
+        display: none !important;
     }
     .product-sidebar-widget .product-widget-range-slider .noUi-base {
+        background-color: transparent;
+    }
+    .product-sidebar-widget .product-widget-range-slider .noUi-origin {
+        border-radius: 0;
+    }
+    .product-sidebar-widget .product-widget-range-slider .noUi-target {
+        border-radius: 0;
         background-color: transparent;
     }
     .product-sidebar-widget .product-widget-range-slider .slider-labels {
@@ -309,7 +316,7 @@
 $(document).ready(function() {
     // Initialize price range slider
     var sliderRange = document.getElementById('slider-range');
-    if (sliderRange && typeof noUiSlider !== 'undefined') {
+    if (sliderRange && typeof noUiSlider !== 'undefined' && !sliderRange.noUiSlider) {
         var minPrice = {{ $minPrice }};
         var maxPrice = {{ $maxPrice }};
         var currentMin = {{ request('min_price', $minPrice) }};
@@ -320,44 +327,53 @@ $(document).ready(function() {
             return '$' + Math.round(value);
         };
         
-        noUiSlider.create(sliderRange, {
-            start: [currentMin, currentMax],
-            step: 10,
-            range: {
-                'min': minPrice,
-                'max': maxPrice
-            },
-            connect: true,
-            format: {
-                to: function(value) {
-                    return Math.round(value);
+        try {
+            noUiSlider.create(sliderRange, {
+                start: [currentMin, currentMax],
+                step: 10,
+                range: {
+                    'min': minPrice,
+                    'max': maxPrice
                 },
-                from: function(value) {
-                    return Number(value);
+                connect: true,
+                format: {
+                    to: function(value) {
+                        return Math.round(value);
+                    },
+                    from: function(value) {
+                        return Number(value);
+                    }
                 }
-            }
-        });
-        
-        // Update display values
-        sliderRange.noUiSlider.on('update', function(values, handle) {
-            var value = Math.round(values[handle]);
-            if (handle === 0) {
-                document.getElementById('slider-range-value1').innerHTML = formatNumber(value);
-                document.getElementById('min-price-input').value = value;
-            } else {
-                document.getElementById('slider-range-value2').innerHTML = formatNumber(value);
-                document.getElementById('max-price-input').value = value;
-            }
-        });
-        
-        // Submit form when slider changes (with debounce)
-        var timeout;
-        sliderRange.noUiSlider.on('change', function(values) {
-            clearTimeout(timeout);
-            timeout = setTimeout(function() {
-                document.getElementById('price-filter-form').submit();
-            }, 500);
-        });
+            });
+            
+            // Update display values
+            sliderRange.noUiSlider.on('update', function(values, handle) {
+                var value = Math.round(values[handle]);
+                if (handle === 0) {
+                    var el1 = document.getElementById('slider-range-value1');
+                    var input1 = document.getElementById('min-price-input');
+                    if (el1) el1.innerHTML = formatNumber(value);
+                    if (input1) input1.value = value;
+                } else {
+                    var el2 = document.getElementById('slider-range-value2');
+                    var input2 = document.getElementById('max-price-input');
+                    if (el2) el2.innerHTML = formatNumber(value);
+                    if (input2) input2.value = value;
+                }
+            });
+            
+            // Submit form when slider changes (with debounce)
+            var timeout;
+            sliderRange.noUiSlider.on('change', function(values) {
+                clearTimeout(timeout);
+                timeout = setTimeout(function() {
+                    var form = document.getElementById('price-filter-form');
+                    if (form) form.submit();
+                }, 500);
+            });
+        } catch (e) {
+            console.error('Error initializing slider:', e);
+        }
     }
 });
 </script>
