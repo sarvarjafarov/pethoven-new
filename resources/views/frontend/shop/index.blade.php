@@ -230,6 +230,12 @@
         width: 11px;
         transform: translate(0px, -50%);
     }
+    /* Price Filter icon - make it solid/filled green to match original */
+    .product-sidebar-widget .product-widget-title:before {
+        background-color: #22C55E !important;
+        border: none !important;
+    }
+    
     /* Update slider colors to match image - light blue track, blue handles */
     .product-sidebar-widget .product-widget-range-slider .noUi-connect {
         background-color: #A8DADC !important;
