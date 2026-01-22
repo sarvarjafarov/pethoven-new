@@ -295,9 +295,10 @@
                             </table>
                             <div class="shop-payment-method">
                                 <div id="PaymentMethodAccordion">
+                                    <input type="hidden" name="payment_method" id="payment_method_input" value="bank_transfer">
                                     <div class="card">
                                         <div class="card-header" id="check_payments">
-                                            <h5 class="title" data-bs-toggle="collapse" data-bs-target="#itemOne" aria-controls="itemOne" aria-expanded="true">Direct bank transfer</h5>
+                                            <h5 class="title" data-bs-toggle="collapse" data-bs-target="#itemOne" aria-controls="itemOne" aria-expanded="true" data-payment-value="bank_transfer">Direct bank transfer</h5>
                                         </div>
                                         <div id="itemOne" class="collapse show" aria-labelledby="check_payments" data-bs-parent="#PaymentMethodAccordion">
                                             <div class="card-body">
@@ -307,7 +308,7 @@
                                     </div>
                                     <div class="card">
                                         <div class="card-header" id="check_payments2">
-                                            <h5 class="title" data-bs-toggle="collapse" data-bs-target="#itemTwo" aria-controls="itemTwo" aria-expanded="false">Check payments</h5>
+                                            <h5 class="title" data-bs-toggle="collapse" data-bs-target="#itemTwo" aria-controls="itemTwo" aria-expanded="false" data-payment-value="check_payment">Check payments</h5>
                                         </div>
                                         <div id="itemTwo" class="collapse" aria-labelledby="check_payments2" data-bs-parent="#PaymentMethodAccordion">
                                             <div class="card-body">
@@ -317,7 +318,7 @@
                                     </div>
                                     <div class="card">
                                         <div class="card-header" id="check_payments3">
-                                            <h5 class="title" data-bs-toggle="collapse" data-bs-target="#itemThree" aria-controls="itemThree" aria-expanded="false">Cash on delivery</h5>
+                                            <h5 class="title" data-bs-toggle="collapse" data-bs-target="#itemThree" aria-controls="itemThree" aria-expanded="false" data-payment-value="cod">Cash on delivery</h5>
                                         </div>
                                         <div id="itemThree" class="collapse" aria-labelledby="check_payments3" data-bs-parent="#PaymentMethodAccordion">
                                             <div class="card-body">
@@ -327,7 +328,7 @@
                                     </div>
                                     <div class="card">
                                         <div class="card-header" id="check_payments4">
-                                            <h5 class="title" data-bs-toggle="collapse" data-bs-target="#itemFour" aria-controls="itemFour" aria-expanded="false">PayPal Express Checkout</h5>
+                                            <h5 class="title" data-bs-toggle="collapse" data-bs-target="#itemFour" aria-controls="itemFour" aria-expanded="false" data-payment-value="paypal">PayPal Express Checkout</h5>
                                         </div>
                                         <div id="itemFour" class="collapse" aria-labelledby="check_payments4" data-bs-parent="#PaymentMethodAccordion">
                                             <div class="card-body">
@@ -364,14 +365,28 @@ $(document).ready(function() {
         $('#coupon-form-wrapper').slideToggle();
     });
 
-    // Toggle billing address fields
-    $('#billing_same_as_shipping').on('change', function() {
-        if ($(this).is(':checked')) {
-            $('#billing-address-fields').slideUp();
-        } else {
-            $('#billing-address-fields').slideDown();
+    // Update payment method hidden input when accordion changes
+    $('#PaymentMethodAccordion .collapse').on('show.bs.collapse', function () {
+        // Find the trigger that controls this collapse
+        var targetId = '#' + $(this).attr('id');
+        var trigger = $('[data-bs-target="' + targetId + '"]');
+        var value = trigger.data('payment-value');
+        
+        if(value) {
+            $('#payment_method_input').val(value);
         }
     });
+
+    // Ensure default state matches logic
+    var defaultOpen = $('#PaymentMethodAccordion .collapse.show');
+    if(defaultOpen.length) {
+         var targetId = '#' + defaultOpen.attr('id');
+         var trigger = $('[data-bs-target="' + targetId + '"]');
+         var value = trigger.data('payment-value');
+         if(value) {
+             $('#payment_method_input').val(value);
+         }
+    }
 });
 </script>
 @endpush

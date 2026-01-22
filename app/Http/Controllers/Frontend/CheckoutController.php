@@ -34,27 +34,35 @@ class CheckoutController extends Controller
     public function process(Request $request)
     {
         $validated = $request->validate([
-            'shipping_first_name' => 'required|string|max:255',
-            'shipping_last_name' => 'required|string|max:255',
-            'shipping_email' => 'required|email',
-            'shipping_phone' => 'nullable|string|max:20',
-            'shipping_line_one' => 'required|string|max:255',
-            'shipping_line_two' => 'nullable|string|max:255',
-            'shipping_city' => 'required|string|max:255',
-            'shipping_state' => 'nullable|string|max:255',
-            'shipping_postcode' => 'required|string|max:20',
-            'shipping_country_id' => 'required|exists:lunar_countries,id',
-            'billing_same_as_shipping' => 'boolean',
-            'billing_first_name' => 'required_if:billing_same_as_shipping,false|string|max:255',
-            'billing_last_name' => 'required_if:billing_same_as_shipping,false|string|max:255',
-            'billing_line_one' => 'required_if:billing_same_as_shipping,false|string|max:255',
+            // Billing is primary in the form
+            'billing_first_name' => 'required|string|max:255',
+            'billing_last_name' => 'required|string|max:255',
+            'billing_email' => 'required|email',
+            'billing_phone' => 'nullable|string|max:20',
+            'billing_company' => 'nullable|string|max:255',
+            'billing_line_one' => 'required|string|max:255',
             'billing_line_two' => 'nullable|string|max:255',
-            'billing_city' => 'required_if:billing_same_as_shipping,false|string|max:255',
-            'billing_state' => 'nullable|string|max:255',
-            'billing_postcode' => 'required_if:billing_same_as_shipping,false|string|max:20',
-            'billing_country_id' => 'required_if:billing_same_as_shipping,false|exists:lunar_countries,id',
+            'billing_city' => 'required|string|max:255',
+            'billing_state' => 'required|string|max:255',
+            'billing_postcode' => 'nullable|string|max:20',
+            'billing_country_id' => 'required|exists:lunar_countries,id',
+
+            // Shipping toggle
+            'ship_to_different_address' => 'nullable', 
+
+            // Shipping fields required if toggle is on
+            'shipping_first_name' => 'required_if:ship_to_different_address,1|nullable|string|max:255',
+            'shipping_last_name' => 'required_if:ship_to_different_address,1|nullable|string|max:255',
+            'shipping_company' => 'nullable|string|max:255',
+            'shipping_line_one' => 'required_if:ship_to_different_address,1|nullable|string|max:255',
+            'shipping_line_two' => 'nullable|string|max:255',
+            'shipping_city' => 'required_if:ship_to_different_address,1|nullable|string|max:255',
+            'shipping_state' => 'required_if:ship_to_different_address,1|nullable|string|max:255',
+            'shipping_postcode' => 'nullable|string|max:20',
+            'shipping_country_id' => 'required_if:ship_to_different_address,1|nullable|exists:lunar_countries,id',
+
             'notes' => 'nullable|string',
-            'payment_method' => 'required|in:stripe',
+            'payment_method' => 'required',
         ]);
 
         $cart = CartSession::current();
@@ -64,44 +72,53 @@ class CheckoutController extends Controller
                 ->with('error', 'Your cart is empty');
         }
 
-        // Set shipping address
-        $cart->setShippingAddress([
-            'first_name' => $validated['shipping_first_name'],
-            'last_name' => $validated['shipping_last_name'],
-            'line_one' => $validated['shipping_line_one'],
-            'line_two' => $validated['shipping_line_two'] ?? null,
-            'city' => $validated['shipping_city'],
-            'state' => $validated['shipping_state'] ?? null,
-            'postcode' => $validated['shipping_postcode'],
-            'country_id' => $validated['shipping_country_id'],
-            'contact_email' => $validated['shipping_email'],
-            'contact_phone' => $validated['shipping_phone'] ?? null,
-        ]);
-
-        // Set billing address
-        if ($request->boolean('billing_same_as_shipping')) {
-            $cart->setBillingAddress([
+        // Determine Shipping Address
+        $shippingAddress = [];
+        if ($request->input('ship_to_different_address')) {
+            $shippingAddress = [
                 'first_name' => $validated['shipping_first_name'],
                 'last_name' => $validated['shipping_last_name'],
+                'company_name' => $validated['shipping_company'] ?? null,
                 'line_one' => $validated['shipping_line_one'],
                 'line_two' => $validated['shipping_line_two'] ?? null,
                 'city' => $validated['shipping_city'],
                 'state' => $validated['shipping_state'] ?? null,
                 'postcode' => $validated['shipping_postcode'],
                 'country_id' => $validated['shipping_country_id'],
-            ]);
+                // Use billing email/phone for contact info if specific shipping contact fields don't exist
+                'contact_email' => $validated['billing_email'],
+                'contact_phone' => $validated['billing_phone'] ?? null,
+            ];
         } else {
-            $cart->setBillingAddress([
+            $shippingAddress = [
                 'first_name' => $validated['billing_first_name'],
                 'last_name' => $validated['billing_last_name'],
+                'company_name' => $validated['billing_company'] ?? null,
                 'line_one' => $validated['billing_line_one'],
                 'line_two' => $validated['billing_line_two'] ?? null,
                 'city' => $validated['billing_city'],
                 'state' => $validated['billing_state'] ?? null,
                 'postcode' => $validated['billing_postcode'],
                 'country_id' => $validated['billing_country_id'],
-            ]);
+                'contact_email' => $validated['billing_email'],
+                'contact_phone' => $validated['billing_phone'] ?? null,
+            ];
         }
+
+        $cart->setShippingAddress($shippingAddress);
+
+        // Billing Address is always from the Billing fields
+        $cart->setBillingAddress([
+            'first_name' => $validated['billing_first_name'],
+            'last_name' => $validated['billing_last_name'],
+            'company_name' => $validated['billing_company'] ?? null,
+            'line_one' => $validated['billing_line_one'],
+            'line_two' => $validated['billing_line_two'] ?? null,
+            'city' => $validated['billing_city'],
+            'state' => $validated['billing_state'] ?? null,
+            'postcode' => $validated['billing_postcode'],
+            'country_id' => $validated['billing_country_id'],
+        ]);
 
         // Add notes if provided
         if ($validated['notes']) {
