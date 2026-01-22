@@ -26,6 +26,18 @@ class ProductController extends Controller
             });
         }
 
+        // Price filter
+        if ($request->has('min_price') && $request->min_price) {
+            $query->whereHas('variants.prices', function($q) use ($request) {
+                $q->where('price', '>=', $request->min_price * 100); // Convert to cents
+            });
+        }
+        if ($request->has('max_price') && $request->max_price) {
+            $query->whereHas('variants.prices', function($q) use ($request) {
+                $q->where('price', '<=', $request->max_price * 100); // Convert to cents
+            });
+        }
+
         // Search functionality
         if ($request->has('search') && $request->search) {
             $search = $request->search;
@@ -57,7 +69,30 @@ class ProductController extends Controller
         $collections = Collection::withCount('products')->get();
         $totalProducts = Product::where('status', 'published')->count();
 
-        return view('frontend.shop.index', compact('products', 'collections', 'sort', 'totalProducts'));
+        // Get price range for slider
+        // Try to get actual min/max prices, fallback to defaults
+        try {
+            $allPrices = \Lunar\Models\Price::whereHas('priceable.variant.product', function($q) {
+                $q->where('status', 'published');
+            })->pluck('price');
+            
+            if ($allPrices->isNotEmpty()) {
+                $minPrice = floor($allPrices->min() / 100);
+                $maxPrice = ceil($allPrices->max() / 100);
+            } else {
+                $minPrice = 430;
+                $maxPrice = 2500;
+            }
+        } catch (\Exception $e) {
+            // Fallback to default range (matching the image)
+            $minPrice = 430;
+            $maxPrice = 2500;
+        }
+        
+        // Popular tags (using product names/descriptions keywords)
+        $popularTags = ['Beauty', 'MakeupArtist', 'Makeup', 'Hair', 'Nails', 'Hairstyle', 'Skincare'];
+
+        return view('frontend.shop.index', compact('products', 'collections', 'sort', 'totalProducts', 'minPrice', 'maxPrice', 'popularTags'));
     }
 
     public function show($slug)

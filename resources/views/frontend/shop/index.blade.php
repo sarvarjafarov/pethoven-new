@@ -102,7 +102,39 @@
                             @if(request('sort'))
                                 <input type="hidden" name="sort" value="{{ request('sort') }}">
                             @endif
+                            @if(request('min_price'))
+                                <input type="hidden" name="min_price" value="{{ request('min_price') }}">
+                            @endif
+                            @if(request('max_price'))
+                                <input type="hidden" name="max_price" value="{{ request('max_price') }}">
+                            @endif
                         </form>
+                    </div>
+
+                    <!-- Price Filter -->
+                    <div class="product-widget">
+                        <h4 class="product-widget-title">Price Filter</h4>
+                        <div class="product-widget-range-slider">
+                            <div id="slider-range" class="noUi-target"></div>
+                            <div class="slider-labels">
+                                <span id="slider-range-value1">${{ request('min_price', $minPrice) }}</span>
+                                <span> — </span>
+                                <span id="slider-range-value2">${{ request('max_price', $maxPrice) }}</span>
+                            </div>
+                            <form action="{{ route('shop.index') }}" method="GET" id="price-filter-form" style="display: none;">
+                                <input type="hidden" name="min_price" id="min-price-input" value="{{ request('min_price', $minPrice) }}">
+                                <input type="hidden" name="max_price" id="max-price-input" value="{{ request('max_price', $maxPrice) }}">
+                                @if(request('collection'))
+                                    <input type="hidden" name="collection" value="{{ request('collection') }}">
+                                @endif
+                                @if(request('search'))
+                                    <input type="hidden" name="search" value="{{ request('search') }}">
+                                @endif
+                                @if(request('sort'))
+                                    <input type="hidden" name="sort" value="{{ request('sort') }}">
+                                @endif
+                            </form>
+                        </div>
                     </div>
 
                     @if($collections->isNotEmpty())
@@ -121,6 +153,20 @@
                                             {{ $collection->translateAttribute('name') }}
                                             <span>({{ $collection->products_count ?? 0 }})</span>
                                         </a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <!-- Popular Tags -->
+                    @if(isset($popularTags) && !empty($popularTags))
+                        <div class="product-widget">
+                            <h4 class="product-widget-title">Popular Tags</h4>
+                            <ul class="product-widget-tags">
+                                @foreach($popularTags as $tag)
+                                    <li>
+                                        <a href="{{ route('shop.index', ['search' => $tag]) }}">{{ $tag }}</a>
                                     </li>
                                 @endforeach
                             </ul>
@@ -151,5 +197,126 @@
 </section>
 <!--== End Product Area Wrapper ==-->
 @endsection
+
+@push('styles')
+<style>
+    /* Ensure widget styling matches template */
+    .product-sidebar-widget .product-widget {
+        background-color: #ffffff;
+        border: 1px solid #eeeeee;
+        border-radius: 8px;
+        margin-bottom: 40px;
+        padding: 25px 30px 24px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .product-sidebar-widget .product-widget-title {
+        color: #231942;
+        font-size: 18px;
+        font-weight: 500;
+        line-height: 1;
+        display: inline-block;
+        margin-bottom: 22px;
+        position: relative;
+        padding-left: 22px;
+    }
+    .product-sidebar-widget .product-widget-title:before {
+        border: 2px solid #22C55E;
+        border-radius: 50%;
+        content: "";
+        height: 11px;
+        left: 0;
+        position: absolute;
+        top: 50%;
+        width: 11px;
+        transform: translate(0px, -50%);
+    }
+    /* Update slider colors to match image - light blue track, blue handles */
+    .product-sidebar-widget .product-widget-range-slider .noUi-connect {
+        background-color: #A8DADC !important;
+    }
+    .product-sidebar-widget .product-widget-range-slider .noUi-horizontal .noUi-handle {
+        background-color: #457B9D !important;
+        width: 12px !important;
+        height: 12px !important;
+        border-radius: 50% !important;
+    }
+    .product-sidebar-widget .product-widget-range-slider .noUi-base {
+        background-color: #e8e8e8;
+    }
+    .product-sidebar-widget .product-widget-range-slider .slider-labels {
+        margin-top: 14px;
+    }
+    .product-sidebar-widget .product-widget-range-slider .slider-labels span {
+        font-weight: 500;
+        font-size: 14px;
+        color: #1D3557;
+    }
+    /* Category active state */
+    .product-sidebar-widget .product-widget-category li a.active {
+        color: #22C55E;
+        font-weight: 600;
+    }
+</style>
+@endpush
+
+@push('scripts')
+<script src="{{ asset('brancy/js/plugins/range-slider.js') }}"></script>
+<script>
+$(document).ready(function() {
+    // Initialize price range slider
+    var sliderRange = document.getElementById('slider-range');
+    if (sliderRange && typeof noUiSlider !== 'undefined') {
+        var minPrice = {{ $minPrice }};
+        var maxPrice = {{ $maxPrice }};
+        var currentMin = {{ request('min_price', $minPrice) }};
+        var currentMax = {{ request('max_price', $maxPrice) }};
+        
+        // Simple number formatter
+        var formatNumber = function(value) {
+            return '$' + Math.round(value);
+        };
+        
+        noUiSlider.create(sliderRange, {
+            start: [currentMin, currentMax],
+            step: 10,
+            range: {
+                'min': minPrice,
+                'max': maxPrice
+            },
+            connect: true,
+            format: {
+                to: function(value) {
+                    return Math.round(value);
+                },
+                from: function(value) {
+                    return Number(value);
+                }
+            }
+        });
+        
+        // Update display values
+        sliderRange.noUiSlider.on('update', function(values, handle) {
+            var value = Math.round(values[handle]);
+            if (handle === 0) {
+                document.getElementById('slider-range-value1').innerHTML = formatNumber(value);
+                document.getElementById('min-price-input').value = value;
+            } else {
+                document.getElementById('slider-range-value2').innerHTML = formatNumber(value);
+                document.getElementById('max-price-input').value = value;
+            }
+        });
+        
+        // Submit form when slider changes (with debounce)
+        var timeout;
+        sliderRange.noUiSlider.on('change', function(values) {
+            clearTimeout(timeout);
+            timeout = setTimeout(function() {
+                document.getElementById('price-filter-form').submit();
+            }, 500);
+        });
+    }
+});
+</script>
+@endpush
 
 {{-- Add to cart handler is now in the global layout (app.blade.php) --}}
