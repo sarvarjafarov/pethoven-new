@@ -362,8 +362,8 @@
                 <!-- Modal Header (Red) -->
                 <div class="modal-header" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; border: none; padding: 18px 24px; position: relative;">
                     <h5 class="modal-title" id="addToCartModalLabel" style="font-size: 17px; font-weight: 700; letter-spacing: 0.3px; margin: 0; line-height: 1.3;">Added To Cart Successfully!</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: #000; opacity: 1; text-shadow: none; font-size: 22px; line-height: 1; font-weight: 300; padding: 0; margin: 0; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: all 0.2s ease; background: #ffffff; border: 1px solid #c8c8c8; box-shadow: none;" onmouseover="this.style.backgroundColor='#f5f5f5'; this.style.borderColor='#999';" onmouseout="this.style.backgroundColor='#ffffff'; this.style.borderColor='#c8c8c8';">
-                        <span aria-hidden="true" style="display: block;">&times;</span>
+                    <button type="button" class="btn-close-modal" data-bs-dismiss="modal" aria-label="Close" style="color: #000; opacity: 1; text-shadow: none; font-size: 20px; line-height: 1; font-weight: 300; padding: 0; margin: 0; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: all 0.2s ease; background: #ffffff; border: 1px solid #c8c8c8; box-shadow: 0 1px 3px rgba(0,0,0,0.1); cursor: pointer;" onmouseover="this.style.backgroundColor='#f5f5f5'; this.style.borderColor='#999';" onmouseout="this.style.backgroundColor='#ffffff'; this.style.borderColor='#c8c8c8';">
+                        <span aria-hidden="true" style="display: block; line-height: 1;">&times;</span>
                     </button>
                 </div>
                 <!-- Modal Body -->
@@ -391,7 +391,7 @@
                         <i class="fa fa-shopping-cart" style="font-size: 16px;"></i>
                         <span>VIEW CART</span>
                     </a>
-                    <button type="button" class="btn" id="continueShoppingBtn" style="flex: 1; padding: 12px 20px; background: #ffffff; color: #e74c3c; border: 2px solid #e74c3c; border-radius: 8px; font-weight: 600; font-size: 14px; letter-spacing: 0.5px; text-transform: uppercase; transition: all 0.3s ease; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.08);" onmouseover="this.style.backgroundColor='#e74c3c'; this.style.color='white'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(231, 76, 60, 0.25)';" onmouseout="this.style.backgroundColor='#ffffff'; this.style.color='#e74c3c'; this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.08)';">
+                    <button type="button" class="btn" id="continueShoppingBtn" style="flex: 1; padding: 12px 20px; background: #ffffff; color: #e74c3c; border: 1px solid #e74c3c; border-radius: 8px; font-weight: 600; font-size: 14px; letter-spacing: 0.5px; text-transform: uppercase; transition: all 0.3s ease; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" onmouseover="this.style.backgroundColor='#e74c3c'; this.style.color='white'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 3px 6px rgba(0,0,0,0.15)';" onmouseout="this.style.backgroundColor='#ffffff'; this.style.color='#e74c3c'; this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.1)';">
                         <span>CONTINUE SHOPPING</span>
                     </button>
                 </div>
@@ -450,6 +450,12 @@
 
     // Handle Continue Shopping button click
     $(document).on('click', '#continueShoppingBtn', function(e) {
+        e.preventDefault();
+        $('#addToCartModal').modal('hide');
+    });
+    
+    // Handle close button click (backup for Bootstrap compatibility)
+    $(document).on('click', '.btn-close-modal', function(e) {
         e.preventDefault();
         $('#addToCartModal').modal('hide');
     });
