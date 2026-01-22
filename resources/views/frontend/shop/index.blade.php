@@ -300,67 +300,83 @@
 
 @push('scripts')
 <script>
-// Store original jQuery ready function to prevent auto-init
-var originalJQueryReady = null;
-if (typeof $ !== 'undefined' && $.fn.ready) {
-    // We'll handle this differently
-}
+// Temporarily hide the slider element to prevent original auto-init
+(function() {
+    var sliderElement = document.getElementById('slider-range');
+    if (sliderElement) {
+        sliderElement.style.display = 'none';
+        sliderElement.setAttribute('data-temp-hidden', 'true');
+    }
+})();
 </script>
 <script src="{{ asset('brancy/js/plugins/range-slider.js') }}"></script>
 <script>
-// Immediately after range-slider.js loads, prevent its auto-init
+// Override the original auto-init by intercepting the ready handler
 (function() {
-    // Store reference to slider element before auto-init can run
-    var sliderElement = document.getElementById('slider-range');
-    if (sliderElement && sliderElement.noUiSlider) {
-        try {
-            sliderElement.noUiSlider.destroy();
-        } catch(e) {
-            // Ignore
+    // The original script uses $(document).ready(), so we need to run after it
+    // but before it can initialize. We'll check and destroy immediately.
+    var checkAndDestroy = function() {
+        var sliderRange = document.getElementById('slider-range');
+        if (sliderRange && sliderRange.noUiSlider) {
+            try {
+                sliderRange.noUiSlider.destroy();
+            } catch(e) {
+                // Ignore
+            }
         }
+    };
+    
+    // Check immediately and also on ready
+    checkAndDestroy();
+    if (typeof $ !== 'undefined') {
+        $(document).ready(function() {
+            setTimeout(checkAndDestroy, 10);
+        });
     }
 })();
 
+// Our custom initialization
 $(document).ready(function() {
-    // Wait for DOM and scripts to be fully ready
     setTimeout(function() {
-        // Initialize price range slider
         var sliderRange = document.getElementById('slider-range');
         
-        // Check if slider exists
         if (!sliderRange) {
             console.error('Slider element not found');
             return;
         }
         
-        // Check if noUiSlider is available
+        // Restore visibility
+        if (sliderRange.getAttribute('data-temp-hidden') === 'true') {
+            sliderRange.style.display = '';
+            sliderRange.removeAttribute('data-temp-hidden');
+        }
+        
         if (typeof noUiSlider === 'undefined') {
             console.error('noUiSlider not found');
             return;
         }
         
-        // Destroy existing slider if it exists (from original range-slider.js auto-init)
+        // Destroy any existing instance
         if (sliderRange.noUiSlider) {
             try {
                 sliderRange.noUiSlider.destroy();
             } catch(e) {
-                // Ignore destroy errors
+                console.warn('Error destroying slider:', e);
             }
         }
         
-        // Get price values - ensure they are numbers
-        var minPrice = {{ $minPrice }};
-        var maxPrice = {{ $maxPrice }};
-        var currentMin = {{ request('min_price') ? request('min_price') : $minPrice }};
-        var currentMax = {{ request('max_price') ? request('max_price') : $maxPrice }};
+        // Get price values from PHP
+        var minPrice = parseInt({{ $minPrice }}) || 430;
+        var maxPrice = parseInt({{ $maxPrice }}) || 2500;
+        var currentMin = parseInt({{ request('min_price') ? request('min_price') : $minPrice }}) || minPrice;
+        var currentMax = parseInt({{ request('max_price') ? request('max_price') : $maxPrice }}) || maxPrice;
         
-        // Ensure values are valid numbers
-        minPrice = parseInt(minPrice) || 430;
-        maxPrice = parseInt(maxPrice) || 2500;
-        currentMin = parseInt(currentMin) || minPrice;
-        currentMax = parseInt(currentMax) || maxPrice;
+        // Validate and clamp values
+        if (isNaN(minPrice)) minPrice = 430;
+        if (isNaN(maxPrice)) maxPrice = 2500;
+        if (isNaN(currentMin)) currentMin = minPrice;
+        if (isNaN(currentMax)) currentMax = maxPrice;
         
-        // Ensure values are within range
         currentMin = Math.max(minPrice, Math.min(currentMin, maxPrice));
         currentMax = Math.max(minPrice, Math.min(currentMax, maxPrice));
         if (currentMin > currentMax) {
@@ -368,7 +384,7 @@ $(document).ready(function() {
             currentMax = maxPrice;
         }
         
-        // Use wNumb formatter (included in range-slider.js)
+        // Create money formatter
         var moneyFormat;
         if (typeof wNumb !== 'undefined') {
             moneyFormat = wNumb({
@@ -377,7 +393,6 @@ $(document).ready(function() {
                 prefix: '$'
             });
         } else {
-            // Fallback formatter
             moneyFormat = {
                 to: function(value) {
                     return '$' + Math.round(value);
@@ -389,6 +404,7 @@ $(document).ready(function() {
         }
         
         try {
+            // Create the slider
             noUiSlider.create(sliderRange, {
                 start: [currentMin, currentMax],
                 step: 10,
@@ -400,7 +416,7 @@ $(document).ready(function() {
                 format: moneyFormat
             });
             
-            // Update display values on slider change
+            // Update display on slider change
             sliderRange.noUiSlider.on('update', function(values, handle) {
                 var formattedValue = moneyFormat.to(values[handle]);
                 var numericValue = moneyFormat.from(values[handle]);
@@ -418,26 +434,33 @@ $(document).ready(function() {
                 }
             });
             
-            // Submit form when slider changes (with debounce)
-            var timeout;
+            // Auto-submit on change (debounced)
+            var submitTimeout;
             sliderRange.noUiSlider.on('change', function(values) {
-                clearTimeout(timeout);
-                timeout = setTimeout(function() {
+                clearTimeout(submitTimeout);
+                submitTimeout = setTimeout(function() {
                     var form = document.getElementById('price-filter-form');
                     if (form) {
-                        // Update form values before submit
                         var minVal = moneyFormat.from(values[0]);
                         var maxVal = moneyFormat.from(values[1]);
-                        document.getElementById('min-price-input').value = minVal;
-                        document.getElementById('max-price-input').value = maxVal;
+                        var minInput = document.getElementById('min-price-input');
+                        var maxInput = document.getElementById('max-price-input');
+                        if (minInput) minInput.value = minVal;
+                        if (maxInput) maxInput.value = maxVal;
                         form.submit();
                     }
                 }, 500);
             });
+            
+            console.log('Price filter slider initialized:', {
+                min: minPrice,
+                max: maxPrice,
+                current: [currentMin, currentMax]
+            });
         } catch (e) {
-            console.error('Error initializing slider:', e);
+            console.error('Error initializing price filter slider:', e);
         }
-    }, 400);
+    }, 100);
 });
 </script>
 @endpush
