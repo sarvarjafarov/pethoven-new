@@ -59,6 +59,13 @@
 
         <form action="{{ route('checkout.process') }}" method="POST" id="checkout-form" novalidate>
             @csrf
+            @php
+                $billingAddress = $cart->billingAddress;
+                $shippingAddress = $cart->shippingAddress;
+                $billingCountryId = old('billing_country_id', $billingAddress?->country_id);
+                $shippingCountryId = old('shipping_country_id', $shippingAddress?->country_id ?? $billingCountryId);
+                $shipToDifferentAddress = old('ship_to_different_address', $shippingAddress ? '1' : '0');
+            @endphp
             <div class="row">
                 <div class="col-lg-6">
                     <!--== Start Billing Accordion ==-->
@@ -96,7 +103,7 @@
                                         <select id="billing_country_id" name="billing_country_id" class="form-control wide @error('billing_country_id') is-invalid @enderror" required>
                                             <option value="">Select Country</option>
                                             @foreach($countries as $country)
-                                                <option value="{{ $country->id }}" {{ old('billing_country_id') == $country->id ? 'selected' : '' }}>
+                                                <option value="{{ $country->id }}" {{ $billingCountryId == $country->id ? 'selected' : '' }}>
                                                     {{ $country->name }}
                                                 </option>
                                             @endforeach
@@ -159,13 +166,13 @@
                                     </div>
                                 </div>
                                 <div id="CheckoutBillingAccordion2" class="col-md-12">
-                                    <div class="checkout-box" data-bs-toggle="collapse" data-bs-target="#CheckoutTwo" aria-expanded="{{ old('ship_to_different_address') === '1' ? 'true' : 'false' }}" role="toolbar">
+                                <div class="checkout-box" data-bs-toggle="collapse" data-bs-target="#CheckoutTwo" aria-expanded="{{ $shipToDifferentAddress === '1' ? 'true' : 'false' }}" role="toolbar">
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input visually-hidden" id="ship-to-different-address" name="ship_to_different_address" value="1" {{ old('ship_to_different_address') === '1' ? 'checked' : '' }}>
+                                            <input type="checkbox" class="custom-control-input visually-hidden" id="ship-to-different-address" name="ship_to_different_address" value="1" {{ $shipToDifferentAddress === '1' ? 'checked' : '' }}>
                                             <label class="custom-control-label" for="ship-to-different-address">Ship to a different address?</label>
                                         </div>
                                     </div>
-                                    <div id="CheckoutTwo" class="collapse {{ old('ship_to_different_address') === '1' ? 'show' : '' }}" data-bs-parent="#CheckoutBillingAccordion2">
+                                    <div id="CheckoutTwo" class="collapse {{ $shipToDifferentAddress === '1' ? 'show' : '' }}" data-bs-parent="#CheckoutBillingAccordion2">
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group">
@@ -200,7 +207,7 @@
                                                     <select id="shipping_country_id" name="shipping_country_id" class="form-control wide @error('shipping_country_id') is-invalid @enderror">
                                                         <option value="">Select Country</option>
                                                         @foreach($countries as $country)
-                                                            <option value="{{ $country->id }}" {{ old('shipping_country_id') == $country->id ? 'selected' : '' }}>
+                                                            <option value="{{ $country->id }}" {{ $shippingCountryId == $country->id ? 'selected' : '' }}>
                                                                 {{ $country->name }}
                                                             </option>
                                                         @endforeach

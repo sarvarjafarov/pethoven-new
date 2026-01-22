@@ -25,6 +25,11 @@ class CheckoutController extends Controller
 
         $countries = Country::orderBy('name')->get();
 
+        $cart->loadMissing([
+            'billingAddress.country',
+            'shippingAddress.country',
+        ]);
+
         return view('frontend.checkout.index', compact('cart', 'countries'));
     }
 

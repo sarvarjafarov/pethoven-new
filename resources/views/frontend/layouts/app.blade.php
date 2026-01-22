@@ -52,6 +52,17 @@
     <!-- Brancy Custom Style CSS -->
     <link rel="stylesheet" href="{{ asset('brancy/css/style.min.css') }}">
 
+    <style>
+        .nice-select.is-invalid {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 1px rgba(220, 53, 69, 0.25);
+        }
+
+        .nice-select.is-invalid .current {
+            color: #dc3545;
+        }
+    </style>
+
     @stack('styles')
 
     <!-- Structured Data (JSON-LD) -->
@@ -306,6 +317,26 @@
         });
     });
 
+    </script>
+
+    <script>
+    $(document).ready(function() {
+        function syncNiceSelectInvalidState() {
+            $('select.is-invalid').each(function () {
+                const $select = $(this);
+                const $nice = $select.next('.nice-select');
+                if ($nice.length) {
+                    $nice.toggleClass('is-invalid', $select.hasClass('is-invalid'));
+                }
+            });
+        }
+
+        syncNiceSelectInvalidState();
+
+        $(document).on('change', 'select', function () {
+            syncNiceSelectInvalidState();
+        });
+    });
     </script>
 
     @stack('scripts')
