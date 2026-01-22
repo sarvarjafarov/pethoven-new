@@ -391,7 +391,7 @@
                         <i class="fa fa-shopping-cart" style="font-size: 16px;"></i>
                         <span>VIEW CART</span>
                     </a>
-                    <button type="button" class="btn" id="continueShoppingBtn" style="flex: 1; padding: 12px 20px; background: #ffffff; color: #c0392b; border: 1px solid #c0392b; border-radius: 8px; font-weight: 600; font-size: 14px; letter-spacing: 0.5px; text-transform: uppercase; transition: all 0.2s ease; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1); outline: none;" onmouseover="this.style.boxShadow='0 3px 6px rgba(0,0,0,0.15)';" onmouseout="this.style.boxShadow='0 2px 4px rgba(0,0,0,0.1)';">
+                    <button type="button" class="btn" id="continueShoppingBtn" style="flex: 1; padding: 5px 20px; background: #ffffff; color: #c0392b; border: 1px solid #c0392b; border-radius: 8px; font-weight: 600; font-size: 14px; letter-spacing: 0.5px; text-transform: uppercase; transition: all 0.2s ease; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1); outline: none;" onmouseover="this.style.boxShadow='0 3px 6px rgba(0,0,0,0.15)';" onmouseout="this.style.boxShadow='0 2px 4px rgba(0,0,0,0.1)';">
                         CONTINUE SHOPPING
                     </button>
                 </div>
@@ -434,7 +434,7 @@
             font-size: 14px !important;
             letter-spacing: 0.5px !important;
             text-transform: uppercase !important;
-            padding: 12px 20px !important;
+            padding: 5px 20px !important;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
             transition: all 0.2s ease !important;
         }
