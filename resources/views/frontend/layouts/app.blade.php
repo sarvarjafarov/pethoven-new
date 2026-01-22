@@ -423,6 +423,31 @@
             opacity: 0;
             transition: opacity 0.3s ease;
         }
+        
+        /* Override Bootstrap button styles for Continue Shopping button */
+        #continueShoppingBtn.btn {
+            background-color: #ffffff !important;
+            color: #c0392b !important;
+            border: 1px solid #c0392b !important;
+            border-radius: 8px !important;
+            font-weight: 600 !important;
+            font-size: 14px !important;
+            letter-spacing: 0.5px !important;
+            text-transform: uppercase !important;
+            padding: 12px 20px !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+            transition: all 0.2s ease !important;
+        }
+        
+        #continueShoppingBtn.btn:hover,
+        #continueShoppingBtn.btn:focus,
+        #continueShoppingBtn.btn:active {
+            background-color: #ffffff !important;
+            color: #c0392b !important;
+            border-color: #c0392b !important;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15) !important;
+            outline: none !important;
+        }
     </style>
 
     <script>
