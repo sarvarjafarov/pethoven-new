@@ -402,8 +402,9 @@
         margin-bottom: 0; 
         border-radius: 0; /* Match theme input style */
         height: 50px;     /* Match theme input height */
-        line-height: 48px;/* Vertically center text */
+        line-height: 50px;/* Vertically center text */
         padding-left: 20px;
+        border: 1px solid #e8e8e8;
     }
 
     /* Adjust nice-select internal list */
@@ -415,20 +416,33 @@
 
     /* Style nice-select selected option */
     .nice-select .option.selected {
-        font-weight: normal; /* Override Brancy bold */
-        background-color: #f7f7f7;
+        font-weight: 700;
+        background-color: #fff;
+    }
+
+    /* Active/Focus state for Selected Country text */
+    .nice-select.open .current {
+       font-weight: 700; /* Bold when open or selected */
+    }
+
+    /* Selected Item in Dropdown */
+    .nice-select .option.selected {
+       font-weight: 700;
+       background-color: #f7f7f7;
+    }
+
+    /* Match the "Select Country" placeholder style */
+    .nice-select .current {
+        font-size: 14px;
+        color: #000;
+        font-weight: 700; /* Bold to match attached image */
     }
     
     .nice-select .option:hover {
         background-color: #f7f7f7;
+        font-weight: 700;
     }
     
-    /* Ensure placeholder color matches theme */
-    .nice-select .current {
-        color: #626262; 
-        font-size: 14px;
-    }
-
     /* Error message styling tweak */
     .invalid-feedback {
         display: block; /* Force display when present */
