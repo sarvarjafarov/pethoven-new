@@ -407,39 +407,53 @@
         float: none;
         width: 100%;
         margin-bottom: 0; 
-        border-radius: 0; /* Match theme input style */
-        height: 50px;     /* Match theme input height */
-        line-height: 50px;/* Vertically center text */
-        padding-left: 20px;
-        border: 1px solid #e8e8e8;
+        border-radius: 4px; /* Match theme input style */
+        height: 70px;     /* Match theme input height */
+        line-height: 70px;/* Vertically center text */
+        padding-left: 24px;
+        border: 1px solid #ebeef5;
+    }
+    .nice-select:after {
+        right: 24px;
+        margin: 0;
     }
     
     /* Input Styling to match template */
     .form-control {
-        height: 50px;
-        border-radius: 0;
-        border: 1px solid #e8e8e8;
-        padding-left: 20px;
-        font-size: 14px;
-        color: #474747;
+        height: 70px;
+        border-radius: 4px;
+        border: 1px solid #ebeef5;
+        padding-left: 24px;
+        font-size: 16px;
+        color: #1c1c1c;
+        background-color: #fff;
+        box-shadow: none;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
     
     .form-control:focus {
-        border-color: #000;
-        box-shadow: none;
+        border-color: #a6b1c2;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07);
+    }
+
+    .form-control::-webkit-input-placeholder {
+        color: #626262;
     }
     
     /* Label Styling to match template */
+    .form-group {
+        margin-bottom: 20px;
+    }
     .form-group label {
         font-size: 14px;
-        color: #474747;
+        color: #000000;
         margin-bottom: 8px;
         display: block;
     }
     
     /* Required asterisk color */
     .required {
-        color: #ff0000;
+        color: #f00;
         text-decoration: none;
         font-weight: 700;
     }
@@ -449,6 +463,60 @@
         width: 100%;
         border-radius: 0;
         margin-top: 1px;
+    }
+
+    /* Order Details styling overrides if they are missing from app.css */
+    .checkout-order-details-wrap {
+        margin-left: 40px;
+    }
+    @media (max-width: 991px) {
+        .checkout-order-details-wrap {
+            margin-left: 0;
+            margin-top: 40px;
+        }
+    }
+    .order-details-table-wrap {
+        border: 2px solid rgba(52, 53, 56, 0.1);
+        padding: 48px 50px 54px;
+        position: relative;
+    }
+    @media (max-width: 991px) {
+        .order-details-table-wrap {
+            padding: 20px 20px 20px;
+        }
+    }
+    .order-details-table-wrap .title {
+        font-size: 20px;
+        position: relative;
+        padding-bottom: 12px;
+        margin-bottom: 35px;
+        font-weight: 600;
+        text-transform: capitalize;
+    }
+    .order-details-table-wrap .title:before {
+        background-color: #000000;
+        bottom: 0;
+        content: "";
+        height: 2px;
+        left: 0;
+        position: absolute;
+        width: 50px;
+    }
+    .order-details-table-wrap .table th,
+    .order-details-table-wrap .table td {
+         color: #000000;
+         font-weight: 400;
+         font-size: 14px;
+         vertical-align: middle;
+         padding: 8px 0;
+         border: none;
+         border-bottom: 1px solid #e8e8e8;
+    }
+    .order-details-table-wrap .table th {
+        border-bottom: 1px solid #e8e8e8 !important;
+    }
+    .product-total {
+        text-align: right;
     }
 
     /* Style nice-select selected option */
