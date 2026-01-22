@@ -68,92 +68,92 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="shipping_first_name">First name <abbr class="required" title="required">*</abbr></label>
-                                        <input id="shipping_first_name" name="shipping_first_name" type="text" class="form-control @error('shipping_first_name') is-invalid @enderror" value="{{ old('shipping_first_name') }}" required>
-                                        @error('shipping_first_name')
+                                        <label for="billing_first_name">First name <abbr class="required" title="required">*</abbr></label>
+                                        <input id="billing_first_name" name="billing_first_name" type="text" class="form-control @error('billing_first_name') is-invalid @enderror" value="{{ old('billing_first_name') }}" required>
+                                        @error('billing_first_name')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="shipping_last_name">Last name <abbr class="required" title="required">*</abbr></label>
-                                        <input id="shipping_last_name" name="shipping_last_name" type="text" class="form-control @error('shipping_last_name') is-invalid @enderror" value="{{ old('shipping_last_name') }}" required>
-                                        @error('shipping_last_name')
+                                        <label for="billing_last_name">Last name <abbr class="required" title="required">*</abbr></label>
+                                        <input id="billing_last_name" name="billing_last_name" type="text" class="form-control @error('billing_last_name') is-invalid @enderror" value="{{ old('billing_last_name') }}" required>
+                                        @error('billing_last_name')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="shipping_company">Company name (optional)</label>
-                                        <input id="shipping_company" name="shipping_company" type="text" class="form-control" value="{{ old('shipping_company') }}">
+                                        <label for="billing_company">Company name (optional)</label>
+                                        <input id="billing_company" name="billing_company" type="text" class="form-control" value="{{ old('billing_company') }}">
                                     </div>
                                 </div>
                                 <div class="col-md-12 mb-4">
                                     <div class="form-group">
-                                        <label for="shipping_country_id">Country <abbr class="required" title="required">*</abbr></label>
-                                        <select id="shipping_country_id" name="shipping_country_id" class="form-control wide @error('shipping_country_id') is-invalid @enderror" required>
+                                        <label for="billing_country_id">Country <abbr class="required" title="required">*</abbr></label>
+                                        <select id="billing_country_id" name="billing_country_id" class="form-control wide @error('billing_country_id') is-invalid @enderror" required>
                                             <option value="">Select Country</option>
                                             @foreach($countries as $country)
-                                                <option value="{{ $country->id }}" {{ old('shipping_country_id') == $country->id ? 'selected' : '' }}>
+                                                <option value="{{ $country->id }}" {{ old('billing_country_id') == $country->id ? 'selected' : '' }}>
                                                     {{ $country->name }}
                                                 </option>
                                             @endforeach
                                         </select>
-                                        @error('shipping_country_id')
+                                        @error('billing_country_id')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="shipping_line_one">Street address <abbr class="required" title="required">*</abbr></label>
-                                        <input id="shipping_line_one" name="shipping_line_one" type="text" class="form-control @error('shipping_line_one') is-invalid @enderror" placeholder="House number and street name" value="{{ old('shipping_line_one') }}" required>
-                                        @error('shipping_line_one')
+                                        <label for="billing_line_one">Street address <abbr class="required" title="required">*</abbr></label>
+                                        <input id="billing_line_one" name="billing_line_one" type="text" class="form-control @error('billing_line_one') is-invalid @enderror" placeholder="House number and street name" value="{{ old('billing_line_one') }}" required>
+                                        @error('billing_line_one')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
                                     <div class="form-group">
-                                        <label for="shipping_line_two" class="visually-hidden">Street address 2 <abbr class="required" title="required">*</abbr></label>
-                                        <input id="shipping_line_two" name="shipping_line_two" type="text" class="form-control" placeholder="Apartment, suite, unit etc. (optional)" value="{{ old('shipping_line_two') }}">
+                                        <label for="billing_line_two" class="visually-hidden">Street address 2 <abbr class="required" title="required">*</abbr></label>
+                                        <input id="billing_line_two" name="billing_line_two" type="text" class="form-control" placeholder="Apartment, suite, unit etc. (optional)" value="{{ old('billing_line_two') }}">
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="shipping_city">Town / City <abbr class="required" title="required">*</abbr></label>
-                                        <input id="shipping_city" name="shipping_city" type="text" class="form-control @error('shipping_city') is-invalid @enderror" value="{{ old('shipping_city') }}" required>
-                                        @error('shipping_city')
+                                        <label for="billing_city">Town / City <abbr class="required" title="required">*</abbr></label>
+                                        <input id="billing_city" name="billing_city" type="text" class="form-control @error('billing_city') is-invalid @enderror" value="{{ old('billing_city') }}" required>
+                                        @error('billing_city')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
                                 </div>
                                 <div class="col-md-12 mb-4">
                                     <div class="form-group">
-                                        <label for="shipping_state">District <abbr class="required" title="required">*</abbr></label>
-                                        <input id="shipping_state" name="shipping_state" type="text" class="form-control @error('shipping_state') is-invalid @enderror" value="{{ old('shipping_state') }}" required>
-                                        @error('shipping_state')
+                                        <label for="billing_state">District <abbr class="required" title="required">*</abbr></label>
+                                        <input id="billing_state" name="billing_state" type="text" class="form-control @error('billing_state') is-invalid @enderror" value="{{ old('billing_state') }}" required>
+                                        @error('billing_state')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="shipping_postcode">Postcode / ZIP (optional)</label>
-                                        <input id="shipping_postcode" name="shipping_postcode" type="text" class="form-control" value="{{ old('shipping_postcode') }}">
+                                        <label for="billing_postcode">Postcode / ZIP (optional)</label>
+                                        <input id="billing_postcode" name="billing_postcode" type="text" class="form-control" value="{{ old('billing_postcode') }}">
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="shipping_phone">Phone (optional)</label>
-                                        <input id="shipping_phone" name="shipping_phone" type="text" class="form-control" value="{{ old('shipping_phone') }}">
+                                        <label for="billing_phone">Phone (optional)</label>
+                                        <input id="billing_phone" name="billing_phone" type="text" class="form-control" value="{{ old('billing_phone') }}">
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="shipping_email">Email address <abbr class="required" title="required">*</abbr></label>
-                                        <input id="shipping_email" name="shipping_email" type="text" class="form-control @error('shipping_email') is-invalid @enderror" value="{{ old('shipping_email') }}" required>
-                                        @error('shipping_email')
+                                        <label for="billing_email">Email address <abbr class="required" title="required">*</abbr></label>
+                                        <input id="billing_email" name="billing_email" type="text" class="form-control @error('billing_email') is-invalid @enderror" value="{{ old('billing_email') }}" required>
+                                        @error('billing_email')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
@@ -169,29 +169,29 @@
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label for="billing_first_name">First name <abbr class="required" title="required">*</abbr></label>
-                                                    <input id="billing_first_name" name="billing_first_name" type="text" class="form-control" value="{{ old('billing_first_name') }}">
+                                                    <label for="shipping_first_name">First name <abbr class="required" title="required">*</abbr></label>
+                                                    <input id="shipping_first_name" name="shipping_first_name" type="text" class="form-control" value="{{ old('shipping_first_name') }}">
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label for="billing_last_name">Last name <abbr class="required" title="required">*</abbr></label>
-                                                    <input id="billing_last_name" name="billing_last_name" type="text" class="form-control" value="{{ old('billing_last_name') }}">
+                                                    <label for="shipping_last_name">Last name <abbr class="required" title="required">*</abbr></label>
+                                                    <input id="shipping_last_name" name="shipping_last_name" type="text" class="form-control" value="{{ old('shipping_last_name') }}">
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
                                                 <div class="form-group">
-                                                    <label for="billing_company">Company name (optional)</label>
-                                                    <input id="billing_company" name="billing_company" type="text" class="form-control" value="{{ old('billing_company') }}">
+                                                    <label for="shipping_company">Company name (optional)</label>
+                                                    <input id="shipping_company" name="shipping_company" type="text" class="form-control" value="{{ old('shipping_company') }}">
                                                 </div>
                                             </div>
                                             <div class="col-md-12 mb-4">
                                                 <div class="form-group">
-                                                    <label for="billing_country_id">Country <abbr class="required" title="required">*</abbr></label>
-                                                    <select id="billing_country_id" name="billing_country_id" class="form-control wide">
+                                                    <label for="shipping_country_id">Country <abbr class="required" title="required">*</abbr></label>
+                                                    <select id="shipping_country_id" name="shipping_country_id" class="form-control wide">
                                                         <option value="">Select Country</option>
                                                         @foreach($countries as $country)
-                                                            <option value="{{ $country->id }}" {{ old('billing_country_id') == $country->id ? 'selected' : '' }}>
+                                                            <option value="{{ $country->id }}" {{ old('shipping_country_id') == $country->id ? 'selected' : '' }}>
                                                                 {{ $country->name }}
                                                             </option>
                                                         @endforeach
@@ -200,30 +200,30 @@
                                             </div>
                                             <div class="col-md-12">
                                                 <div class="form-group">
-                                                    <label for="billing_line_one">Street address <abbr class="required" title="required">*</abbr></label>
-                                                    <input id="billing_line_one" name="billing_line_one" type="text" class="form-control" placeholder="House number and street name" value="{{ old('billing_line_one') }}">
+                                                    <label for="shipping_line_one">Street address <abbr class="required" title="required">*</abbr></label>
+                                                    <input id="shipping_line_one" name="shipping_line_one" type="text" class="form-control" placeholder="House number and street name" value="{{ old('shipping_line_one') }}">
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="billing_line_two" class="visually-hidden">Street address 2 <abbr class="required" title="required">*</abbr></label>
-                                                    <input id="billing_line_two" name="billing_line_two" type="text" class="form-control" placeholder="Apartment, suite, unit etc. (optional)" value="{{ old('billing_line_two') }}">
+                                                    <label for="shipping_line_two" class="visually-hidden">Street address 2 <abbr class="required" title="required">*</abbr></label>
+                                                    <input id="shipping_line_two" name="shipping_line_two" type="text" class="form-control" placeholder="Apartment, suite, unit etc. (optional)" value="{{ old('shipping_line_two') }}">
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
                                                 <div class="form-group">
-                                                    <label for="billing_city">Town / City <abbr class="required" title="required">*</abbr></label>
-                                                    <input id="billing_city" name="billing_city" type="text" class="form-control" value="{{ old('billing_city') }}">
+                                                    <label for="shipping_city">Town / City <abbr class="required" title="required">*</abbr></label>
+                                                    <input id="shipping_city" name="shipping_city" type="text" class="form-control" value="{{ old('shipping_city') }}">
                                                 </div>
                                             </div>
                                             <div class="col-md-12 mb-4">
                                                 <div class="form-group">
-                                                    <label for="billing_state">District <abbr class="required" title="required">*</abbr></label>
-                                                    <input id="billing_state" name="billing_state" type="text" class="form-control" value="{{ old('billing_state') }}">
+                                                    <label for="shipping_state">District <abbr class="required" title="required">*</abbr></label>
+                                                    <input id="shipping_state" name="shipping_state" type="text" class="form-control" value="{{ old('shipping_state') }}">
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
                                                 <div class="form-group">
-                                                    <label for="billing_postcode">Postcode / ZIP (optional)</label>
-                                                    <input id="billing_postcode" name="billing_postcode" type="text" class="form-control" value="{{ old('billing_postcode') }}">
+                                                    <label for="shipping_postcode">Postcode / ZIP (optional)</label>
+                                                    <input id="shipping_postcode" name="shipping_postcode" type="text" class="form-control" value="{{ old('shipping_postcode') }}">
                                                 </div>
                                             </div>
                                         </div>
