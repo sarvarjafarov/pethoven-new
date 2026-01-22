@@ -511,7 +511,7 @@
                         $logo.attr('src', greenLogoUrl);
                     }
                 } else {
-                    // Header is not sticky (transparent) - use white logo
+                    // Header is not sticky (transparent background) - use white logo for visibility
                     if (currentSrc.indexOf('logo-white') === -1) {
                         $logo.attr('src', whiteLogoUrl);
                     }

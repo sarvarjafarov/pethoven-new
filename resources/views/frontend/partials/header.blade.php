@@ -13,11 +13,7 @@
             <div class="{{ $logoCols }}">
                 <div class="header-logo">
                     <a href="{{ route('home') }}">
-                        @if($isHomePage)
-                            <img class="logo-main" src="{{ asset('brancy/images/logo-white.png') }}" width="95" height="68" alt="{{ config('app.name') }}" />
-                        @else
-                            <img class="logo-main" src="{{ asset('brancy/images/logo.png') }}" width="95" height="68" alt="{{ config('app.name') }}" />
-                        @endif
+                        <img class="logo-main" src="{{ asset('brancy/images/logo.png') }}" width="95" height="68" alt="{{ config('app.name') }}" />
                     </a>
                 </div>
             </div>
