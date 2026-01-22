@@ -117,13 +117,13 @@
                         <div class="product-widget-range-slider">
                             <div id="slider-range" class="noUi-target"></div>
                             <div class="slider-labels">
-                                <span id="slider-range-value1">${{ request('min_price', $minPrice) }}</span>
+                                <span id="slider-range-value1">${{ number_format(request('min_price', $minPrice), 0) }}</span>
                                 <span> — </span>
-                                <span id="slider-range-value2">${{ request('max_price', $maxPrice) }}</span>
+                                <span id="slider-range-value2">${{ number_format(request('max_price', $maxPrice), 0) }}</span>
                             </div>
                             <form action="{{ route('shop.index') }}" method="GET" id="price-filter-form" style="display: none;">
-                                <input type="hidden" name="min_price" id="min-price-input" value="{{ request('min_price', $minPrice) }}">
-                                <input type="hidden" name="max_price" id="max-price-input" value="{{ request('max_price', $maxPrice) }}">
+                                <input type="hidden" name="min_price" id="min-price-input" value="{{ request('min_price') ?: $minPrice }}">
+                                <input type="hidden" name="max_price" id="max-price-input" value="{{ request('max_price') ?: $maxPrice }}">
                                 @if(request('collection'))
                                     <input type="hidden" name="collection" value="{{ request('collection') }}">
                                 @endif
@@ -299,20 +299,41 @@
 @endpush
 
 @push('scripts')
+<script>
+// Store original jQuery ready function to prevent auto-init
+var originalJQueryReady = null;
+if (typeof $ !== 'undefined' && $.fn.ready) {
+    // We'll handle this differently
+}
+</script>
 <script src="{{ asset('brancy/js/plugins/range-slider.js') }}"></script>
 <script>
+// Immediately after range-slider.js loads, prevent its auto-init
+(function() {
+    // Store reference to slider element before auto-init can run
+    var sliderElement = document.getElementById('slider-range');
+    if (sliderElement && sliderElement.noUiSlider) {
+        try {
+            sliderElement.noUiSlider.destroy();
+        } catch(e) {
+            // Ignore
+        }
+    }
+})();
+
 $(document).ready(function() {
-    // Wait for range-slider.js to fully load
+    // Wait for DOM and scripts to be fully ready
     setTimeout(function() {
         // Initialize price range slider
         var sliderRange = document.getElementById('slider-range');
         
-        // Check if slider exists and noUiSlider is available
+        // Check if slider exists
         if (!sliderRange) {
             console.error('Slider element not found');
             return;
         }
         
+        // Check if noUiSlider is available
         if (typeof noUiSlider === 'undefined') {
             console.error('noUiSlider not found');
             return;
@@ -327,10 +348,17 @@ $(document).ready(function() {
             }
         }
         
+        // Get price values - ensure they are numbers
         var minPrice = {{ $minPrice }};
         var maxPrice = {{ $maxPrice }};
-        var currentMin = {{ request('min_price', $minPrice) }};
-        var currentMax = {{ request('max_price', $maxPrice) }};
+        var currentMin = {{ request('min_price') ? request('min_price') : $minPrice }};
+        var currentMax = {{ request('max_price') ? request('max_price') : $maxPrice }};
+        
+        // Ensure values are valid numbers
+        minPrice = parseInt(minPrice) || 430;
+        maxPrice = parseInt(maxPrice) || 2500;
+        currentMin = parseInt(currentMin) || minPrice;
+        currentMax = parseInt(currentMax) || maxPrice;
         
         // Ensure values are within range
         currentMin = Math.max(minPrice, Math.min(currentMin, maxPrice));
@@ -341,11 +369,24 @@ $(document).ready(function() {
         }
         
         // Use wNumb formatter (included in range-slider.js)
-        var moneyFormat = wNumb({
-            decimals: 0,
-            thousand: ',',
-            prefix: '$'
-        });
+        var moneyFormat;
+        if (typeof wNumb !== 'undefined') {
+            moneyFormat = wNumb({
+                decimals: 0,
+                thousand: ',',
+                prefix: '$'
+            });
+        } else {
+            // Fallback formatter
+            moneyFormat = {
+                to: function(value) {
+                    return '$' + Math.round(value);
+                },
+                from: function(value) {
+                    return Number(value);
+                }
+            };
+        }
         
         try {
             noUiSlider.create(sliderRange, {
@@ -385,8 +426,10 @@ $(document).ready(function() {
                     var form = document.getElementById('price-filter-form');
                     if (form) {
                         // Update form values before submit
-                        document.getElementById('min-price-input').value = moneyFormat.from(values[0]);
-                        document.getElementById('max-price-input').value = moneyFormat.from(values[1]);
+                        var minVal = moneyFormat.from(values[0]);
+                        var maxVal = moneyFormat.from(values[1]);
+                        document.getElementById('min-price-input').value = minVal;
+                        document.getElementById('max-price-input').value = maxVal;
                         form.submit();
                     }
                 }, 500);
@@ -394,7 +437,7 @@ $(document).ready(function() {
         } catch (e) {
             console.error('Error initializing slider:', e);
         }
-    }, 200);
+    }, 400);
 });
 </script>
 @endpush
