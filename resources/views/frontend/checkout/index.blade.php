@@ -403,6 +403,28 @@
 
 @push('css')
 <style>
+    /* Title styling to match template */
+    .checkout-billing-details-wrap .title,
+    .shopping-checkout-wrap .title {
+        font-size: 20px;
+        position: relative;
+        padding-bottom: 12px;
+        margin-bottom: 35px;
+        font-weight: 600;
+        text-transform: capitalize;
+        color: #1D3557; /* Dark blue to match template */
+    }
+    .checkout-billing-details-wrap .title:before,
+    .shopping-checkout-wrap .title:before {
+        background-color: #000000;
+        bottom: 0;
+        content: "";
+        height: 2px;
+        left: 0;
+        position: absolute;
+        width: 50px;
+    }
+    
     /* Fix for Nice Select Validation Styling */
     .form-control.is-invalid + .nice-select {
         border-color: #dc3545; /* Bootstrap danger color */
@@ -412,60 +434,75 @@
         border-bottom: 2px solid #dc3545;
     }
     
-    /* Ensure nice-select has same height/style as other inputs if needed */
-    .nice-select {
-        float: none;
-        width: 100%;
-        margin-bottom: 0; 
-        border-radius: 4px; /* Match theme input style */
-        height: 70px;     /* Match theme input height */
-        line-height: 70px;/* Vertically center text */
-        padding-left: 24px;
-        border: 1px solid #ebeef5;
-    }
-    .nice-select:after {
-        right: 24px;
-        margin: 0;
-    }
-    
-    /* Input Styling to match template */
-    .form-control {
-        height: 70px;
-        border-radius: 4px;
-        border: 1px solid #ebeef5;
-        padding-left: 24px;
-        font-size: 16px;
-        color: #1c1c1c;
-        background-color: #fff;
-        box-shadow: none;
-        transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    }
-    
-    .form-control:focus {
-        border-color: #a6b1c2;
-        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07);
-    }
-
-    .form-control::-webkit-input-placeholder {
-        color: #626262;
-    }
-    
-    /* Label Styling to match template */
-    .form-group {
+    /* Form group and label styling to match template */
+    .billing-form-wrap form .form-group {
         margin-bottom: 20px;
     }
-    .form-group label {
+    .billing-form-wrap form .form-group label {
         font-size: 14px;
         color: #000000;
         margin-bottom: 8px;
         display: block;
     }
-    
-    /* Required asterisk color */
-    .required {
+    .billing-form-wrap form .form-group label .required {
         color: #f00;
-        text-decoration: none;
-        font-weight: 700;
+    }
+    
+    /* Ensure billing form inputs match template exactly */
+    .billing-form-wrap form .form-group .form-control {
+        border-radius: 4px;
+        box-shadow: none;
+        border: 1px solid #ebeef5;
+        color: #1c1c1c;
+        font-size: 16px;
+        height: 70px;
+        line-height: 70px;
+        background-color: #fff;
+        padding: 0 24px;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .billing-form-wrap form .form-group .form-control:active,
+    .billing-form-wrap form .form-group .form-control:focus {
+        border-color: #a6b1c2;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07);
+    }
+    
+    .billing-form-wrap form .form-group .form-control::-webkit-input-placeholder {
+        color: #626262;
+    }
+    .billing-form-wrap form .form-group .form-control:-moz-placeholder {
+        color: #626262;
+    }
+    .billing-form-wrap form .form-group .form-control::-moz-placeholder {
+        color: #626262;
+    }
+    .billing-form-wrap form .form-group .form-control:-ms-input-placeholder {
+        color: #626262;
+    }
+    
+    .billing-form-wrap form .form-group textarea.form-control {
+        min-height: 120px;
+        background-color: #fff;
+        border: 1px solid #e8e8e8;
+        padding: 20px;
+        line-height: 1.3;
+    }
+    
+    /* Nice-select styling to match inputs exactly */
+    .billing-form-wrap form .form-group .nice-select {
+        border-radius: 4px;
+        border: 1px solid #ebeef5;
+        height: 70px;
+        line-height: 70px;
+        padding: 0 24px;
+        float: none;
+        width: 100%;
+        margin-bottom: 0;
+    }
+    .billing-form-wrap form .form-group .nice-select:after {
+        right: 24px;
+        margin: 0;
     }
 
     /* Adjust nice-select internal list */
@@ -557,33 +594,24 @@
         color: #fff;
     }
 
-    /* Style nice-select selected option */
-    .nice-select .option.selected {
-        font-weight: 700;
-        background-color: #fff;
-    }
-
-    /* Active/Focus state for Selected Country text */
-    .nice-select.open .current {
-       font-weight: 700; /* Bold when open or selected */
-    }
-
-    /* Selected Item in Dropdown */
-    .nice-select .option.selected {
-       font-weight: 700;
-       background-color: #f7f7f7;
-    }
-
-    /* Match the "Select Country" placeholder style */
-    .nice-select .current {
-        font-size: 14px;
-        color: #000;
-        font-weight: 700; /* Bold to match attached image */
+    /* Nice-select dropdown styling */
+    .billing-form-wrap form .form-group .nice-select .current {
+        font-size: 16px;
+        color: #1c1c1c;
+        font-weight: 400;
     }
     
-    .nice-select .option:hover {
+    .billing-form-wrap form .form-group .nice-select .option.selected {
+        font-weight: 400;
+        background-color: #fff;
+    }
+    
+    .billing-form-wrap form .form-group .nice-select .option:hover {
         background-color: #f7f7f7;
-        font-weight: 700;
+    }
+    
+    .billing-form-wrap form .form-group .nice-select.open .current {
+        font-weight: 400;
     }
     
     /* Error message styling tweak */
