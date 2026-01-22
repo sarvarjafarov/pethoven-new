@@ -234,14 +234,29 @@
     .product-sidebar-widget .product-widget-range-slider .noUi-connect {
         background-color: #A8DADC !important;
     }
+    .product-sidebar-widget .product-widget-range-slider .noUi-background {
+        background-color: #e8e8e8 !important;
+    }
+    .product-sidebar-widget .product-widget-range-slider .noUi-horizontal {
+        height: 4px !important;
+    }
     .product-sidebar-widget .product-widget-range-slider .noUi-horizontal .noUi-handle {
         background-color: #457B9D !important;
-        width: 12px !important;
-        height: 12px !important;
+        width: 10px !important;
+        height: 10px !important;
         border-radius: 50% !important;
+        top: 50% !important;
+        transform: translate(0px, -50%) !important;
+        -webkit-transform: translate(0px, -50%) !important;
+        -moz-transform: translate(0px, -50%) !important;
+        -ms-transform: translate(0px, -50%) !important;
+        -o-transform: translate(0px, -50%) !important;
+        left: -5px !important;
+        border: none !important;
+        box-shadow: none !important;
     }
     .product-sidebar-widget .product-widget-range-slider .noUi-base {
-        background-color: #e8e8e8;
+        background-color: transparent;
     }
     .product-sidebar-widget .product-widget-range-slider .slider-labels {
         margin-top: 14px;
