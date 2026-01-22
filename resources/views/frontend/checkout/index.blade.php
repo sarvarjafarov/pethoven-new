@@ -493,6 +493,28 @@ $(document).ready(function() {
             }
         }
     });
+
+    // FINAL SAFETY NET: Force sync all nice-select dropdowns on form submit
+    // This catches any case where the click handler might have been missed
+    $('#checkout-form').on('submit', function() {
+        $('.nice-select').each(function() {
+            var $dropdown = $(this);
+            var $select = $dropdown.prev('select');
+            
+            // Find the selected option in the visual dropdown
+            var $selectedOption = $dropdown.find('.option.selected');
+            var selectedValue = $selectedOption.data('value');
+            
+            // Force update the native select if valid
+            if ($select.length > 0 && selectedValue !== undefined) {
+                 $select.val(selectedValue);
+                 console.log('Synced select ' + $select.attr('id') + ' with value: ' + selectedValue);
+            }
+        });
+    });
+
+    // Debugging: Log initialization
+    console.log('Checkout script version 3.0 loaded');
 });
 </script>
 @endpush
