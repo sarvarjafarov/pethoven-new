@@ -491,51 +491,36 @@
         $('#cart-modal-product-image').css('opacity', '0');
     });
     
-    // Switch logo based on sticky header state (for transparent header on home page)
+    // Ensure green logo is always used (prevent any white logo from showing)
     $(document).ready(function() {
-        var $header = $('.sticky-header');
         var $logo = $('.header-logo img.logo-main');
-        var isHomePage = $header.hasClass('header-transparent');
         var greenLogoUrl = '{{ asset('brancy/images/logo.png') }}';
-        var whiteLogoUrl = '{{ asset('brancy/images/logo-white.png') }}';
         
-        // Keep green logo by default - only switch to white if header becomes transparent again after being sticky
-        // (This shouldn't normally happen, but just in case)
-        if (isHomePage && $logo.length) {
-            // Function to update logo based on sticky state
-            function updateLogo() {
-                var isSticky = $header.hasClass('sticky');
-                var currentSrc = $logo.attr('src');
-                
-                // Always use green logo - never switch to white automatically
-                if (currentSrc.indexOf('logo-white') !== -1) {
-                    $logo.attr('src', greenLogoUrl);
-                }
+        if ($logo.length) {
+            // Force green logo on page load
+            var currentSrc = $logo.attr('src');
+            if (currentSrc.indexOf('logo-white') !== -1) {
+                $logo.attr('src', greenLogoUrl);
             }
             
-            // Watch for sticky class changes using MutationObserver
+            // Watch for any changes and force green logo
             if (typeof MutationObserver !== 'undefined') {
                 var observer = new MutationObserver(function(mutations) {
                     mutations.forEach(function(mutation) {
-                        if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                            updateLogo();
+                        if (mutation.type === 'attributes' && mutation.attributeName === 'src') {
+                            var src = $logo.attr('src');
+                            if (src && src.indexOf('logo-white') !== -1) {
+                                $logo.attr('src', greenLogoUrl);
+                            }
                         }
                     });
                 });
                 
-                observer.observe($header[0], {
+                observer.observe($logo[0], {
                     attributes: true,
-                    attributeFilter: ['class']
+                    attributeFilter: ['src']
                 });
             }
-            
-            // Also check on scroll (backup method)
-            $(window).on('scroll', function() {
-                updateLogo();
-            });
-            
-            // Initial check - ensure green logo
-            updateLogo();
         }
     });
     </script>
