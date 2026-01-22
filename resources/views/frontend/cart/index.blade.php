@@ -17,6 +17,7 @@
 <!--== Start Product Area Wrapper ==-->
 <section class="section-space">
     <div class="container">
+        <!-- Layout derived from Brancy product-cart template -->
         @if(session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 {{ session('success') }}
@@ -32,6 +33,37 @@
         @endif
 
         @if($cart && $cart->lines->count() > 0)
+            @php
+                $cartSubtotal = $cart->subTotal;
+                $cartTotal = $cart->total;
+                $cartShippingTotal = $cart->shippingTotal;
+                $cartTaxTotal = $cart->taxTotal;
+                $cartDiscountTotal = $cart->discountTotal;
+                $formattedSubtotal = optional($cartSubtotal)->formatted ?? '$0.00';
+                $formattedTotal = optional($cartTotal)->formatted ?? '$0.00';
+                $formattedTax = optional($cartTaxTotal)->formatted;
+                $formattedDiscount = optional($cartDiscountTotal)->formatted;
+                $shippingCountry = session('shipping_country') ?? session('shipping_country_name') ?? 'USA';
+                $flatShippingLabel = ($cartShippingTotal && $cartShippingTotal->value > 0)
+                    ? $cartShippingTotal->formatted
+                    : '$3.00';
+                $selectedShippingMethod = ($cartShippingTotal && $cartShippingTotal->value > 0) ? 'flat_rate' : 'free';
+                $shippingOptions = [
+                    'flat_rate' => [
+                        'id' => 'shipping_flat_rate',
+                        'label' => 'Flat rate',
+                        'priceLabel' => $flatShippingLabel,
+                    ],
+                    'free' => [
+                        'id' => 'shipping_free',
+                        'label' => 'Free shipping',
+                    ],
+                    'local' => [
+                        'id' => 'shipping_local',
+                        'label' => 'Local pickup',
+                    ],
+                ];
+            @endphp
             <div class="shopping-cart-form table-responsive">
                 <form action="#" method="post">
                     <table class="table text-center">
@@ -114,50 +146,49 @@
                                 <tr class="cart-subtotal">
                                     <th>Subtotal</th>
                                     <td>
-                                        <span class="amount" id="cart-subtotal">{{ $cart->subTotal->formatted }}</span>
+                                        <span class="amount" id="cart-subtotal">{{ $formattedSubtotal }}</span>
                                     </td>
                                 </tr>
                                 <tr class="shipping-totals">
                                     <th>Shipping</th>
                                     <td>
                                         <ul class="shipping-list">
-                                            <li class="radio">
-                                                <input type="radio" name="shipping_method" id="shipping_flat_rate" value="flat_rate" {{ ($cart->shippingTotal && $cart->shippingTotal->value > 0) ? 'checked' : '' }}>
-                                                <label for="shipping_flat_rate">Flat rate: <span>@if($cart->shippingTotal && $cart->shippingTotal->value > 0)
-                                                    {{ $cart->shippingTotal->formatted }}
-                                                @else
-                                                    $3.00
-                                                @endif</span></label>
-                                            </li>
-                                            <li class="radio">
-                                                <input type="radio" name="shipping_method" id="shipping_free" value="free" {{ (!$cart->shippingTotal || $cart->shippingTotal->value == 0) ? 'checked' : '' }}>
-                                                <label for="shipping_free">Free shipping</label>
-                                            </li>
-                                            <li class="radio">
-                                                <input type="radio" name="shipping_method" id="shipping_local" value="local">
-                                                <label for="shipping_local">Local pickup</label>
-                                            </li>
+                                            @foreach($shippingOptions as $method => $option)
+                                                <li class="radio">
+                                                    <input type="radio"
+                                                        name="shipping_method"
+                                                        id="{{ $option['id'] }}"
+                                                        value="{{ $method }}"
+                                                        {{ $selectedShippingMethod === $method ? 'checked' : '' }}>
+                                                    <label for="{{ $option['id'] }}">
+                                                        {{ $option['label'] }}
+                                                        @isset($option['priceLabel'])
+                                                            <span>{{ $option['priceLabel'] }}</span>
+                                                        @endisset
+                                                    </label>
+                                                </li>
+                                            @endforeach
                                         </ul>
-                                        <p class="destination">Shipping to <strong>USA</strong>.</p>
+                                        <p class="destination">Shipping to <strong>{{ $shippingCountry }}</strong>.</p>
                                         <a href="javascript:void(0)" class="btn-shipping-address">Change address</a>
                                     </td>
                                 </tr>
-                                @if($cart->taxTotal && $cart->taxTotal->value > 0)
+                                @if($cartTaxTotal && $cartTaxTotal->value > 0)
                                     <tr>
                                         <th>Tax</th>
-                                        <td class="amount" id="cart-tax">{{ $cart->taxTotal->formatted }}</td>
+                                        <td class="amount" id="cart-tax">{{ $formattedTax }}</td>
                                     </tr>
                                 @endif
-                                @if($cart->discountTotal && $cart->discountTotal->value > 0)
+                                @if($cartDiscountTotal && $cartDiscountTotal->value > 0)
                                     <tr>
                                         <th>Discount</th>
-                                        <td class="amount" style="color: #FF6565;" id="cart-discount">-{{ $cart->discountTotal->formatted }}</td>
+                                        <td class="amount" style="color: #FF6565;" id="cart-discount">-{{ $formattedDiscount }}</td>
                                     </tr>
                                 @endif
                                 <tr class="order-total">
                                     <th>Total</th>
                                     <td>
-                                        <span class="amount" id="cart-total">{{ $cart->total->formatted }}</span>
+                                        <span class="amount" id="cart-total">{{ $formattedTotal }}</span>
                                     </td>
                                 </tr>
                             </tbody>
