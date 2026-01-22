@@ -389,7 +389,10 @@
     /* Fix for Nice Select Validation Styling */
     .form-control.is-invalid + .nice-select {
         border-color: #dc3545; /* Bootstrap danger color */
-        background-image: none; /* Remove default check/icon if needed */
+    }
+    .form-control.is-invalid + .nice-select:after {
+        border-right: 2px solid #dc3545;
+        border-bottom: 2px solid #dc3545;
     }
     
     /* Ensure nice-select has same height/style as other inputs if needed */
@@ -403,6 +406,8 @@
     .invalid-feedback {
         display: block; /* Force display when present */
         margin-top: 5px;
+        font-size: 0.875em;
+        color: #dc3545;
     }
 </style>
 @endpush
