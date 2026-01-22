@@ -297,10 +297,7 @@
                                 <div id="PaymentMethodAccordion">
                                     <div class="card">
                                         <div class="card-header" id="check_payments">
-                                            <h5 class="title" data-bs-toggle="collapse" data-bs-target="#itemOne" aria-controls="itemOne" aria-expanded="true">
-                                                <input type="radio" name="payment_method" id="payment_bank" value="bank_transfer" checked style="height: auto; width: auto; display: inline-block; margin-right: 5px;">
-                                                <label for="payment_bank" style="display: inline;">Direct bank transfer</label>
-                                            </h5>
+                                            <h5 class="title" data-bs-toggle="collapse" data-bs-target="#itemOne" aria-controls="itemOne" aria-expanded="true">Direct bank transfer</h5>
                                         </div>
                                         <div id="itemOne" class="collapse show" aria-labelledby="check_payments" data-bs-parent="#PaymentMethodAccordion">
                                             <div class="card-body">
@@ -310,10 +307,7 @@
                                     </div>
                                     <div class="card">
                                         <div class="card-header" id="check_payments2">
-                                            <h5 class="title" data-bs-toggle="collapse" data-bs-target="#itemTwo" aria-controls="itemTwo" aria-expanded="false">
-                                                <input type="radio" name="payment_method" id="payment_check" value="check_payment" style="height: auto; width: auto; display: inline-block; margin-right: 5px;">
-                                                <label for="payment_check" style="display: inline;">Check payments</label>
-                                            </h5>
+                                            <h5 class="title" data-bs-toggle="collapse" data-bs-target="#itemTwo" aria-controls="itemTwo" aria-expanded="false">Check payments</h5>
                                         </div>
                                         <div id="itemTwo" class="collapse" aria-labelledby="check_payments2" data-bs-parent="#PaymentMethodAccordion">
                                             <div class="card-body">
@@ -323,10 +317,7 @@
                                     </div>
                                     <div class="card">
                                         <div class="card-header" id="check_payments3">
-                                            <h5 class="title" data-bs-toggle="collapse" data-bs-target="#itemThree" aria-controls="itemThree" aria-expanded="false">
-                                                <input type="radio" name="payment_method" id="payment_cod" value="cash_on_delivery" style="height: auto; width: auto; display: inline-block; margin-right: 5px;">
-                                                <label for="payment_cod" style="display: inline;">Cash on delivery</label>
-                                            </h5>
+                                            <h5 class="title" data-bs-toggle="collapse" data-bs-target="#itemThree" aria-controls="itemThree" aria-expanded="false">Cash on delivery</h5>
                                         </div>
                                         <div id="itemThree" class="collapse" aria-labelledby="check_payments3" data-bs-parent="#PaymentMethodAccordion">
                                             <div class="card-body">
@@ -336,10 +327,7 @@
                                     </div>
                                     <div class="card">
                                         <div class="card-header" id="check_payments4">
-                                            <h5 class="title" data-bs-toggle="collapse" data-bs-target="#itemFour" aria-controls="itemFour" aria-expanded="false">
-                                                <input type="radio" name="payment_method" id="payment_paypal" value="paypal" style="height: auto; width: auto; display: inline-block; margin-right: 5px;">
-                                                <label for="payment_paypal" style="display: inline;">PayPal Express Checkout</label>
-                                            </h5>
+                                            <h5 class="title" data-bs-toggle="collapse" data-bs-target="#itemFour" aria-controls="itemFour" aria-expanded="false">PayPal Express Checkout</h5>
                                         </div>
                                         <div id="itemFour" class="collapse" aria-labelledby="check_payments4" data-bs-parent="#PaymentMethodAccordion">
                                             <div class="card-body">
