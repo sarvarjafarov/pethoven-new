@@ -448,7 +448,7 @@
     }
     .billing-form-wrap .form-group label .required,
     .billing-form-wrap form .form-group label .required {
-        color: #f00;
+        color: #16A34A;
     }
     
     /* Ensure billing form inputs match template exactly - using !important to override Bootstrap */

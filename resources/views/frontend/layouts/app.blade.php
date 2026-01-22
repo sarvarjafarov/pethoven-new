@@ -359,8 +359,8 @@
     <div class="modal fade" id="addToCartModal" tabindex="-1" role="dialog" aria-labelledby="addToCartModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 540px;">
             <div class="modal-content" style="border: none; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.2);">
-                <!-- Modal Header (Red) -->
-                <div class="modal-header" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; border: none; padding: 18px 24px; position: relative;">
+                <!-- Modal Header (Green) -->
+                <div class="modal-header" style="background: linear-gradient(135deg, #22C55E 0%, #16A34A 100%); color: white; border: none; padding: 18px 24px; position: relative;">
                     <h5 class="modal-title" id="addToCartModalLabel" style="font-size: 17px; font-weight: 700; letter-spacing: 0.3px; margin: 0; line-height: 1.3;">Added To Cart Successfully!</h5>
                     <button type="button" class="btn-close-modal" data-bs-dismiss="modal" aria-label="Close" style="color: #000; opacity: 1; text-shadow: none; font-size: 20px; line-height: 1; font-weight: 300; padding: 0; margin: 0; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: all 0.2s ease; background: #ffffff; border: 1px solid #c8c8c8; box-shadow: 0 1px 3px rgba(0,0,0,0.1); cursor: pointer;" onmouseover="this.style.backgroundColor='#f5f5f5'; this.style.borderColor='#999';" onmouseout="this.style.backgroundColor='#ffffff'; this.style.borderColor='#c8c8c8';">
                         <span aria-hidden="true" style="display: block; line-height: 1;">&times;</span>
@@ -387,11 +387,11 @@
                 </div>
                 <!-- Modal Footer -->
                 <div class="modal-footer" style="border-top: 1px solid #e9ecef; padding: 20px 24px; background: #ffffff; display: flex; gap: 12px;">
-                    <a href="{{ route('cart.index') }}" class="btn" style="flex: 1; padding: 12px 20px; background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 14px; letter-spacing: 0.5px; text-transform: uppercase; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(231, 76, 60, 0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(231, 76, 60, 0.3)';">
+                    <a href="{{ route('cart.index') }}" class="btn" style="flex: 1; padding: 12px 20px; background: linear-gradient(135deg, #22C55E 0%, #16A34A 100%); color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 14px; letter-spacing: 0.5px; text-transform: uppercase; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(34, 197, 94, 0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(231, 76, 60, 0.3)';">
                         <i class="fa fa-shopping-cart" style="font-size: 16px;"></i>
                         <span>VIEW CART</span>
                     </a>
-                    <button type="button" class="btn" id="continueShoppingBtn" style="flex: 1; padding: 5px 20px; background: #ffffff; color: #c0392b; border: 1px solid #c0392b; border-radius: 8px; font-weight: 600; font-size: 14px; letter-spacing: 0.5px; text-transform: uppercase; transition: all 0.2s ease; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1); outline: none;" onmouseover="this.style.boxShadow='0 3px 6px rgba(0,0,0,0.15)';" onmouseout="this.style.boxShadow='0 2px 4px rgba(0,0,0,0.1)';">
+                    <button type="button" class="btn" id="continueShoppingBtn" style="flex: 1; padding: 5px 20px; background: #ffffff; color: #16A34A; border: 1px solid #16A34A; border-radius: 8px; font-weight: 600; font-size: 14px; letter-spacing: 0.5px; text-transform: uppercase; transition: all 0.2s ease; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1); outline: none;" onmouseover="this.style.boxShadow='0 3px 6px rgba(0,0,0,0.15)';" onmouseout="this.style.boxShadow='0 2px 4px rgba(0,0,0,0.1)';">
                         CONTINUE SHOPPING
                     </button>
                 </div>
@@ -427,8 +427,8 @@
         /* Override Bootstrap button styles for Continue Shopping button */
         #continueShoppingBtn.btn {
             background-color: #ffffff !important;
-            color: #c0392b !important;
-            border: 1px solid #c0392b !important;
+            color: #16A34A !important;
+            border: 1px solid #16A34A !important;
             border-radius: 8px !important;
             font-weight: 600 !important;
             font-size: 14px !important;
@@ -443,8 +443,8 @@
         #continueShoppingBtn.btn:focus,
         #continueShoppingBtn.btn:active {
             background-color: #ffffff !important;
-            color: #c0392b !important;
-            border-color: #c0392b !important;
+            color: #16A34A !important;
+            border-color: #16A34A !important;
             box-shadow: 0 3px 6px rgba(0,0,0,0.15) !important;
             outline: none !important;
         }
