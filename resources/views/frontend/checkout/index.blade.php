@@ -400,6 +400,23 @@
         float: none;
         width: 100%;
         margin-bottom: 0; 
+        border-radius: 0; /* Match theme input style */
+        height: 50px;     /* Match theme input height */
+        line-height: 48px;/* Vertically center text */
+        padding-left: 20px;
+    }
+
+    /* Adjust nice-select internal list */
+    .nice-select .list {
+        width: 100%;
+        border-radius: 0;
+        margin-top: 1px;
+    }
+    
+    /* Ensure placeholder color matches theme */
+    .nice-select .current {
+        color: #626262; 
+        font-size: 14px;
     }
 
     /* Error message styling tweak */
