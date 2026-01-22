@@ -135,7 +135,7 @@
                                         @enderror
                                     </div>
                                 </div>
-                                <div class="col-md-12 mb-4">
+                                <div class="col-md-6 mb-4">
                                     <div class="form-group">
                                         <label for="billing_state">District <abbr class="required" title="required">*</abbr></label>
                                         <input id="billing_state" name="billing_state" type="text" class="form-control @error('billing_state') is-invalid @enderror" value="{{ old('billing_state') }}" required>
@@ -144,19 +144,19 @@
                                         @enderror
                                     </div>
                                 </div>
-                                <div class="col-md-12">
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="billing_postcode">Postcode / ZIP (optional)</label>
                                         <input id="billing_postcode" name="billing_postcode" type="text" class="form-control" value="{{ old('billing_postcode') }}">
                                     </div>
                                 </div>
-                                <div class="col-md-12">
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="billing_phone">Phone (optional)</label>
                                         <input id="billing_phone" name="billing_phone" type="text" class="form-control" value="{{ old('billing_phone') }}">
                                     </div>
                                 </div>
-                                <div class="col-md-12">
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="billing_email">Email address <abbr class="required" title="required">*</abbr></label>
                                         <input id="billing_email" name="billing_email" type="text" class="form-control @error('billing_email') is-invalid @enderror" value="{{ old('billing_email') }}" required>
@@ -251,7 +251,7 @@
                                                     @enderror
                                                 </div>
                                             </div>
-                                            <div class="col-md-12">
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="shipping_postcode">Postcode / ZIP (optional)</label>
                                                     <input id="shipping_postcode" name="shipping_postcode" type="text" class="form-control @error('shipping_postcode') is-invalid @enderror" value="{{ old('shipping_postcode') }}">
@@ -412,6 +412,36 @@
         line-height: 50px;/* Vertically center text */
         padding-left: 20px;
         border: 1px solid #e8e8e8;
+    }
+    
+    /* Input Styling to match template */
+    .form-control {
+        height: 50px;
+        border-radius: 0;
+        border: 1px solid #e8e8e8;
+        padding-left: 20px;
+        font-size: 14px;
+        color: #474747;
+    }
+    
+    .form-control:focus {
+        border-color: #000;
+        box-shadow: none;
+    }
+    
+    /* Label Styling to match template */
+    .form-group label {
+        font-size: 14px;
+        color: #474747;
+        margin-bottom: 8px;
+        display: block;
+    }
+    
+    /* Required asterisk color */
+    .required {
+        color: #ff0000;
+        text-decoration: none;
+        font-weight: 700;
     }
 
     /* Adjust nice-select internal list */
