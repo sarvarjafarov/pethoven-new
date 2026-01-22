@@ -413,16 +413,12 @@
         font-weight: 600;
         text-transform: capitalize;
         color: #000000;
+        border-bottom: 2px solid #000000;
+        display: inline-block;
     }
     .checkout-billing-details-wrap .title:before,
     .shopping-checkout-wrap .title:before {
-        background-color: #000000;
-        bottom: 0;
-        content: "";
-        height: 2px;
-        left: 0;
-        position: absolute;
-        width: 50px;
+        display: none;
     }
     
     /* Fix for Nice Select Validation Styling */
