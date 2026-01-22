@@ -57,7 +57,7 @@
             <!--== End Checkout Coupon Accordion ==-->
         </div>
 
-        <form action="{{ route('checkout.process') }}" method="POST" id="checkout-form">
+        <form action="{{ route('checkout.process') }}" method="POST" id="checkout-form" novalidate>
             @csrf
             <div class="row">
                 <div class="col-lg-6">
@@ -356,6 +356,29 @@
 </section>
 <!--== End Shopping Checkout Area Wrapper ==-->
 @endsection
+
+@push('css')
+<style>
+    /* Fix for Nice Select Validation Styling */
+    .form-control.is-invalid + .nice-select {
+        border-color: #dc3545; /* Bootstrap danger color */
+        background-image: none; /* Remove default check/icon if needed */
+    }
+    
+    /* Ensure nice-select has same height/style as other inputs if needed */
+    .nice-select {
+        float: none;
+        width: 100%;
+        margin-bottom: 0; 
+    }
+
+    /* Error message styling tweak */
+    .invalid-feedback {
+        display: block; /* Force display when present */
+        margin-top: 5px;
+    }
+</style>
+@endpush
 
 @push('scripts')
 <script>
