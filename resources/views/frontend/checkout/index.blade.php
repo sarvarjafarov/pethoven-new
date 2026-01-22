@@ -355,11 +355,11 @@
                                     </div>
                                     <div class="card">
                                         <div class="card-header" id="check_payments4">
-                                            <h5 class="title" data-bs-toggle="collapse" data-bs-target="#itemFour" aria-controls="itemFour" aria-expanded="false" data-payment-value="paypal">PayPal Express Checkout</h5>
+                                            <h5 class="title" data-bs-toggle="collapse" data-bs-target="#itemFour" aria-controls="itemFour" aria-expanded="false" data-payment-value="stripe">Credit Card (Stripe)</h5>
                                         </div>
                                         <div id="itemFour" class="collapse" aria-labelledby="check_payments4" data-bs-parent="#PaymentMethodAccordion">
                                             <div class="card-body">
-                                                <p>Pay via PayPal; you can pay with your credit card if you don’t have a PayPal account.</p>
+                                                <p>Pay via Stripe; you can pay with your credit card.</p>
                                             </div>
                                         </div>
                                     </div>
@@ -429,6 +429,12 @@ $(document).ready(function() {
         
         if(value) {
             $('#payment_method_input').val(value);
+            // Change button text based on payment method
+            if(value === 'stripe') {
+                $('.btn-place-order').text('Continue to Payment');
+            } else {
+                $('.btn-place-order').text('Place Order');
+            }
         }
     });
 
