@@ -120,6 +120,44 @@ class CheckoutController extends Controller
             'country_id' => $validated['billing_country_id'],
         ]);
 
+        // Create order directly for offline methods
+        if ($validated['payment_method'] !== 'stripe') {
+            try {
+                // Create order from cart
+                $order = $cart->createOrder();
+                
+                // Update order status/meta based on payment method
+                $paymentMethod = $validated['payment_method'];
+                $notes = 'Payment method: ' . ucfirst(str_replace('_', ' ', $paymentMethod));
+                
+                $order->update([
+                    'status' => 'order-placed',
+                    'placed_at' => now(),
+                    'notes' => $notes 
+                ]);
+                
+                // Create a transaction record for the offline payment
+                $order->transactions()->create([
+                    'success' => true, // Pending offline payment validation
+                    'type' => 'capture',
+                    'driver' => 'offline', 
+                    'amount' => $cart->total->value,
+                    'reference' => 'OFFLINE-' . uniqid(),
+                    'status' => 'pending', // Pending actual payment
+                    'notes' => $notes,
+                    'card_type' => $paymentMethod
+                ]);
+
+                // Clear the cart
+                CartSession::forget();
+                session()->forget('checkout_cart_id');
+                
+                return redirect()->route('checkout.success', ['order' => $order->id]);
+            } catch (\Exception $e) {
+                return back()->with('error', 'There was a problem placing your order: ' . $e->getMessage());
+            }
+        }
+
         // Add notes if provided
         if ($validated['notes']) {
             $cart->meta = array_merge($cart->meta ?? [], [
