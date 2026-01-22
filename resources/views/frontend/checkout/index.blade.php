@@ -475,6 +475,24 @@ $(document).ready(function() {
              $('#payment_method_input').val(value);
          }
     }
+
+    // Fix for nice-select not updating the underlying select value properly
+    // This ensures that when a user selects an option in the nice-select dropdown,
+    // the original (hidden) select element handles the change event correctly.
+    $(document).on('click.nice_select', '.nice-select .option', function(e) {
+        var $option = $(this);
+        var $dropdown = $option.closest('.nice-select');
+        var $select = $dropdown.prev('select');
+        
+        if ($select.length > 0) {
+            var value = $option.data('value');
+            
+            // Only trigger if value actually changed
+            if ($select.val() !== value) {
+                $select.val(value).trigger('change');
+            }
+        }
+    });
 });
 </script>
 @endpush
