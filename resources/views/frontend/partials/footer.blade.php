@@ -8,7 +8,7 @@
                     <div class="widget-item">
                         <div class="widget-about">
                             <a class="widget-logo" href="{{ route('home') }}">
-                                <img src="{{ asset('brancy/images/logo.webp') }}" width="95" height="68" alt="{{ config('app.name') }}">
+                                <img src="{{ asset('brancy/images/logo.png') }}" width="95" height="68" alt="{{ config('app.name') }}">
                             </a>
                             <p class="desc">{{ config('app.name') }} - Your trusted beauty and cosmetic destination. Quality products for your beautiful skin.</p>
                         </div>

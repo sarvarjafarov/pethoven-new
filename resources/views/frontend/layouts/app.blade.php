@@ -490,6 +490,59 @@
         $(this).removeClass('show');
         $('#cart-modal-product-image').css('opacity', '0');
     });
+    
+    // Switch logo based on sticky header state (for transparent header on home page)
+    $(document).ready(function() {
+        var $header = $('.sticky-header');
+        var $logo = $('.header-logo img.logo-main');
+        var isHomePage = $header.hasClass('header-transparent');
+        var greenLogoUrl = '{{ asset('brancy/images/logo.png') }}';
+        var whiteLogoUrl = '{{ asset('brancy/images/logo-white.png') }}';
+        
+        if (isHomePage && $logo.length) {
+            // Function to update logo based on sticky state
+            function updateLogo() {
+                var isSticky = $header.hasClass('sticky');
+                var currentSrc = $logo.attr('src');
+                
+                if (isSticky) {
+                    // Header is sticky (white background) - use green logo
+                    if (currentSrc.indexOf('logo-white') !== -1) {
+                        $logo.attr('src', greenLogoUrl);
+                    }
+                } else {
+                    // Header is not sticky (transparent) - use white logo
+                    if (currentSrc.indexOf('logo-white') === -1) {
+                        $logo.attr('src', whiteLogoUrl);
+                    }
+                }
+            }
+            
+            // Watch for sticky class changes using MutationObserver
+            if (typeof MutationObserver !== 'undefined') {
+                var observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                            updateLogo();
+                        }
+                    });
+                });
+                
+                observer.observe($header[0], {
+                    attributes: true,
+                    attributeFilter: ['class']
+                });
+            }
+            
+            // Also check on scroll (backup method)
+            $(window).on('scroll', function() {
+                updateLogo();
+            });
+            
+            // Initial check
+            updateLogo();
+        }
+    });
     </script>
 
 </body>
