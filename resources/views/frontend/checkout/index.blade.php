@@ -448,61 +448,74 @@
         color: #f00;
     }
     
-    /* Ensure billing form inputs match template exactly */
-    .billing-form-wrap form .form-group .form-control {
-        border-radius: 4px;
-        box-shadow: none;
-        border: 1px solid #ebeef5;
-        color: #1c1c1c;
-        font-size: 16px;
-        height: 70px;
-        line-height: 70px;
-        background-color: #fff;
-        padding: 0 24px;
-        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    /* Ensure billing form inputs match template exactly - using !important to override Bootstrap */
+    .billing-form-wrap form .form-group .form-control,
+    .billing-form-wrap form .form-group input.form-control,
+    .billing-form-wrap form .form-group select.form-control,
+    .billing-form-wrap form .form-group textarea.form-control {
+        border-radius: 4px !important;
+        box-shadow: none !important;
+        border: 1px solid #ebeef5 !important;
+        color: #1c1c1c !important;
+        font-size: 16px !important;
+        height: 70px !important;
+        line-height: 70px !important;
+        background-color: #fff !important;
+        padding: 0 24px !important;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
     }
     
     .billing-form-wrap form .form-group .form-control:active,
-    .billing-form-wrap form .form-group .form-control:focus {
-        border-color: #a6b1c2;
-        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07);
+    .billing-form-wrap form .form-group .form-control:focus,
+    .billing-form-wrap form .form-group input.form-control:active,
+    .billing-form-wrap form .form-group input.form-control:focus,
+    .billing-form-wrap form .form-group select.form-control:active,
+    .billing-form-wrap form .form-group select.form-control:focus {
+        border-color: #a6b1c2 !important;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07) !important;
+        outline: none !important;
     }
     
-    .billing-form-wrap form .form-group .form-control::-webkit-input-placeholder {
-        color: #626262;
+    .billing-form-wrap form .form-group .form-control::-webkit-input-placeholder,
+    .billing-form-wrap form .form-group input.form-control::-webkit-input-placeholder {
+        color: #626262 !important;
     }
-    .billing-form-wrap form .form-group .form-control:-moz-placeholder {
-        color: #626262;
+    .billing-form-wrap form .form-group .form-control:-moz-placeholder,
+    .billing-form-wrap form .form-group input.form-control:-moz-placeholder {
+        color: #626262 !important;
     }
-    .billing-form-wrap form .form-group .form-control::-moz-placeholder {
-        color: #626262;
+    .billing-form-wrap form .form-group .form-control::-moz-placeholder,
+    .billing-form-wrap form .form-group input.form-control::-moz-placeholder {
+        color: #626262 !important;
     }
-    .billing-form-wrap form .form-group .form-control:-ms-input-placeholder {
-        color: #626262;
+    .billing-form-wrap form .form-group .form-control:-ms-input-placeholder,
+    .billing-form-wrap form .form-group input.form-control:-ms-input-placeholder {
+        color: #626262 !important;
     }
     
     .billing-form-wrap form .form-group textarea.form-control {
-        min-height: 120px;
-        background-color: #fff;
-        border: 1px solid #e8e8e8;
-        padding: 20px;
-        line-height: 1.3;
+        min-height: 120px !important;
+        background-color: #fff !important;
+        border: 1px solid #e8e8e8 !important;
+        padding: 20px !important;
+        line-height: 1.3 !important;
+        height: auto !important;
     }
     
     /* Nice-select styling to match inputs exactly */
     .billing-form-wrap form .form-group .nice-select {
-        border-radius: 4px;
-        border: 1px solid #ebeef5;
-        height: 70px;
-        line-height: 70px;
-        padding: 0 24px;
-        float: none;
-        width: 100%;
-        margin-bottom: 0;
+        border-radius: 4px !important;
+        border: 1px solid #ebeef5 !important;
+        height: 70px !important;
+        line-height: 70px !important;
+        padding: 0 24px !important;
+        float: none !important;
+        width: 100% !important;
+        margin-bottom: 0 !important;
     }
     .billing-form-wrap form .form-group .nice-select:after {
-        right: 24px;
-        margin: 0;
+        right: 24px !important;
+        margin: 0 !important;
     }
 
     /* Adjust nice-select internal list */
