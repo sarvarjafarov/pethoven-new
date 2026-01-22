@@ -391,7 +391,7 @@
                         <i class="fa fa-shopping-cart" style="font-size: 16px;"></i>
                         <span>VIEW CART</span>
                     </a>
-                    <button type="button" class="btn" id="continueShoppingBtn" style="flex: 1; padding: 12px 20px; background: #ffffff; color: #e74c3c; border: 1px solid #e74c3c; border-radius: 8px; font-weight: 600; font-size: 14px; letter-spacing: 0.5px; text-transform: uppercase; transition: all 0.3s ease; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" onmouseover="this.style.backgroundColor='#e74c3c'; this.style.color='white'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 3px 6px rgba(0,0,0,0.15)';" onmouseout="this.style.backgroundColor='#ffffff'; this.style.color='#e74c3c'; this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.1)';">
+                    <button type="button" class="btn" id="continueShoppingBtn" style="flex: 1; padding: 12px 20px; background: #ffffff; color: #c0392b; border: 1px solid #c0392b; border-radius: 8px; font-weight: 600; font-size: 14px; letter-spacing: 0.5px; text-transform: uppercase; transition: all 0.3s ease; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.08);" onmouseover="this.style.backgroundColor='#f8f9fa'; this.style.borderColor='#a93226'; this.style.color='#a93226'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 3px 6px rgba(0,0,0,0.12)';" onmouseout="this.style.backgroundColor='#ffffff'; this.style.borderColor='#c0392b'; this.style.color='#c0392b'; this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.08)';">
                         <span>CONTINUE SHOPPING</span>
                     </button>
                 </div>
