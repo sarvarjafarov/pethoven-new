@@ -435,20 +435,27 @@
     }
     
     /* Form group and label styling to match template */
+    .billing-form-wrap .form-group,
     .billing-form-wrap form .form-group {
         margin-bottom: 20px;
     }
+    .billing-form-wrap .form-group label,
     .billing-form-wrap form .form-group label {
         font-size: 14px;
         color: #000000;
         margin-bottom: 8px;
         display: block;
     }
+    .billing-form-wrap .form-group label .required,
     .billing-form-wrap form .form-group label .required {
         color: #f00;
     }
     
     /* Ensure billing form inputs match template exactly - using !important to override Bootstrap */
+    .billing-form-wrap .form-group .form-control,
+    .billing-form-wrap .form-group input.form-control,
+    .billing-form-wrap .form-group select.form-control,
+    .billing-form-wrap .form-group textarea.form-control,
     .billing-form-wrap form .form-group .form-control,
     .billing-form-wrap form .form-group input.form-control,
     .billing-form-wrap form .form-group select.form-control,
@@ -465,6 +472,12 @@
         transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
     }
     
+    .billing-form-wrap .form-group .form-control:active,
+    .billing-form-wrap .form-group .form-control:focus,
+    .billing-form-wrap .form-group input.form-control:active,
+    .billing-form-wrap .form-group input.form-control:focus,
+    .billing-form-wrap .form-group select.form-control:active,
+    .billing-form-wrap .form-group select.form-control:focus,
     .billing-form-wrap form .form-group .form-control:active,
     .billing-form-wrap form .form-group .form-control:focus,
     .billing-form-wrap form .form-group input.form-control:active,
@@ -476,23 +489,32 @@
         outline: none !important;
     }
     
+    .billing-form-wrap .form-group .form-control::-webkit-input-placeholder,
+    .billing-form-wrap .form-group input.form-control::-webkit-input-placeholder,
     .billing-form-wrap form .form-group .form-control::-webkit-input-placeholder,
     .billing-form-wrap form .form-group input.form-control::-webkit-input-placeholder {
         color: #626262 !important;
     }
+    .billing-form-wrap .form-group .form-control:-moz-placeholder,
+    .billing-form-wrap .form-group input.form-control:-moz-placeholder,
     .billing-form-wrap form .form-group .form-control:-moz-placeholder,
     .billing-form-wrap form .form-group input.form-control:-moz-placeholder {
         color: #626262 !important;
     }
+    .billing-form-wrap .form-group .form-control::-moz-placeholder,
+    .billing-form-wrap .form-group input.form-control::-moz-placeholder,
     .billing-form-wrap form .form-group .form-control::-moz-placeholder,
     .billing-form-wrap form .form-group input.form-control::-moz-placeholder {
         color: #626262 !important;
     }
+    .billing-form-wrap .form-group .form-control:-ms-input-placeholder,
+    .billing-form-wrap .form-group input.form-control:-ms-input-placeholder,
     .billing-form-wrap form .form-group .form-control:-ms-input-placeholder,
     .billing-form-wrap form .form-group input.form-control:-ms-input-placeholder {
         color: #626262 !important;
     }
     
+    .billing-form-wrap .form-group textarea.form-control,
     .billing-form-wrap form .form-group textarea.form-control {
         min-height: 120px !important;
         background-color: #fff !important;
@@ -503,6 +525,7 @@
     }
     
     /* Nice-select styling to match inputs exactly */
+    .billing-form-wrap .form-group .nice-select,
     .billing-form-wrap form .form-group .nice-select {
         border-radius: 4px !important;
         border: 1px solid #ebeef5 !important;
@@ -513,6 +536,7 @@
         width: 100% !important;
         margin-bottom: 0 !important;
     }
+    .billing-form-wrap .form-group .nice-select:after,
     .billing-form-wrap form .form-group .nice-select:after {
         right: 24px !important;
         margin: 0 !important;
