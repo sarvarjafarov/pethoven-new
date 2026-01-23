@@ -220,7 +220,7 @@
         padding-left: 22px;
     }
     .product-sidebar-widget .product-widget-title:before {
-        border: 2px solid #22C55E;
+        border: 2px solid #ed8982;
         border-radius: 50%;
         content: "";
         height: 11px;
@@ -230,28 +230,35 @@
         width: 11px;
         transform: translate(0px, -50%);
     }
-    /* Price Filter - match original template */
+    /* Price Filter - match original template exactly */
     .product-sidebar-widget .product-widget-range-slider .noUi-connect {
-        background-color: #A8DADC;
+        background-color: #aadddd;
     }
     .product-sidebar-widget .product-widget-range-slider .noUi-horizontal {
-        height: 4px;
+        height: 6px;
+        border: none;
+        background-color: #e5e5e5;
     }
     .product-sidebar-widget .product-widget-range-slider .noUi-horizontal .noUi-handle {
-        background-color: #457B9D;
+        background-color: #4b7f9f;
         cursor: pointer;
-        width: 10px;
-        height: 10px;
+        width: 16px;
+        height: 16px;
         top: 50%;
         transform: translate(0px, -50%);
         -webkit-transform: translate(0px, -50%);
         -moz-transform: translate(0px, -50%);
         -ms-transform: translate(0px, -50%);
         -o-transform: translate(0px, -50%);
+        border-radius: 50%;
+        border: none;
+        box-shadow: none;
     }
     .product-sidebar-widget .product-widget-range-slider .noUi-target {
-        border-radius: 0;
+        border-radius: 3px;
         width: 100%;
+        border: none;
+        box-shadow: none;
     }
     .product-sidebar-widget .product-widget-range-slider .slider-labels {
         margin-top: 14px;
