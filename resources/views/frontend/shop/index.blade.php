@@ -115,7 +115,7 @@
                     <div class="product-widget">
                         <h4 class="product-widget-title">Price Filter</h4>
                         <div class="product-widget-range-slider">
-                            <div id="slider-range" class="noUi-target"></div>
+                            <div class="slider-range noUi-target noUi-ltr noUi-horizontal noUi-background" id="slider-range"></div>
                             <div class="slider-labels">
                                 <span id="slider-range-value1">${{ number_format(request('min_price') ?: $minPrice, 0) }}</span>
                                 <span> — </span>
