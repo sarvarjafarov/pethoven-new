@@ -232,33 +232,33 @@
     }
     /* Price Filter - match original template exactly */
     .product-sidebar-widget .product-widget-range-slider .noUi-connect {
-        background-color: #aadddd;
+        background-color: #aadddd !important;
     }
     .product-sidebar-widget .product-widget-range-slider .noUi-horizontal {
-        height: 6px;
-        border: none;
-        background-color: #e5e5e5;
+        height: 6px !important;
+        border: none !important;
+        background-color: #e5e5e5 !important;
     }
     .product-sidebar-widget .product-widget-range-slider .noUi-horizontal .noUi-handle {
-        background-color: #4b7f9f;
+        background-color: #4b7f9f !important;
         cursor: pointer;
-        width: 16px;
-        height: 16px;
-        top: 50%;
-        transform: translate(0px, -50%);
-        -webkit-transform: translate(0px, -50%);
-        -moz-transform: translate(0px, -50%);
-        -ms-transform: translate(0px, -50%);
-        -o-transform: translate(0px, -50%);
-        border-radius: 50%;
-        border: none;
-        box-shadow: none;
+        width: 16px !important;
+        height: 16px !important;
+        top: 50% !important;
+        transform: translate(0px, -50%) !important;
+        -webkit-transform: translate(0px, -50%) !important;
+        -moz-transform: translate(0px, -50%) !important;
+        -ms-transform: translate(0px, -50%) !important;
+        -o-transform: translate(0px, -50%) !important;
+        border-radius: 50% !important;
+        border: none !important;
+        box-shadow: none !important;
     }
     .product-sidebar-widget .product-widget-range-slider .noUi-target {
-        border-radius: 3px;
-        width: 100%;
-        border: none;
-        box-shadow: none;
+        border-radius: 3px !important;
+        width: 100% !important;
+        border: none !important;
+        box-shadow: none !important;
     }
     .product-sidebar-widget .product-widget-range-slider .slider-labels {
         margin-top: 14px;
