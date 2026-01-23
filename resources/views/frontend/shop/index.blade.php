@@ -230,7 +230,7 @@
         width: 11px;
         transform: translate(0px, -50%);
     }
-    /* Price Filter - match original template exactly */
+    /* Price Filter - match original template */
     .product-sidebar-widget .product-widget-range-slider .noUi-connect {
         background-color: #A8DADC;
     }
@@ -412,7 +412,7 @@
                     
                     // Update display labels on slider change
                     sliderRange.noUiSlider.on('update', function(values, handle) {
-                        var formattedValue = moneyFormat.to(values[handle]);
+                        var formattedValue = values[handle];
                         var numericValue = moneyFormat.from(values[handle]);
                         
                         if (handle === 0) {
