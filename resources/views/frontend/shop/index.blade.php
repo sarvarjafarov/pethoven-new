@@ -125,10 +125,10 @@
                     <div class="product-widget">
                         <h4 class="product-widget-title">Price Filter</h4>
                         <div class="product-widget-range-slider">
-                            <div class="slider-range noUi-target noUi-ltr noUi-horizontal noUi-background" id="slider-range"></div>
+                            <div class="slider-range" id="slider-range"></div>
                             <div class="slider-labels">
                                 <span id="slider-range-value1">${{ number_format(request('min_price') ?: $minPrice, 0) }}</span>
-                                <span> — </span>
+                                <span>—</span>
                                 <span id="slider-range-value2">${{ number_format(request('max_price') ?: $maxPrice, 0) }}</span>
                             </div>
                             <form action="{{ route('shop.index') }}" method="GET" id="price-filter-form" style="display: none;">
@@ -320,35 +320,35 @@
         width: 11px;
         transform: translate(0px, -50%);
     }
-    /* Price Filter - match original template exactly */
-    .product-sidebar-widget .product-widget-range-slider .noUi-connect {
-        background-color: #aadddd !important;
+    /* Price Filter - EXACT match to original Brancy template */
+    .product-sidebar-widget .product-widget-range-slider .noUi-target {
+        background: #D6D7D9;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+        width: 100%;
     }
     .product-sidebar-widget .product-widget-range-slider .noUi-horizontal {
-        height: 6px !important;
-        border: none !important;
-        background-color: #e5e5e5 !important;
+        height: 4px;
+    }
+    .product-sidebar-widget .product-widget-range-slider .noUi-connect {
+        background-color: #A8DADC;
     }
     .product-sidebar-widget .product-widget-range-slider .noUi-horizontal .noUi-handle {
-        background-color: #4b7f9f !important;
+        background-color: #457B9D;
+        border: none;
+        border-radius: 50%;
+        box-shadow: none;
         cursor: pointer;
-        width: 16px !important;
-        height: 16px !important;
-        top: 50% !important;
-        transform: translate(0px, -50%) !important;
-        -webkit-transform: translate(0px, -50%) !important;
-        -moz-transform: translate(0px, -50%) !important;
-        -ms-transform: translate(0px, -50%) !important;
-        -o-transform: translate(0px, -50%) !important;
-        border-radius: 50% !important;
-        border: none !important;
-        box-shadow: none !important;
+        width: 10px;
+        height: 10px;
+        top: 50%;
+        right: -5px;
+        transform: translateY(-50%);
     }
-    .product-sidebar-widget .product-widget-range-slider .noUi-target {
-        border-radius: 3px !important;
-        width: 100% !important;
-        border: none !important;
-        box-shadow: none !important;
+    .product-sidebar-widget .product-widget-range-slider .noUi-horizontal .noUi-handle::before,
+    .product-sidebar-widget .product-widget-range-slider .noUi-horizontal .noUi-handle::after {
+        display: none;
     }
     .product-sidebar-widget .product-widget-range-slider .slider-labels {
         margin-top: 14px;
