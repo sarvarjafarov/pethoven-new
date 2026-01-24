@@ -50,41 +50,51 @@
                     @if($products->hasPages())
                         <div class="col-12">
                             <ul class="pagination justify-content-center me-auto ms-auto mt-5 mb-10">
-                                @if($products->onFirstPage())
-                                    <li class="page-item disabled">
-                                        <span class="page-link previous" aria-label="Previous">
-                                            <span class="fa fa-chevron-left" aria-hidden="true"></span>
-                                        </span>
-                                    </li>
-                                @else
-                                    <li class="page-item">
-                                        <a class="page-link previous" href="{{ $products->previousPageUrl() }}" aria-label="Previous">
-                                            <span class="fa fa-chevron-left" aria-hidden="true"></span>
-                                        </a>
-                                    </li>
-                                @endif
+                                {{-- Previous Button --}}
+                                <li class="page-item">
+                                    <a class="page-link previous" href="{{ $products->onFirstPage() ? '#' : $products->previousPageUrl() }}" aria-label="Previous" @if($products->onFirstPage()) style="opacity: 0.5; pointer-events: none;" @endif>
+                                        <span class="fa fa-chevron-left" aria-hidden="true"></span>
+                                    </a>
+                                </li>
 
-                                @foreach($products->getUrlRange(1, $products->lastPage()) as $page => $url)
-                                    @if($page == $products->currentPage())
-                                        <li class="page-item active"><span class="page-link">{{ $page }}</span></li>
-                                    @else
-                                        <li class="page-item"><a class="page-link" href="{{ $url }}">{{ $page }}</a></li>
+                                @php
+                                    $currentPage = $products->currentPage();
+                                    $lastPage = $products->lastPage();
+                                    $showEllipsis = $lastPage > 5;
+                                @endphp
+
+                                {{-- Page Numbers with leading zeros --}}
+                                @if($showEllipsis)
+                                    @for($i = 1; $i <= min(3, $lastPage); $i++)
+                                        <li class="page-item {{ $currentPage == $i ? 'active' : '' }}">
+                                            @if($currentPage == $i)
+                                                <span class="page-link">{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</span>
+                                            @else
+                                                <a class="page-link" href="{{ $products->url($i) }}">{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</a>
+                                            @endif
+                                        </li>
+                                    @endfor
+                                    @if($lastPage > 3)
+                                        <li class="page-item"><a class="page-link" href="{{ $products->url($lastPage) }}">…</a></li>
                                     @endif
-                                @endforeach
-
-                                @if($products->hasMorePages())
-                                    <li class="page-item">
-                                        <a class="page-link next" href="{{ $products->nextPageUrl() }}" aria-label="Next">
-                                            <span class="fa fa-chevron-right" aria-hidden="true"></span>
-                                        </a>
-                                    </li>
                                 @else
-                                    <li class="page-item disabled">
-                                        <span class="page-link next" aria-label="Next">
-                                            <span class="fa fa-chevron-right" aria-hidden="true"></span>
-                                        </span>
-                                    </li>
+                                    @foreach($products->getUrlRange(1, $lastPage) as $page => $url)
+                                        <li class="page-item {{ $currentPage == $page ? 'active' : '' }}">
+                                            @if($currentPage == $page)
+                                                <span class="page-link">{{ str_pad($page, 2, '0', STR_PAD_LEFT) }}</span>
+                                            @else
+                                                <a class="page-link" href="{{ $url }}">{{ str_pad($page, 2, '0', STR_PAD_LEFT) }}</a>
+                                            @endif
+                                        </li>
+                                    @endforeach
                                 @endif
+
+                                {{-- Next Button --}}
+                                <li class="page-item">
+                                    <a class="page-link next" href="{{ $products->hasMorePages() ? $products->nextPageUrl() : '#' }}" aria-label="Next" @if(!$products->hasMorePages()) style="opacity: 0.5; pointer-events: none;" @endif>
+                                        <span class="fa fa-chevron-right" aria-hidden="true"></span>
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                     @endif
@@ -196,18 +206,98 @@
     </div>
 </section>
 <!--== End Product Area Wrapper ==-->
+
+<!--== Start Product Banner Area Wrapper ==-->
+<section class="pb-10">
+    <div class="container">
+        <a href="{{ route('shop.index') }}" class="product-banner-item">
+            <img src="https://template.hasthemes.com/brancy/brancy/assets/images/shop/banner/7.webp" width="1170" height="240" alt="Shop Banner">
+        </a>
+    </div>
+</section>
+<!--== End Product Banner Area Wrapper ==-->
+
+<!--== Start Related Products Area Wrapper ==-->
+@if($products->isNotEmpty())
+<section class="section-space pt-0">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="section-title">
+                    <h2 class="title">Related Products</h2>
+                    <p class="m-0">Discover more products you might like from our collection</p>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-n10">
+            <div class="col-12">
+                <div class="swiper related-product-slide-container">
+                    <div class="swiper-wrapper">
+                        @foreach($products->take(6) as $relatedProduct)
+                        <div class="swiper-slide mb-8">
+                            @include('frontend.components.product-card', ['product' => $relatedProduct])
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@endif
+<!--== End Related Products Area Wrapper ==-->
 @endsection
 
 @push('styles')
 <style>
+    /* Product Banner Styling */
+    .product-banner-item {
+        display: block;
+        overflow: hidden;
+        border-radius: 8px;
+    }
+    .product-banner-item img {
+        width: 100%;
+        height: auto;
+        transition: transform 0.4s ease;
+    }
+    .product-banner-item:hover img {
+        transform: scale(1.02);
+    }
+
+    /* Section Title Styling */
+    .section-title {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+    .section-title .title {
+        font-size: 36px;
+        font-weight: 500;
+        color: #231942;
+        margin-bottom: 15px;
+    }
+    .section-title p {
+        color: #747474;
+        font-size: 16px;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    /* Related Products Slider */
+    .related-product-slide-container {
+        overflow: hidden;
+    }
+    .related-product-slide-container .swiper-slide {
+        height: auto;
+    }
+
     /* Ensure widget styling matches template */
     .product-sidebar-widget .product-widget {
-        background-color: #ffffff;
-        border: 1px solid #eeeeee;
-        border-radius: 8px;
+        background-color: #f7f7f7c2;
+        border: 1px solid #eeeeeedb;
+        border-radius: 0;
         margin-bottom: 40px;
         padding: 25px 30px 24px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
     .product-sidebar-widget .product-widget-title {
         color: #231942;
@@ -220,7 +310,7 @@
         padding-left: 22px;
     }
     .product-sidebar-widget .product-widget-title:before {
-        border: 2px solid #ed8982;
+        border: 2px solid #22C55E;
         border-radius: 50%;
         content: "";
         height: 11px;
@@ -268,10 +358,70 @@
         font-size: 14px;
         color: #1D3557;
     }
-    /* Category active state */
+    /* Category styling */
+    .product-sidebar-widget .product-widget-category {
+        margin-bottom: 0;
+        padding-left: 0;
+        list-style: none;
+    }
+    .product-sidebar-widget .product-widget-category li {
+        display: block;
+    }
+    .product-sidebar-widget .product-widget-category li a {
+        border-top: 1px solid #e7e7e7;
+        font-size: 14px;
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        color: #747474;
+        transition: color 0.3s ease;
+    }
+    .product-sidebar-widget .product-widget-category li:first-child a {
+        border-top: none;
+        padding-top: 0;
+    }
+    .product-sidebar-widget .product-widget-category li:last-child a {
+        padding-bottom: 0;
+    }
+    .product-sidebar-widget .product-widget-category li a:hover {
+        color: #22C55E;
+    }
     .product-sidebar-widget .product-widget-category li a.active {
         color: #22C55E;
         font-weight: 600;
+    }
+    .product-sidebar-widget .product-widget-category li a span {
+        color: #747474;
+    }
+
+    /* Tags styling */
+    .product-sidebar-widget .product-widget-tags {
+        margin-bottom: 0;
+        padding-left: 0;
+        list-style: none;
+    }
+    .product-sidebar-widget .product-widget-tags li {
+        display: inline-block;
+        margin-right: 3px;
+        margin-bottom: 6px;
+    }
+    .product-sidebar-widget .product-widget-tags li a {
+        background-color: #f9f9f9;
+        border: 1px solid #d9d9d9;
+        border-radius: 0;
+        display: inline-block;
+        font-size: 13px;
+        font-weight: 400;
+        line-height: 1;
+        padding: 9px 16px;
+        text-transform: capitalize;
+        color: #747474;
+        transition: all 0.3s ease;
+    }
+    .product-sidebar-widget .product-widget-tags li a:hover {
+        background-color: #22C55E;
+        border-color: #22C55E;
+        color: #fff;
     }
     /* Sort By select dropdown styling */
     .product-sidebar-widget .product-widget #sort-form .form-select,
@@ -302,10 +452,107 @@
     .product-sidebar-widget .product-widget select.form-select:hover {
         border-color: #a6b1c2;
     }
+
+    /* Search widget styling */
+    .product-sidebar-widget .product-widget-search {
+        margin-bottom: 40px;
+        position: relative;
+    }
+    .product-sidebar-widget .product-widget-search input[type="search"] {
+        background-color: #f7f7f7c2;
+        border: 1px solid #eeeeeedb;
+        border-radius: 0;
+        color: #444444;
+        font-size: 14px;
+        height: 50px;
+        padding: 5px 50px 5px 20px;
+        width: 100%;
+        transition: border-color 0.3s ease;
+    }
+    .product-sidebar-widget .product-widget-search input[type="search"]:focus {
+        border-color: #22C55E;
+        outline: none;
+    }
+    .product-sidebar-widget .product-widget-search input[type="search"]::placeholder {
+        color: #747474;
+    }
+    .product-sidebar-widget .product-widget-search button[type="submit"] {
+        border: none;
+        background: none;
+        position: absolute;
+        font-size: 16px;
+        color: #444444;
+        cursor: pointer;
+        padding: 0;
+        height: 50px;
+        line-height: 50px;
+        width: 50px;
+        right: 0;
+        top: 0;
+        transition: color 0.3s ease;
+    }
+    .product-sidebar-widget .product-widget-search button[type="submit"]:hover {
+        color: #22C55E;
+    }
+
+    /* Pagination styling to match template */
+    .pagination {
+        gap: 8px;
+    }
+    .pagination .page-item .page-link {
+        border: none;
+        background: transparent;
+        color: #747474;
+        font-size: 16px;
+        font-weight: 500;
+        padding: 8px 12px;
+        min-width: 40px;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+    .pagination .page-item .page-link:hover {
+        color: #22C55E;
+        background: transparent;
+    }
+    .pagination .page-item.active .page-link {
+        color: #22C55E;
+        background: transparent;
+        font-weight: 600;
+    }
+    .pagination .page-item .page-link.previous,
+    .pagination .page-item .page-link.next {
+        font-size: 14px;
+    }
 </style>
 @endpush
 
 @push('scripts')
+<script>
+// Initialize Related Products Swiper
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof Swiper !== 'undefined') {
+        var relatedProductSwiper = new Swiper('.related-product-slide-container', {
+            slidesPerView: 1,
+            spaceBetween: 30,
+            loop: false,
+            breakpoints: {
+                576: {
+                    slidesPerView: 2,
+                    spaceBetween: 20,
+                },
+                768: {
+                    slidesPerView: 3,
+                    spaceBetween: 20,
+                },
+                992: {
+                    slidesPerView: 4,
+                    spaceBetween: 30,
+                },
+            },
+        });
+    }
+});
+</script>
 <script>
 // CRITICAL: Prevent original range-slider.js auto-init by removing the element temporarily
 // The original script runs $(document).ready() immediately when loaded, so we need to
