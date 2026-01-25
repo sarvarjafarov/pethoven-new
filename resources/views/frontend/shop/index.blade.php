@@ -320,34 +320,36 @@
         width: 11px;
         transform: translate(0px, -50%);
     }
-    /* Price Filter - EXACT match to original Brancy template */
+    /* Price Filter - noUiSlider 15.x styling to match original Brancy */
     .product-sidebar-widget .product-widget-range-slider .noUi-target {
         background: #D6D7D9;
         border: none;
-        border-radius: 0;
+        border-radius: 2px;
         box-shadow: none;
-        width: 100%;
-    }
-    .product-sidebar-widget .product-widget-range-slider .noUi-horizontal {
         height: 4px;
     }
-    .product-sidebar-widget .product-widget-range-slider .noUi-connect {
-        background-color: #A8DADC;
+    .product-sidebar-widget .product-widget-range-slider .noUi-connects {
+        border-radius: 2px;
     }
-    .product-sidebar-widget .product-widget-range-slider .noUi-horizontal .noUi-handle {
-        background-color: #457B9D;
+    .product-sidebar-widget .product-widget-range-slider .noUi-connect {
+        background: #A8DADC;
+    }
+    .product-sidebar-widget .product-widget-range-slider .noUi-handle {
+        background: #457B9D;
         border: none;
         border-radius: 50%;
         box-shadow: none;
         cursor: pointer;
-        width: 10px;
-        height: 10px;
-        top: 50%;
-        right: -5px;
-        transform: translateY(-50%);
+        width: 12px;
+        height: 12px;
+        top: -4px;
+        right: -6px;
     }
-    .product-sidebar-widget .product-widget-range-slider .noUi-horizontal .noUi-handle::before,
-    .product-sidebar-widget .product-widget-range-slider .noUi-horizontal .noUi-handle::after {
+    .product-sidebar-widget .product-widget-range-slider .noUi-handle:focus {
+        outline: none;
+    }
+    .product-sidebar-widget .product-widget-range-slider .noUi-handle::before,
+    .product-sidebar-widget .product-widget-range-slider .noUi-handle::after {
         display: none;
     }
     .product-sidebar-widget .product-widget-range-slider .slider-labels {
