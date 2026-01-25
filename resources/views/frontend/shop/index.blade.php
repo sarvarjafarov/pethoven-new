@@ -363,34 +363,53 @@
         border-color: #22C55E;
         color: #fff;
     }
-    /* Sort By select dropdown styling */
-    .product-sidebar-widget .product-widget #sort-form .form-select,
-    .product-sidebar-widget .product-widget select.form-select {
+    /* Sort By - nice-select dropdown styling */
+    .product-sidebar-widget .product-widget .nice-select {
         width: 100%;
+        height: auto;
         padding: 12px 40px 12px 18px;
         font-size: 14px;
         font-weight: 400;
+        line-height: 1.4;
         color: #1c1c1c;
         background-color: #ffffff;
-        border: 1px solid #ebeef5;
-        border-radius: 4px;
-        appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235a5a5a' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 18px center;
-        background-size: 12px;
-        cursor: pointer;
-        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        border: 1px solid #e7e7e7;
+        border-radius: 0;
+        float: none;
     }
-    .product-sidebar-widget .product-widget #sort-form .form-select:focus,
-    .product-sidebar-widget .product-widget select.form-select:focus {
-        border-color: #a6b1c2;
-        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07);
-        outline: none;
+    .product-sidebar-widget .product-widget .nice-select:after {
+        border-bottom: 2px solid #747474;
+        border-right: 2px solid #747474;
+        height: 8px;
+        width: 8px;
+        right: 18px;
+        top: 50%;
+        margin-top: -6px;
     }
-    .product-sidebar-widget .product-widget #sort-form .form-select:hover,
-    .product-sidebar-widget .product-widget select.form-select:hover {
-        border-color: #a6b1c2;
+    .product-sidebar-widget .product-widget .nice-select:hover {
+        border-color: #d0d0d0;
+    }
+    .product-sidebar-widget .product-widget .nice-select.open {
+        border-color: #d0d0d0;
+    }
+    .product-sidebar-widget .product-widget .nice-select .list {
+        width: 100%;
+        border-radius: 0;
+        margin-top: 1px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .product-sidebar-widget .product-widget .nice-select .option {
+        padding: 10px 18px;
+        font-size: 14px;
+        min-height: auto;
+        line-height: 1.4;
+    }
+    .product-sidebar-widget .product-widget .nice-select .option:hover,
+    .product-sidebar-widget .product-widget .nice-select .option.focus {
+        background-color: #f5f5f5;
+    }
+    .product-sidebar-widget .product-widget .nice-select .option.selected {
+        font-weight: 600;
     }
 
     /* Search widget styling */
