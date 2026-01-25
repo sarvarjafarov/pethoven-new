@@ -543,73 +543,61 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-{{-- Price Filter: Use bundled noUiSlider v8 from range-slider.js --}}
-<script src="{{ asset('brancy/js/plugins/range-slider.js') }}"></script>
+{{-- Price Filter: Use noUiSlider v8.3.0 from unpkg (exact version matching original template) --}}
+<script src="https://unpkg.com/nouislider@8.3.0/distribute/nouislider.min.js"></script>
+<script src="https://unpkg.com/wnumb@1.0.2/wNumb.js"></script>
 <script>
 (function() {
     'use strict';
 
-    // Wait for the bundled script to auto-init, then reinitialize with our values
-    $(document).ready(function() {
-        setTimeout(function() {
-            var sliderRange = document.getElementById('slider-range');
-            if (!sliderRange) return;
+    var sliderRange = document.getElementById('slider-range');
+    if (!sliderRange || typeof noUiSlider === 'undefined') return;
 
-            // Destroy the auto-initialized slider
-            if (sliderRange.noUiSlider) {
-                sliderRange.noUiSlider.destroy();
-            }
+    // Price values from PHP
+    var minPrice = {{ (int)($minPrice ?? 430) }};
+    var maxPrice = {{ (int)($maxPrice ?? 2500) }};
+    var currentMin = {{ (int)(request('min_price') ?: ($minPrice ?? 430)) }};
+    var currentMax = {{ (int)(request('max_price') ?: ($maxPrice ?? 2500)) }};
 
-            // Price values from PHP
-            var minPrice = {{ (int)($minPrice ?? 430) }};
-            var maxPrice = {{ (int)($maxPrice ?? 2500) }};
-            var currentMin = {{ (int)(request('min_price') ?: ($minPrice ?? 430)) }};
-            var currentMax = {{ (int)(request('max_price') ?: ($maxPrice ?? 2500)) }};
+    // Ensure valid range
+    if (maxPrice <= minPrice) maxPrice = minPrice + 100;
+    currentMin = Math.max(minPrice, Math.min(currentMin, maxPrice));
+    currentMax = Math.max(currentMin, Math.min(currentMax, maxPrice));
 
-            // Ensure valid range
-            if (maxPrice <= minPrice) maxPrice = minPrice + 100;
-            currentMin = Math.max(minPrice, Math.min(currentMin, maxPrice));
-            currentMax = Math.max(currentMin, Math.min(currentMax, maxPrice));
+    // Money formatter
+    var moneyFormat = wNumb({
+        decimals: 0,
+        thousand: ',',
+        prefix: '$'
+    });
 
-            // Money formatter
-            var moneyFormat = wNumb({
-                decimals: 0,
-                thousand: ',',
-                prefix: '$'
-            });
+    // Create slider
+    noUiSlider.create(sliderRange, {
+        start: [currentMin, currentMax],
+        step: 10,
+        connect: true,
+        range: {
+            'min': minPrice,
+            'max': maxPrice
+        },
+        format: moneyFormat
+    });
 
-            // Create slider with our values
-            noUiSlider.create(sliderRange, {
-                start: [currentMin, currentMax],
-                step: 10,
-                connect: true,
-                range: {
-                    'min': minPrice,
-                    'max': maxPrice
-                },
-                format: moneyFormat
-            });
+    // Update labels on slide
+    sliderRange.noUiSlider.on('update', function(values, handle) {
+        document.getElementById('slider-range-value1').innerHTML = values[0];
+        document.getElementById('slider-range-value2').innerHTML = values[1];
+        document.getElementById('min-price-input').value = moneyFormat.from(values[0]);
+        document.getElementById('max-price-input').value = moneyFormat.from(values[1]);
+    });
 
-            // Update labels on slide
-            sliderRange.noUiSlider.on('update', function(values, handle) {
-                if (handle === 0) {
-                    document.getElementById('slider-range-value1').innerHTML = values[0];
-                    document.getElementById('min-price-input').value = moneyFormat.from(values[0]);
-                } else {
-                    document.getElementById('slider-range-value2').innerHTML = values[1];
-                    document.getElementById('max-price-input').value = moneyFormat.from(values[1]);
-                }
-            });
-
-            // Auto-submit on change (debounced)
-            var submitTimeout;
-            sliderRange.noUiSlider.on('change', function() {
-                clearTimeout(submitTimeout);
-                submitTimeout = setTimeout(function() {
-                    document.getElementById('price-filter-form').submit();
-                }, 500);
-            });
-        }, 100); // Small delay to ensure bundled script has initialized
+    // Auto-submit on change (debounced)
+    var submitTimeout;
+    sliderRange.noUiSlider.on('change', function() {
+        clearTimeout(submitTimeout);
+        submitTimeout = setTimeout(function() {
+            document.getElementById('price-filter-form').submit();
+        }, 500);
     });
 })();
 </script>
