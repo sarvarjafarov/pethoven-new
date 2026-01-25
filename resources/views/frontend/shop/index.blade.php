@@ -320,18 +320,17 @@
         width: 11px;
         transform: translate(0px, -50%);
     }
-    /* Price Filter - noUiSlider 15.x styling to match original Brancy */
+    /* Price Filter - noUiSlider v8 styling (matches original Brancy template) */
     .product-sidebar-widget .product-widget-range-slider .noUi-target {
-        background: #D6D7D9;
-        border: none;
         border-radius: 2px;
-        box-shadow: none;
+    }
+    .product-sidebar-widget .product-widget-range-slider .noUi-background {
+        background: #D6D7D9;
+    }
+    .product-sidebar-widget .product-widget-range-slider .noUi-horizontal {
         height: 4px;
     }
-    .product-sidebar-widget .product-widget-range-slider .noUi-connects {
-        border-radius: 2px;
-    }
-    .product-sidebar-widget .product-widget-range-slider .noUi-connect {
+    .product-sidebar-widget .product-widget-range-slider .noUi-origin.noUi-connect {
         background: #A8DADC;
     }
     .product-sidebar-widget .product-widget-range-slider .noUi-handle {
@@ -343,14 +342,11 @@
         width: 12px;
         height: 12px;
         top: -4px;
-        right: -6px;
+        left: -6px;
     }
-    .product-sidebar-widget .product-widget-range-slider .noUi-handle:focus {
-        outline: none;
-    }
-    .product-sidebar-widget .product-widget-range-slider .noUi-handle::before,
-    .product-sidebar-widget .product-widget-range-slider .noUi-handle::after {
-        display: none;
+    .product-sidebar-widget .product-widget-range-slider .noUi-handle:active {
+        border: none;
+        box-shadow: none;
     }
     .product-sidebar-widget .product-widget-range-slider .slider-labels {
         margin-top: 14px;
@@ -547,72 +543,73 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-{{-- Price Filter: Load noUiSlider from CDN (cleaner than using bundled version with auto-init) --}}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/wnumb/1.2.0/wNumb.min.js"></script>
+{{-- Price Filter: Use bundled noUiSlider v8 from range-slider.js --}}
+<script src="{{ asset('brancy/js/plugins/range-slider.js') }}"></script>
 <script>
 (function() {
     'use strict';
 
-    document.addEventListener('DOMContentLoaded', function() {
-        var sliderRange = document.getElementById('slider-range');
-        if (!sliderRange) return;
+    // Wait for the bundled script to auto-init, then reinitialize with our values
+    $(document).ready(function() {
+        setTimeout(function() {
+            var sliderRange = document.getElementById('slider-range');
+            if (!sliderRange) return;
 
-        // Destroy if already initialized (by any other script)
-        if (sliderRange.noUiSlider) {
-            sliderRange.noUiSlider.destroy();
-        }
-
-        // Price values from PHP
-        var minPrice = {{ (int)($minPrice ?? 430) }};
-        var maxPrice = {{ (int)($maxPrice ?? 2500) }};
-        var currentMin = {{ (int)(request('min_price') ?: ($minPrice ?? 430)) }};
-        var currentMax = {{ (int)(request('max_price') ?: ($maxPrice ?? 2500)) }};
-
-        // Ensure valid range
-        if (maxPrice <= minPrice) maxPrice = minPrice + 100;
-        currentMin = Math.max(minPrice, Math.min(currentMin, maxPrice));
-        currentMax = Math.max(currentMin, Math.min(currentMax, maxPrice));
-
-        // Money formatter
-        var moneyFormat = wNumb({
-            decimals: 0,
-            thousand: ',',
-            prefix: '$'
-        });
-
-        // Create slider
-        noUiSlider.create(sliderRange, {
-            start: [currentMin, currentMax],
-            step: 10,
-            connect: true,
-            range: {
-                'min': minPrice,
-                'max': maxPrice
-            },
-            format: moneyFormat
-        });
-
-        // Update labels
-        sliderRange.noUiSlider.on('update', function(values, handle) {
-            if (handle === 0) {
-                document.getElementById('slider-range-value1').textContent = values[0];
-                document.getElementById('min-price-input').value = moneyFormat.from(values[0]);
-            } else {
-                document.getElementById('slider-range-value2').textContent = values[1];
-                document.getElementById('max-price-input').value = moneyFormat.from(values[1]);
+            // Destroy the auto-initialized slider
+            if (sliderRange.noUiSlider) {
+                sliderRange.noUiSlider.destroy();
             }
-        });
 
-        // Auto-submit on change (debounced)
-        var submitTimeout;
-        sliderRange.noUiSlider.on('change', function() {
-            clearTimeout(submitTimeout);
-            submitTimeout = setTimeout(function() {
-                document.getElementById('price-filter-form').submit();
-            }, 500);
-        });
+            // Price values from PHP
+            var minPrice = {{ (int)($minPrice ?? 430) }};
+            var maxPrice = {{ (int)($maxPrice ?? 2500) }};
+            var currentMin = {{ (int)(request('min_price') ?: ($minPrice ?? 430)) }};
+            var currentMax = {{ (int)(request('max_price') ?: ($maxPrice ?? 2500)) }};
+
+            // Ensure valid range
+            if (maxPrice <= minPrice) maxPrice = minPrice + 100;
+            currentMin = Math.max(minPrice, Math.min(currentMin, maxPrice));
+            currentMax = Math.max(currentMin, Math.min(currentMax, maxPrice));
+
+            // Money formatter
+            var moneyFormat = wNumb({
+                decimals: 0,
+                thousand: ',',
+                prefix: '$'
+            });
+
+            // Create slider with our values
+            noUiSlider.create(sliderRange, {
+                start: [currentMin, currentMax],
+                step: 10,
+                connect: true,
+                range: {
+                    'min': minPrice,
+                    'max': maxPrice
+                },
+                format: moneyFormat
+            });
+
+            // Update labels on slide
+            sliderRange.noUiSlider.on('update', function(values, handle) {
+                if (handle === 0) {
+                    document.getElementById('slider-range-value1').innerHTML = values[0];
+                    document.getElementById('min-price-input').value = moneyFormat.from(values[0]);
+                } else {
+                    document.getElementById('slider-range-value2').innerHTML = values[1];
+                    document.getElementById('max-price-input').value = moneyFormat.from(values[1]);
+                }
+            });
+
+            // Auto-submit on change (debounced)
+            var submitTimeout;
+            sliderRange.noUiSlider.on('change', function() {
+                clearTimeout(submitTimeout);
+                submitTimeout = setTimeout(function() {
+                    document.getElementById('price-filter-form').submit();
+                }, 500);
+            });
+        }, 100); // Small delay to ensure bundled script has initialized
     });
 })();
 </script>
