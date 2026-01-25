@@ -320,42 +320,7 @@
         width: 11px;
         transform: translate(0px, -50%);
     }
-    /* Price Filter - noUiSlider v8 styling (matches original Brancy template) */
-    .product-sidebar-widget .product-widget-range-slider .noUi-target {
-        border-radius: 2px;
-    }
-    .product-sidebar-widget .product-widget-range-slider .noUi-background {
-        background: #D6D7D9;
-    }
-    .product-sidebar-widget .product-widget-range-slider .noUi-horizontal {
-        height: 4px;
-    }
-    .product-sidebar-widget .product-widget-range-slider .noUi-origin.noUi-connect {
-        background: #A8DADC;
-    }
-    .product-sidebar-widget .product-widget-range-slider .noUi-handle {
-        background: #457B9D;
-        border: none;
-        border-radius: 50%;
-        box-shadow: none;
-        cursor: pointer;
-        width: 12px;
-        height: 12px;
-        top: -4px;
-        left: -6px;
-    }
-    .product-sidebar-widget .product-widget-range-slider .noUi-handle:active {
-        border: none;
-        box-shadow: none;
-    }
-    .product-sidebar-widget .product-widget-range-slider .slider-labels {
-        margin-top: 14px;
-    }
-    .product-sidebar-widget .product-widget-range-slider .slider-labels span {
-        font-weight: 500;
-        font-size: 14px;
-        color: #1D3557;
-    }
+    /* Price Filter - Use built-in Brancy styles from style.css, only add missing base styles */
     /* Category styling */
     .product-sidebar-widget .product-widget-category {
         margin-bottom: 0;
@@ -543,61 +508,72 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-{{-- Price Filter: Use noUiSlider v8.3.0 from unpkg (exact version matching original template) --}}
-<script src="https://unpkg.com/nouislider@8.3.0/distribute/nouislider.min.js"></script>
-<script src="https://unpkg.com/wnumb@1.0.2/wNumb.js"></script>
+{{-- Price Filter: Load CSS and use bundled JS from project --}}
+<link rel="stylesheet" href="{{ asset('brancy/css/plugins/range-slider.css') }}">
+<script src="{{ asset('brancy/js/plugins/range-slider.js') }}"></script>
 <script>
 (function() {
     'use strict';
 
-    var sliderRange = document.getElementById('slider-range');
-    if (!sliderRange || typeof noUiSlider === 'undefined') return;
+    // Wait for DOM and libraries to be ready
+    $(document).ready(function() {
+        var sliderRange = document.getElementById('slider-range');
+        if (!sliderRange) {
+            console.error('Price filter: slider element not found');
+            return;
+        }
 
-    // Price values from PHP
-    var minPrice = {{ (int)($minPrice ?? 430) }};
-    var maxPrice = {{ (int)($maxPrice ?? 2500) }};
-    var currentMin = {{ (int)(request('min_price') ?: ($minPrice ?? 430)) }};
-    var currentMax = {{ (int)(request('max_price') ?: ($maxPrice ?? 2500)) }};
+        // If slider was auto-initialized by range-slider.js, destroy it first
+        if (sliderRange.noUiSlider) {
+            sliderRange.noUiSlider.destroy();
+        }
 
-    // Ensure valid range
-    if (maxPrice <= minPrice) maxPrice = minPrice + 100;
-    currentMin = Math.max(minPrice, Math.min(currentMin, maxPrice));
-    currentMax = Math.max(currentMin, Math.min(currentMax, maxPrice));
+        // Price values from PHP
+        var minPrice = {{ (int)($minPrice ?? 430) }};
+        var maxPrice = {{ (int)($maxPrice ?? 2500) }};
+        var currentMin = {{ (int)(request('min_price') ?: ($minPrice ?? 430)) }};
+        var currentMax = {{ (int)(request('max_price') ?: ($maxPrice ?? 2500)) }};
 
-    // Money formatter
-    var moneyFormat = wNumb({
-        decimals: 0,
-        thousand: ',',
-        prefix: '$'
-    });
+        // Ensure valid range
+        if (maxPrice <= minPrice) maxPrice = minPrice + 100;
+        currentMin = Math.max(minPrice, Math.min(currentMin, maxPrice));
+        currentMax = Math.max(currentMin, Math.min(currentMax, maxPrice));
 
-    // Create slider
-    noUiSlider.create(sliderRange, {
-        start: [currentMin, currentMax],
-        step: 10,
-        connect: true,
-        range: {
-            'min': minPrice,
-            'max': maxPrice
-        },
-        format: moneyFormat
-    });
+        // Money formatter (wNumb is bundled in range-slider.js)
+        var moneyFormat = wNumb({
+            decimals: 0,
+            thousand: ',',
+            prefix: '$'
+        });
 
-    // Update labels on slide
-    sliderRange.noUiSlider.on('update', function(values, handle) {
-        document.getElementById('slider-range-value1').innerHTML = values[0];
-        document.getElementById('slider-range-value2').innerHTML = values[1];
-        document.getElementById('min-price-input').value = moneyFormat.from(values[0]);
-        document.getElementById('max-price-input').value = moneyFormat.from(values[1]);
-    });
+        // Create slider with dynamic values
+        noUiSlider.create(sliderRange, {
+            start: [currentMin, currentMax],
+            step: 10,
+            connect: true,
+            range: {
+                'min': minPrice,
+                'max': maxPrice
+            },
+            format: moneyFormat
+        });
 
-    // Auto-submit on change (debounced)
-    var submitTimeout;
-    sliderRange.noUiSlider.on('change', function() {
-        clearTimeout(submitTimeout);
-        submitTimeout = setTimeout(function() {
-            document.getElementById('price-filter-form').submit();
-        }, 500);
+        // Update labels on slide
+        sliderRange.noUiSlider.on('update', function(values, handle) {
+            document.getElementById('slider-range-value1').innerHTML = values[0];
+            document.getElementById('slider-range-value2').innerHTML = values[1];
+            document.getElementById('min-price-input').value = moneyFormat.from(values[0]);
+            document.getElementById('max-price-input').value = moneyFormat.from(values[1]);
+        });
+
+        // Auto-submit on change (debounced)
+        var submitTimeout;
+        sliderRange.noUiSlider.on('change', function() {
+            clearTimeout(submitTimeout);
+            submitTimeout = setTimeout(function() {
+                document.getElementById('price-filter-form').submit();
+            }, 500);
+        });
     });
 })();
 </script>
