@@ -149,19 +149,13 @@
 
                     @if($collections->isNotEmpty())
                         <div class="product-widget">
-                            <h4 class="product-widget-title">Categories</h4>
+                            <h4 class="product-widget-title">Categoris</h4>
                             <ul class="product-widget-category">
-                                <li>
-                                    <a href="{{ route('shop.index') }}" class="{{ !request('collection') ? 'active' : '' }}">
-                                        All Products <span>({{ $totalProducts }})</span>
-                                    </a>
-                                </li>
                                 @foreach($collections as $collection)
                                     <li>
                                         <a href="{{ route('shop.index', ['collection' => $collection->slug]) }}"
                                            class="{{ request('collection') == $collection->slug ? 'active' : '' }}">
-                                            {{ $collection->translateAttribute('name') }}
-                                            <span>({{ $collection->products_count ?? 0 }})</span>
+                                            {{ $collection->translateAttribute('name') }} <span>({{ $collection->products_count ?? 0 }})</span>
                                         </a>
                                     </li>
                                 @endforeach
@@ -320,41 +314,24 @@
         width: 11px;
         transform: translate(0px, -50%);
     }
-    /* Price Filter - Use built-in Brancy styles from style.css, only add missing base styles */
-    /* Category styling */
+    /* Category styling - enhance built-in Brancy styles */
     .product-sidebar-widget .product-widget-category {
-        margin-bottom: 0;
         padding-left: 0;
         list-style: none;
     }
-    .product-sidebar-widget .product-widget-category li {
-        display: block;
-    }
     .product-sidebar-widget .product-widget-category li a {
-        border-top: 1px solid #e7e7e7;
-        font-size: 14px;
-        display: flex;
-        justify-content: space-between;
-        padding: 10px 0;
         color: #747474;
         transition: color 0.3s ease;
     }
-    .product-sidebar-widget .product-widget-category li:first-child a {
-        border-top: none;
-        padding-top: 0;
-    }
-    .product-sidebar-widget .product-widget-category li:last-child a {
-        padding-bottom: 0;
-    }
     .product-sidebar-widget .product-widget-category li a:hover {
-        color: #22C55E;
+        color: #457B9D;
     }
     .product-sidebar-widget .product-widget-category li a.active {
-        color: #22C55E;
+        color: #457B9D;
         font-weight: 600;
     }
     .product-sidebar-widget .product-widget-category li a span {
-        color: #747474;
+        color: #999999;
     }
 
     /* Tags styling */
