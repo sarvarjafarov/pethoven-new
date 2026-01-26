@@ -23,6 +23,21 @@ class CartController extends Controller
     {
         $cart = CartSession::current();
 
+        // Calculate cart totals if cart exists
+        if ($cart) {
+            // Load necessary relationships for display
+            $cart->load([
+                'lines.purchasable.product.thumbnail',
+                'lines.purchasable.product.defaultUrl',
+                'lines.purchasable.values.option',
+                'lines.purchasable.prices',
+                'currency',
+            ]);
+
+            // Calculate to get proper totals (subTotal, taxTotal, total)
+            $cart = $cart->calculate();
+        }
+
         return view('frontend.cart.index', compact('cart'));
     }
 
