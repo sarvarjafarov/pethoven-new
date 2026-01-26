@@ -213,6 +213,72 @@
 <!--== End Shopping Cart Area ==-->
 @endsection
 
+@push('styles')
+<style>
+/* Cart table styling */
+.shopping-cart-form table {
+    width: 100%;
+    table-layout: fixed;
+}
+.shopping-cart-form table th,
+.shopping-cart-form table td {
+    vertical-align: middle;
+    padding: 15px 10px;
+}
+.shopping-cart-form table th.product-remove,
+.shopping-cart-form table td.product-remove {
+    width: 50px;
+    text-align: center;
+}
+.shopping-cart-form table th.product-thumbnail,
+.shopping-cart-form table td.product-thumbnail {
+    width: 100px;
+}
+.shopping-cart-form table td.product-thumbnail img {
+    max-width: 80px;
+    height: auto;
+}
+.shopping-cart-form table th.product-name,
+.shopping-cart-form table td.product-name {
+    width: auto;
+    min-width: 200px;
+    text-align: left;
+}
+.shopping-cart-form table td.product-name h5.title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 500;
+}
+.shopping-cart-form table td.product-name h5.title a {
+    color: #1c1c1c;
+    text-decoration: none;
+}
+.shopping-cart-form table td.product-name h5.title a:hover {
+    color: #457B9D;
+}
+.shopping-cart-form table th.product-price,
+.shopping-cart-form table td.product-price {
+    width: 120px;
+}
+.shopping-cart-form table th.product-quantity,
+.shopping-cart-form table td.product-quantity {
+    width: 150px;
+}
+.shopping-cart-form table th.product-subtotal,
+.shopping-cart-form table td.product-subtotal {
+    width: 120px;
+}
+.shopping-cart-form .product-remove .remove {
+    font-size: 24px;
+    color: #999;
+    text-decoration: none;
+}
+.shopping-cart-form .product-remove .remove:hover {
+    color: #ff6565;
+}
+</style>
+@endpush
+
 @push('scripts')
 <script>
 $(document).ready(function() {
