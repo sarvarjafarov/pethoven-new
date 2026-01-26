@@ -170,6 +170,10 @@
                                         <a href="javascript:void(0)" class="btn-shipping-address">Change address</a>
                                     </td>
                                 </tr>
+                                <tr id="shipping-cost-row" style="display: none;">
+                                    <th>SHIPPING COST</th>
+                                    <td class="amount" id="shipping-cost-amount">$0.00</td>
+                                </tr>
                                 @if($cart->taxTotal && $cart->taxTotal->value > 0)
                                     <tr>
                                         <th>TAX</th>
@@ -377,6 +381,55 @@ $(document).ready(function() {
     $('#update-cart-btn').on('click', function() {
         location.reload();
     });
+
+    // Shipping method selection - update total dynamically
+    var cartSubtotal = {{ $cart->subTotal->value ?? 0 }};
+    var cartTax = {{ $cart->taxTotal->value ?? 0 }};
+    var currencySymbol = '{{ $cart->currency->code === "USD" ? "$" : $cart->currency->code }}';
+
+    // Shipping costs in cents
+    var shippingCosts = {
+        'flat_rate': 300, // $3.00
+        'free': 0,
+        'local': 0
+    };
+
+    function formatMoney(cents) {
+        return currencySymbol + (cents / 100).toFixed(2);
+    }
+
+    function updateCartTotal() {
+        var selectedShipping = $('input[name="shipping_method"]:checked').val();
+        var shippingCost = shippingCosts[selectedShipping] || 0;
+        var newTotal = cartSubtotal + cartTax + shippingCost;
+
+        // Update shipping display
+        if (shippingCost > 0) {
+            $('#shipping-cost-row').show();
+            $('#shipping-cost-amount').text(formatMoney(shippingCost));
+        } else {
+            $('#shipping-cost-row').hide();
+        }
+
+        // Update total
+        $('#cart-total').text(formatMoney(newTotal));
+
+        // Store selected shipping in session via AJAX
+        $.post('/cart/shipping', {
+            shipping_method: selectedShipping,
+            _token: '{{ csrf_token() }}'
+        }).fail(function() {
+            // Silently fail - shipping will be set at checkout
+        });
+    }
+
+    // Bind shipping method change
+    $('input[name="shipping_method"]').on('change', function() {
+        updateCartTotal();
+    });
+
+    // Initialize on page load
+    updateCartTotal();
 });
 </script>
 @endpush

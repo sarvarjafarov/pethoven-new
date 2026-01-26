@@ -54,6 +54,7 @@ Route::prefix('cart')->name('cart.')->group(function () {
     Route::delete('/{lineId}', [CartController::class, 'remove'])->name('remove');
     Route::post('/clear', [CartController::class, 'clear'])->name('clear');
     Route::get('/count', [CartController::class, 'count'])->name('count');
+    Route::post('/shipping', [CartController::class, 'setShipping'])->name('shipping');
 });
 
 // Wishlist Routes

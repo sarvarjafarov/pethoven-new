@@ -453,10 +453,10 @@ class CartController extends Controller
         try {
             // Fix any existing cart lines before calculating
             $this->fixExistingCartLines();
-            
+
             $cart = CartSession::current();
             $count = $cart && $cart->lines ? $cart->lines->sum('quantity') : 0;
-            
+
             return response()->json([
                 'count' => $count
             ]);
@@ -466,6 +466,23 @@ class CartController extends Controller
                 'count' => 0
             ]);
         }
+    }
+
+    /**
+     * Save selected shipping method to session
+     */
+    public function setShipping(Request $request)
+    {
+        $request->validate([
+            'shipping_method' => 'required|in:flat_rate,free,local'
+        ]);
+
+        session(['cart_shipping_method' => $request->shipping_method]);
+
+        return response()->json([
+            'success' => true,
+            'shipping_method' => $request->shipping_method
+        ]);
     }
 
     /**
