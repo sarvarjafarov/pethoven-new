@@ -238,14 +238,14 @@
             <div class="col-sm-6 col-lg-4 mb-8">
                 <!--== Start Blog Item ==-->
                 <div class="post-item">
-                    <a href="#" class="thumb">
-                        <img src="{{ asset('brancy/images/blog/1.webp') }}" width="370" height="320" alt="Image-HasTech">
+                    <a href="{{ route('blog.show', 'demo-1') }}" class="thumb">
+                        <img src="{{ asset('brancy/images/blog/1.webp') }}" width="370" height="320" alt="Blog Post">
                     </a>
                     <div class="content">
-                        <a class="post-category" href="#">beauty</a>
-                        <h4 class="title"><a href="#">Lorem ipsum dolor sit amet consectetur adipiscing.</a></h4>
+                        <a class="post-category" href="{{ route('blog.index', ['category' => 'beauty']) }}">beauty</a>
+                        <h4 class="title"><a href="{{ route('blog.show', 'demo-1') }}">Lorem ipsum dolor sit amet consectetur adipiscing.</a></h4>
                         <ul class="meta">
-                            <li class="author-info"><span>By:</span> <a href="#">Tomas De Momen</a></li>
+                            <li class="author-info"><span>By:</span> Tomas Alva Addison</li>
                             <li class="post-date">February 13, 2022</li>
                         </ul>
                     </div>
@@ -255,14 +255,14 @@
             <div class="col-sm-6 col-lg-4 mb-8">
                 <!--== Start Blog Item ==-->
                 <div class="post-item">
-                    <a href="#" class="thumb">
-                        <img src="{{ asset('brancy/images/blog/2.webp') }}" width="370" height="320" alt="Image-HasTech">
+                    <a href="{{ route('blog.show', 'demo-2') }}" class="thumb">
+                        <img src="{{ asset('brancy/images/blog/2.webp') }}" width="370" height="320" alt="Blog Post">
                     </a>
                     <div class="content">
-                        <a class="post-category post-category-two" data-bg-color="#A49CFF" href="#">beauty</a>
-                        <h4 class="title"><a href="#">Facial Scrub is natural treatment for face.</a></h4>
+                        <a class="post-category post-category-two" data-bg-color="#A49CFF" href="{{ route('blog.index', ['category' => 'beauty']) }}">beauty</a>
+                        <h4 class="title"><a href="{{ route('blog.show', 'demo-2') }}">Benefit of Hot Ston Spa for your health & life.</a></h4>
                         <ul class="meta">
-                            <li class="author-info"><span>By:</span> <a href="#">Tomas De Momen</a></li>
+                            <li class="author-info"><span>By:</span> Tomas Alva Addison</li>
                             <li class="post-date">February 13, 2022</li>
                         </ul>
                     </div>
@@ -272,14 +272,14 @@
             <div class="col-sm-6 col-lg-4 mb-8">
                 <!--== Start Blog Item ==-->
                 <div class="post-item">
-                    <a href="#" class="thumb">
-                        <img src="{{ asset('brancy/images/blog/3.webp') }}" width="370" height="320" alt="Image-HasTech">
+                    <a href="{{ route('blog.show', 'demo-3') }}" class="thumb">
+                        <img src="{{ asset('brancy/images/blog/3.webp') }}" width="370" height="320" alt="Blog Post">
                     </a>
                     <div class="content">
-                        <a class="post-category post-category-three" data-bg-color="#9CDBFF" href="#">beauty</a>
-                        <h4 class="title"><a href="#">Benefit of Hot Ston Spa for your health & life.</a></h4>
+                        <a class="post-category post-category-three" data-bg-color="#9CDBFF" href="{{ route('blog.index', ['category' => 'beauty']) }}">beauty</a>
+                        <h4 class="title"><a href="{{ route('blog.show', 'demo-3') }}">Facial Scrub is natural treatment for face.</a></h4>
                         <ul class="meta">
-                            <li class="author-info"><span>By:</span> <a href="#">Tomas De Momen</a></li>
+                            <li class="author-info"><span>By:</span> Tomas Alva Addison</li>
                             <li class="post-date">February 13, 2022</li>
                         </ul>
                     </div>
