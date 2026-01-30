@@ -108,7 +108,7 @@
                         <div class="row align-items-center">
                             <div class="col-12">
                                 <div class="shopping-cart-btn text-end">
-                                    <button type="button" class="btn-update-cart" id="update-cart-btn">Update Cart</button>
+                                    <button type="button" class="btn" id="update-cart-btn">Update Cart</button>
                                 </div>
                             </div>
                         </div>
@@ -224,10 +224,22 @@
     width: 100%;
     table-layout: fixed;
 }
+.shopping-cart-form table thead th {
+    font-size: 14px;
+    font-weight: 600;
+    color: #231942;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 2px solid #E3E3E3;
+    padding: 15px 10px;
+}
 .shopping-cart-form table th,
 .shopping-cart-form table td {
     vertical-align: middle;
-    padding: 15px 10px;
+    padding: 20px 10px;
+}
+.shopping-cart-form table tbody tr {
+    border-bottom: 1px solid #E3E3E3;
 }
 .shopping-cart-form table th.product-remove,
 .shopping-cart-form table td.product-remove {
@@ -254,31 +266,105 @@
     font-weight: 500;
 }
 .shopping-cart-form table td.product-name h5.title a {
-    color: #1c1c1c;
+    color: #231942;
     text-decoration: none;
+    transition: all 0.3s ease;
 }
 .shopping-cart-form table td.product-name h5.title a:hover {
-    color: #457B9D;
+    color: #22C55E;
 }
 .shopping-cart-form table th.product-price,
 .shopping-cart-form table td.product-price {
-    width: 120px;
+    width: 130px;
+}
+.shopping-cart-form table td.product-price .price {
+    font-weight: 600;
+    color: #231942;
 }
 .shopping-cart-form table th.product-quantity,
 .shopping-cart-form table td.product-quantity {
-    width: 150px;
+    width: 190px;
+}
+/* Ensure .pro-qty renders correctly inside cart table */
+.shopping-cart-form .pro-qty {
+    display: inline-block;
+    position: relative;
+}
+.shopping-cart-form .pro-qty input {
+    width: 140px;
+    height: 46px;
+    font-size: 14px;
+    font-weight: 700;
+    border: 2px solid #22C55E;
+    border-radius: 50px;
+    color: #231942;
+    padding: 0 45px;
+    text-align: center;
+    background: transparent;
+    outline: none;
+}
+.shopping-cart-form .pro-qty .qty-btn {
+    cursor: pointer;
+    position: absolute;
+    line-height: 21px;
+    color: #555555;
+    height: 25px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 24px;
+    width: 43px;
+    text-align: center;
+    transition: all 0.3s ease;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.shopping-cart-form .pro-qty .qty-btn:hover {
+    color: #22C55E;
+}
+.shopping-cart-form .pro-qty .dec {
+    left: 0;
+    border-right: 1px solid #CDCDCD;
+    padding-left: 3px;
+    line-height: 22px;
+}
+.shopping-cart-form .pro-qty .inc {
+    right: 0;
+    border-left: 1px solid #CDCDCD;
+    padding-right: 3px;
 }
 .shopping-cart-form table th.product-subtotal,
 .shopping-cart-form table td.product-subtotal {
-    width: 120px;
+    width: 130px;
+}
+.shopping-cart-form table td.product-subtotal .price {
+    font-weight: 600;
+    color: #231942;
 }
 .shopping-cart-form .product-remove .remove {
-    font-size: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    font-size: 18px;
     color: #999;
     text-decoration: none;
+    transition: all 0.3s ease;
 }
 .shopping-cart-form .product-remove .remove:hover {
-    color: #ff6565;
+    color: #fff;
+    background: #ff6565;
+}
+
+/* Shopping cart footer */
+.shopping-cart-footer {
+    padding: 20px 0;
+}
+.shopping-cart-btn .btn {
+    min-width: 180px;
 }
 </style>
 @endpush
