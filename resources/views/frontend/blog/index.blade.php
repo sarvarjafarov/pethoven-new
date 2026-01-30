@@ -226,7 +226,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-sm-10 col-lg-8">
-                <a href="{{ route('products.index') }}" class="product-banner-item">
+                <a href="{{ route('shop.index') }}" class="product-banner-item">
                     <img src="{{ $cdn }}/shop/banner/8.webp" width="770" height="250" alt="Image-HasTech">
                 </a>
             </div>

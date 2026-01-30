@@ -132,8 +132,11 @@
             </div>
             <div class="col-lg-6">
                 <div class="product-details-content">
-                    <h5 class="product-details-collection">Premioum collection</h5>
-                    <h3 class="product-details-title">Offbline Instant Age Rewind Eraser.</h3>
+                    @php
+                        $collectionName = $product->collections->first()?->translateAttribute('name') ?? 'Premium Collection';
+                    @endphp
+                    <h5 class="product-details-collection">{{ $collectionName }}</h5>
+                    <h3 class="product-details-title">{{ $productName }}</h3>
                     <div class="product-details-review">
                         <div class="product-review-icon">
                             <i class="fa fa-star-o"></i>
@@ -142,7 +145,7 @@
                             <i class="fa fa-star-o"></i>
                             <i class="fa fa-star-o"></i>
                         </div>
-                        <button type="button" class="product-review-show">150 reviews</button>
+                        <button type="button" class="product-review-show">0 reviews</button>
                     </div>
 
                     @php
@@ -153,18 +156,22 @@
                     @endphp
 
                     <div class="product-details-qty-list">
-                        <div class="qty-list-check">
-                            <input class="form-check-input variant-radio" type="radio" name="productVariant" id="variant1" value="15ml" data-price="250.00" checked>
-                            <label class="form-check-label" for="variant1">
-                                15 ml bottol <b>$250.00</b>
-                            </label>
-                        </div>
-                        <div class="qty-list-check">
-                            <input class="form-check-input variant-radio" type="radio" name="productVariant" id="variant2" value="25ml" data-price="350.00">
-                            <label class="form-check-label" for="variant2">
-                                25 ml bottol <b>$350.00</b> <span class="extra-offer">extra 25%</span>
-                            </label>
-                        </div>
+                        @foreach($variants as $index => $variant)
+                            @php
+                                $variantPrice = $variant->prices->first();
+                                $variantLabel = $variant->values->isNotEmpty()
+                                    ? $variant->values->map(fn($v) => $v->name)->join(', ')
+                                    : ($variant->sku ?? 'Option ' . ($index + 1));
+                                $priceValue = $variantPrice?->price?->decimal ?? 0;
+                                $priceFormatted = $variantPrice?->price?->formatted ?? '$0.00';
+                            @endphp
+                            <div class="qty-list-check">
+                                <input class="form-check-input variant-radio" type="radio" name="productVariant" id="variant{{ $variant->id }}" value="{{ $variant->id }}" data-price="{{ $priceValue }}" {{ $index === 0 ? 'checked' : '' }}>
+                                <label class="form-check-label" for="variant{{ $variant->id }}">
+                                    {{ $variantLabel }} <b>{{ $priceFormatted }}</b>
+                                </label>
+                            </div>
+                        @endforeach
                     </div>
 
                     <div class="product-details-pro-qty">
@@ -200,25 +207,37 @@
                 </div>
                 <div class="tab-content" id="product-details-nav-tabContent">
                     <div class="tab-pane" id="specification" role="tabpanel" aria-labelledby="specification-tab">
+                        @php
+                            $sku = $firstVariant?->sku;
+                            $weight = $firstVariant?->weight_value;
+                            $weightUnit = $firstVariant?->weight_unit ?? 'g';
+                            $length = $firstVariant?->length_value;
+                            $width = $firstVariant?->width_value;
+                            $height = $firstVariant?->height_value;
+                            $dimensionUnit = $firstVariant?->dimension_unit ?? 'cm';
+                        @endphp
                         <ul class="product-details-info-wrap">
+                            @if($sku)
+                            <li><span>SKU</span>
+                                <p>{{ $sku }}</p>
+                            </li>
+                            @endif
+                            @if($weight)
                             <li><span>Weight</span>
-                                <p>250 g</p>
+                                <p>{{ $weight }} {{ $weightUnit }}</p>
                             </li>
+                            @endif
+                            @if($length && $width && $height)
                             <li><span>Dimensions</span>
-                                <p>10 x 10 x 15 cm</p>
+                                <p>{{ $length }} x {{ $width }} x {{ $height }} {{ $dimensionUnit }}</p>
                             </li>
-                            <li><span>Materials</span>
-                                <p>60% cotton, 40% polyester</p>
-                            </li>
-                            <li><span>Other Info</span>
-                                <p>American heirloom jean shorts pug seitan letterpress</p>
-                            </li>
+                            @endif
                         </ul>
 
-                        @if($product->description)
+                        @if($product->translateAttribute('description'))
                             <p>{!! nl2br(e($product->translateAttribute('description'))) !!}</p>
                         @else
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius velit corporis quo voluptate culpa soluta, esse accusamus, sunt quia omnis amet temporibus sapiente harum quam itaque libero tempore. Ipsum, ducimus. lorem</p>
+                            <p>No description available for this product.</p>
                         @endif
                     </div>
 
@@ -296,54 +315,9 @@
             </div>
             <div class="col-lg-5">
                 <div class="product-reviews-form-wrap">
-                    <h4 class="product-form-title">Leave a replay</h4>
+                    <h4 class="product-form-title">Leave a Review</h4>
                     <div class="product-reviews-form">
-                        <form action="#">
-                            <div class="form-input-item">
-                                <textarea class="form-control" placeholder="Enter you feedback"></textarea>
-                            </div>
-                            <div class="form-input-item">
-                                <input class="form-control" type="text" placeholder="Full Name">
-                            </div>
-                            <div class="form-input-item">
-                                <input class="form-control" type="email" placeholder="Email Address">
-                            </div>
-                            <div class="form-input-item">
-                                <div class="form-ratings-item">
-                                    <select id="product-review-form-rating-select" class="select-ratings">
-                                        <option value="1">01</option>
-                                        <option value="2">02</option>
-                                        <option value="3">03</option>
-                                        <option value="4">04</option>
-                                        <option value="5">05</option>
-                                    </select>
-                                    <span class="title">Provide Your Ratings</span>
-                                    <div class="product-ratingsform-form-wrap">
-                                        <div class="product-ratingsform-form-icon">
-                                            <i class="fa fa-star-o"></i>
-                                            <i class="fa fa-star-o"></i>
-                                            <i class="fa fa-star-o"></i>
-                                            <i class="fa fa-star-o"></i>
-                                            <i class="fa fa-star-o"></i>
-                                        </div>
-                                        <div id="product-review-form-rating" class="product-ratingsform-form-icon-fill">
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="reviews-form-checkbox">
-                                    <input class="form-check-input" type="checkbox" value="" id="ReviewsFormCheckbox" checked>
-                                    <label class="form-check-label" for="ReviewsFormCheckbox">Provide ratings anonymously.</label>
-                                </div>
-                            </div>
-                            <div class="form-input-item mb-0">
-                                <button type="submit" class="btn">SUBMIT</button>
-                            </div>
-                        </form>
+                        <p class="text-muted">Reviews are coming soon. Check back later to share your feedback on this product.</p>
                     </div>
                 </div>
             </div>
@@ -517,7 +491,7 @@ $(document).ready(function() {
     // Add to cart
     $('#add-to-cart-btn').on('click', function() {
         const $btn = $(this);
-        const variantId = $btn.data('variant-id') || $('.variant-radio:checked').val();
+        const variantId = $('.variant-radio:checked').val() || $btn.data('variant-id');
         const quantity = parseInt($('#quantity-input').val()) || 1;
 
         if (!variantId) {

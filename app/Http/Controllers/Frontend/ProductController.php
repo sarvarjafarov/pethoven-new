@@ -51,10 +51,24 @@ class ProductController extends Controller
         $sort = $request->get('sort', 'newest');
         switch ($sort) {
             case 'price_low':
-                $query->orderBy('created_at', 'asc');
+                $query->addSelect(['min_price' => \Lunar\Models\Price::selectRaw('MIN(price)')
+                    ->whereColumn('priceable_id', 'lunar_product_variants.id')
+                    ->where('priceable_type', \Lunar\Models\ProductVariant::class)
+                    ->limit(1)
+                ])
+                ->leftJoin('lunar_product_variants', 'lunar_product_variants.product_id', '=', 'lunar_products.id')
+                ->groupBy('lunar_products.id')
+                ->orderBy('min_price', 'asc');
                 break;
             case 'price_high':
-                $query->orderBy('created_at', 'desc');
+                $query->addSelect(['max_price' => \Lunar\Models\Price::selectRaw('MAX(price)')
+                    ->whereColumn('priceable_id', 'lunar_product_variants.id')
+                    ->where('priceable_type', \Lunar\Models\ProductVariant::class)
+                    ->limit(1)
+                ])
+                ->leftJoin('lunar_product_variants', 'lunar_product_variants.product_id', '=', 'lunar_products.id')
+                ->groupBy('lunar_products.id')
+                ->orderBy('max_price', 'desc');
                 break;
             case 'name':
                 $query->orderBy('name', 'asc');
@@ -67,7 +81,7 @@ class ProductController extends Controller
 
         $products = $query->paginate(12);
         $collections = Collection::withCount('products')->get();
-        $totalProducts = Product::where('status', 'published')->count();
+        $totalProducts = $products->total();
 
         // Get price range for slider
         // Try to get actual min/max prices, fallback to defaults

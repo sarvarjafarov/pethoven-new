@@ -116,7 +116,7 @@
 
         <div class="section-space pb-0">
             <!--== Start Product Category Item ==-->
-            <a href="{{ route('products.index') }}" class="product-banner-item">
+            <a href="{{ route('shop.index') }}" class="product-banner-item">
                 <img src="{{ $cdn }}/shop/banner/9.webp" width="1170" height="200" alt="Image-HasTech">
             </a>
             <!--== End Product Category Item ==-->

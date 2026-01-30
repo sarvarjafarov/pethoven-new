@@ -122,7 +122,8 @@ class CheckoutController extends Controller
 
         // Handle non-Stripe payment methods (COD, Direct Bank Transfer)
         if (in_array($validated['payment_method'], ['cod', 'direct_bank'])) {
-            // Create order directly without online payment
+            // Ensure cart totals are calculated before creating order
+            $cart->calculate();
             $order = $cart->createOrder();
 
             // Update order status based on payment method
@@ -137,6 +138,9 @@ class CheckoutController extends Controller
                 'payment_method' => $validated['payment_method'],
             ]);
             $order->save();
+
+            // Store order ID in session for guest access verification
+            session(['last_order_id' => $order->id]);
 
             // Clear the cart
             CartSession::forget();
@@ -209,7 +213,9 @@ class CheckoutController extends Controller
             // If payment_intent_id is provided, confirm existing intent (after 3D Secure)
             if ($request->payment_intent_id) {
                 $paymentIntent = \Stripe\PaymentIntent::retrieve($request->payment_intent_id);
-                $paymentIntent->confirm();
+                if ($paymentIntent->status === 'requires_confirmation') {
+                    $paymentIntent->confirm();
+                }
             } else {
                 // Create new payment intent
                 $paymentIntent = \Stripe\PaymentIntent::create([
@@ -227,7 +233,8 @@ class CheckoutController extends Controller
 
             // Handle different payment intent statuses
             if ($paymentIntent->status === 'succeeded') {
-                // Create order from cart
+                // Ensure cart totals are calculated before creating order
+                $cart->calculate();
                 $order = $cart->createOrder();
 
                 // Update order with payment info
@@ -247,6 +254,9 @@ class CheckoutController extends Controller
                     'card_type' => $paymentIntent->charges->data[0]->payment_method_details->card->brand ?? null,
                     'last_four' => $paymentIntent->charges->data[0]->payment_method_details->card->last4 ?? null,
                 ]);
+
+                // Store order ID in session for guest access verification
+                session(['last_order_id' => $order->id]);
 
                 // Clear the cart
                 CartSession::forget();
@@ -302,8 +312,15 @@ class CheckoutController extends Controller
             'transactions'
         ])->findOrFail($orderId);
 
-        // Verify this order belongs to current user (if logged in)
-        // For now, allow anyone with the order ID to view it
+        // Verify this order belongs to the current user
+        if (auth()->check() && $order->user_id && $order->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized access to this order.');
+        }
+
+        // For guest orders, verify via session
+        if (!auth()->check() && session('last_order_id') !== $order->id) {
+            abort(403, 'Unauthorized access to this order.');
+        }
 
         return view('frontend.checkout.success', compact('order'));
     }

@@ -40,11 +40,9 @@ Route::prefix('shop')->name('shop.')->group(function () {
     Route::get('/product/{slug}', [ProductController::class, 'show'])->name('product.show');
 });
 
-// Products Routes (alias for shop)
-Route::prefix('products')->name('products.')->group(function () {
-    Route::get('/', [ProductController::class, 'index'])->name('index');
-    Route::get('/product/{slug}', [ProductController::class, 'show'])->name('product.show');
-});
+// Redirect legacy /products URLs to /shop
+Route::get('/products', fn () => redirect()->route('shop.index', request()->query(), 301));
+Route::get('/products/product/{slug}', fn ($slug) => redirect()->route('shop.product.show', $slug, 301));
 
 // Cart Routes
 Route::prefix('cart')->name('cart.')->group(function () {

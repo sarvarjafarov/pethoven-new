@@ -117,17 +117,7 @@
             </div>
 
             <div class="row">
-                <div class="col-lg-6">
-                    <div class="coupon-wrap mt-6">
-                        <h4 class="title">COUPON</h4>
-                        <p class="desc">Enter your coupon code if you have one.</p>
-                        <form action="#" method="post" id="coupon-form">
-                            @csrf
-                            <input class="form-control" type="text" name="coupon" placeholder="Coupon code">
-                            <button type="submit" class="btn-coupon">APPLY COUPON</button>
-                        </form>
-                    </div>
-                </div>
+                <div class="col-lg-6"></div>
                 <div class="col-lg-6">
                     <div class="cart-totals-wrap mt-6">
                         <h4 class="title">CART TOTALS</h4>
@@ -471,7 +461,9 @@ $(document).ready(function() {
     // Shipping method selection - update total dynamically
     var cartSubtotal = {{ $cart->subTotal->value ?? 0 }};
     var cartTax = {{ $cart->taxTotal->value ?? 0 }};
-    var currencySymbol = '{{ $cart->currency->code === "USD" ? "$" : $cart->currency->code }}';
+    var currencySymbols = {'USD':'$','EUR':'€','GBP':'£','JPY':'¥','CAD':'CA$','AUD':'A$'};
+    var currencyCode = '{{ $cart->currency->code }}';
+    var currencySymbol = currencySymbols[currencyCode] || currencyCode + ' ';
 
     // Shipping costs in cents
     var shippingCosts = {

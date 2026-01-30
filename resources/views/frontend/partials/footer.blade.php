@@ -35,10 +35,10 @@
                     <div class="widget-item">
                         <h4 class="widget-title">Social Info</h4>
                         <div class="widget-social">
-                            <a href="https://twitter.com/" target="_blank" rel="noopener"><i class="fa fa-twitter"></i></a>
-                            <a href="https://www.facebook.com/" target="_blank" rel="noopener"><i class="fa fa-facebook"></i></a>
-                            <a href="https://www.pinterest.com/" target="_blank" rel="noopener"><i class="fa fa-pinterest-p"></i></a>
-                            <a href="https://www.instagram.com/" target="_blank" rel="noopener"><i class="fa fa-instagram"></i></a>
+                            <a href="{{ config('app.social.twitter', '#') }}" target="_blank" rel="noopener"><i class="fa fa-twitter"></i></a>
+                            <a href="{{ config('app.social.facebook', '#') }}" target="_blank" rel="noopener"><i class="fa fa-facebook"></i></a>
+                            <a href="{{ config('app.social.pinterest', '#') }}" target="_blank" rel="noopener"><i class="fa fa-pinterest-p"></i></a>
+                            <a href="{{ config('app.social.instagram', '#') }}" target="_blank" rel="noopener"><i class="fa fa-instagram"></i></a>
                         </div>
                     </div>
                 </div>

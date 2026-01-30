@@ -22,7 +22,7 @@
                     <ul class="main-nav justify-content-start">
                         <li class="{{ request()->routeIs('home') ? 'active' : '' }}"><a href="{{ route('home') }}">home</a></li>
                         <li class="{{ request()->routeIs('about') ? 'active' : '' }}"><a href="{{ route('about') }}">about</a></li>
-                        <li class="{{ request()->routeIs(['products.*', 'shop.*', 'cart.*']) ? 'active' : '' }}"><a href="{{ route('products.index') }}">shop</a></li>
+                        <li class="{{ request()->routeIs(['products.*', 'shop.*', 'cart.*']) ? 'active' : '' }}"><a href="{{ route('shop.index') }}">shop</a></li>
                         <li class="{{ request()->routeIs('blog.*') ? 'active' : '' }}"><a href="{{ route('blog.index') }}">blog</a></li>
                         <li class="{{ request()->routeIs('contact') ? 'active' : '' }}"><a href="{{ route('contact') }}">contact</a></li>
                     </ul>
@@ -135,7 +135,7 @@
                 <div class="search-note">
                     <p>Start typing and press Enter to search</p>
                 </div>
-                <form action="{{ route('products.index') }}" method="get">
+                <form action="{{ route('shop.index') }}" method="get">
                     <div class="aside-search-form position-relative">
                         <label for="SearchInput" class="visually-hidden">Search</label>
                         <input id="SearchInput" type="search" name="search" class="form-control" placeholder="Search products…" value="{{ request('search') }}">
@@ -158,6 +158,9 @@
         @php
             try {
                 $cart = \Lunar\Facades\CartSession::current();
+                if ($cart) {
+                    $cart->loadMissing(['lines.purchasable.product.thumbnail', 'lines.purchasable.product.defaultUrl']);
+                }
                 $cartLines = $cart ? $cart->lines : collect();
                 $cartTotal = $cart ? $cart->total : 0;
             } catch (\Exception $e) {
@@ -193,7 +196,7 @@
         @else
             <div class="text-center py-5">
                 <p>Your cart is empty</p>
-                <a class="btn-total" href="{{ route('products.index') }}">Continue Shopping</a>
+                <a class="btn-total" href="{{ route('shop.index') }}">Continue Shopping</a>
             </div>
         @endif
     </div>
@@ -211,7 +214,7 @@
             <ul>
                 <li><a class="offcanvas-nav-item" href="{{ route('home') }}">home</a></li>
                 <li><a class="offcanvas-nav-item" href="{{ route('about') }}">about</a></li>
-                <li><a class="offcanvas-nav-item" href="{{ route('products.index') }}">products</a></li>
+                <li><a class="offcanvas-nav-item" href="{{ route('shop.index') }}">products</a></li>
                 <li><a class="offcanvas-nav-item" href="{{ route('blog.index') }}">blog</a></li>
                 <li><a class="offcanvas-nav-item" href="{{ route('contact') }}">contact</a></li>
             </ul>

@@ -88,13 +88,13 @@
         <div class="contact-info">
             <div class="contact-info-item">
                 <img class="icon" src="{{ $cdn }}/icons/1.webp" width="30" height="30" alt="Icon">
-                <a href="tel://+11020303023">+11 0203 03023</a>
-                <a href="tel://+11020303023">+11 0203 03023</a>
+                <a href="tel:+11020303023">+11 0203 03023</a>
+                <a href="tel:+11020303023">+11 0203 03023</a>
             </div>
             <div class="contact-info-item">
                 <img class="icon" src="{{ $cdn }}/icons/2.webp" width="30" height="30" alt="Icon">
-                <a href="mailto://example@demo.com">example@demo.com</a>
-                <a href="mailto://demo@example.com">demo@example.com</a>
+                <a href="mailto:example@demo.com">example@demo.com</a>
+                <a href="mailto:demo@example.com">demo@example.com</a>
             </div>
             <div class="contact-info-item mb-0">
                 <img class="icon" src="{{ $cdn }}/icons/3.webp" width="30" height="30" alt="Icon">
