@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Faq;
 use Illuminate\Http\Request;
 
 class PageController extends Controller
@@ -53,6 +54,8 @@ class PageController extends Controller
 
     public function faq()
     {
-        return view('frontend.pages.faq');
+        $faqs = Faq::active()->ordered()->get();
+
+        return view('frontend.pages.faq', compact('faqs'));
     }
 }

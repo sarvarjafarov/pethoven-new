@@ -188,13 +188,7 @@
     });
 
   // Select Js
-    // Only initialize niceSelect if not already initialized
-    $('select:not(.no-nice-select)').niceSelect();
-
-    // Listen for custom trigger to update nice-select
-    $(document).on('update.nice-select', function() {
-        $('select:not(.no-nice-select)').niceSelect('update');
-    });
+    $('select').niceSelect();
 
   // Review Form Rating Function
     var reviewFormRatingSelect = $('#product-review-form-rating-select'),

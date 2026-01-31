@@ -2,8 +2,8 @@
 
 @section('title', 'Home - ' . config('app.name'))
 
-@section('meta_description', 'Pethoven - Premium beauty and cosmetic salon offering quality skincare, makeup, and spa products. Shop now for the best beauty products.')
-@section('meta_keywords', 'beauty salon, cosmetic products, skincare, makeup, spa products, beauty care')
+@section('meta_description', setting('seo.meta_description', 'Premium beauty and cosmetic salon offering quality skincare, makeup, and spa products.'))
+@section('meta_keywords', setting('seo.meta_keywords', 'beauty salon, cosmetic products, skincare, makeup, spa products, beauty care'))
 
 @push('structured_data')
 <script type="application/ld+json">
@@ -13,7 +13,7 @@
     "name": "{{ config('app.name') }}",
     "url": "{{ url('/') }}",
     "logo": "{{ asset('brancy/images/logo.png') }}",
-    "description": "Premium beauty and cosmetic salon",
+    "description": "{{ setting('seo.meta_description', 'Premium beauty and cosmetic salon') }}",
     "address": {
         "@type": "PostalAddress",
         "addressCountry": "US"
@@ -44,6 +44,35 @@
 <section class="hero-slider-area position-relative">
     <div class="swiper hero-slider-container">
         <div class="swiper-wrapper">
+            @forelse($sliders as $slider)
+            <div class="swiper-slide hero-slide-item">
+                <div class="container">
+                    <div class="row align-items-center position-relative">
+                        <div class="col-12 col-md-6">
+                            <div class="hero-slide-content">
+                                <div class="hero-slide-text-img"><img src="{{ asset('brancy/images/slider/text-theme.webp') }}" width="427" height="232" alt="Image"></div>
+                                <h2 class="hero-slide-title">{{ $slider->title }}</h2>
+                                @if($slider->description)
+                                <p class="hero-slide-desc">{{ $slider->description }}</p>
+                                @endif
+                                <a class="btn btn-border-dark" href="{{ $slider->button_link ?: route('shop.index') }}">{{ $slider->button_text }}</a>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="hero-slide-thumb">
+                                @if($slider->image)
+                                    <img src="{{ asset('storage/' . $slider->image) }}" width="841" height="832" alt="{{ $slider->title }}">
+                                @else
+                                    <img src="{{ asset('brancy/images/slider/slider' . $loop->iteration . '.webp') }}" width="841" height="832" alt="{{ $slider->title }}">
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-slide-text-shape"><img src="{{ asset('brancy/images/slider/text1.webp') }}" width="70" height="955" alt="Image"></div>
+                <div class="hero-slide-social-shape"></div>
+            </div>
+            @empty
             <div class="swiper-slide hero-slide-item">
                 <div class="container">
                     <div class="row align-items-center position-relative">
@@ -51,7 +80,7 @@
                             <div class="hero-slide-content">
                                 <div class="hero-slide-text-img"><img src="{{ asset('brancy/images/slider/text-theme.webp') }}" width="427" height="232" alt="Image"></div>
                                 <h2 class="hero-slide-title">CLEAN FRESH</h2>
-                                <p class="hero-slide-desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis.</p>
+                                <p class="hero-slide-desc">Discover our premium beauty collection.</p>
                                 <a class="btn btn-border-dark" href="{{ route('shop.index') }}">BUY NOW</a>
                             </div>
                         </div>
@@ -65,93 +94,50 @@
                 <div class="hero-slide-text-shape"><img src="{{ asset('brancy/images/slider/text1.webp') }}" width="70" height="955" alt="Image"></div>
                 <div class="hero-slide-social-shape"></div>
             </div>
-            <div class="swiper-slide hero-slide-item">
-                <div class="container">
-                    <div class="row align-items-center position-relative">
-                        <div class="col-12 col-md-6">
-                            <div class="hero-slide-content">
-                                <div class="hero-slide-text-img"><img src="{{ asset('brancy/images/slider/text-theme.webp') }}" width="427" height="232" alt="Image"></div>
-                                <h2 class="hero-slide-title">Facial Cream</h2>
-                                <p class="hero-slide-desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis.</p>
-                                <a class="btn btn-border-dark" href="{{ route('shop.index') }}">BUY NOW</a>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <div class="hero-slide-thumb">
-                                <img src="{{ asset('brancy/images/slider/slider2.webp') }}" width="841" height="832" alt="Image">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="hero-slide-text-shape"><img src="{{ asset('brancy/images/slider/text1.webp') }}" width="70" height="955" alt="Image"></div>
-                <div class="hero-slide-social-shape"></div>
-            </div>
+            @endforelse
         </div>
         <!--== Add Pagination ==-->
         <div class="hero-slider-pagination"></div>
     </div>
     <div class="hero-slide-social-media">
-        <a href="https://www.pinterest.com/" target="_blank" rel="noopener"><i class="fa fa-pinterest-p"></i></a>
-        <a href="https://twitter.com/" target="_blank" rel="noopener"><i class="fa fa-twitter"></i></a>
-        <a href="https://www.facebook.com/" target="_blank" rel="noopener"><i class="fa fa-facebook"></i></a>
+        <a href="{{ setting('social.pinterest', '#') }}" target="_blank" rel="noopener"><i class="fa fa-pinterest-p"></i></a>
+        <a href="{{ setting('social.twitter', '#') }}" target="_blank" rel="noopener"><i class="fa fa-twitter"></i></a>
+        <a href="{{ setting('social.facebook', '#') }}" target="_blank" rel="noopener"><i class="fa fa-facebook"></i></a>
     </div>
 </section>
 <!--== End Hero Area Wrapper ==-->
 
 <!--== Start Product Category Area Wrapper ==-->
+@php
+    $categories = setting('home.categories', []);
+    $defaultCategories = [
+        ['name' => 'Hare care', 'icon' => '', 'bg_color' => '', 'badge' => 'new'],
+        ['name' => 'Skin care', 'icon' => '', 'bg_color' => '#FFEDB4', 'badge' => ''],
+        ['name' => 'Lip stick', 'icon' => '', 'bg_color' => '#DFE4FF', 'badge' => ''],
+        ['name' => 'Face skin', 'icon' => '', 'bg_color' => '#FFEACC', 'badge' => 'sale'],
+        ['name' => 'Blusher', 'icon' => '', 'bg_color' => '#FFDAE0', 'badge' => ''],
+        ['name' => 'Natural', 'icon' => '', 'bg_color' => '#FFF3DA', 'badge' => ''],
+    ];
+    if (empty($categories)) $categories = $defaultCategories;
+@endphp
 <section class="section-space pb-0">
     <div class="container">
         <div class="row g-3 g-sm-6">
-            <div class="col-6 col-lg-4 col-lg-2 col-xl-2">
-                <!--== Start Product Category Item ==-->
-                <a href="{{ route('shop.index') }}" class="product-category-item">
-                    <img class="icon" src="{{ asset('brancy/images/shop/category/1.webp') }}" width="70" height="80" alt="Image-HasTech">
-                    <h3 class="title">Hare care</h3>
-                    <span class="flag-new">new</span>
+            @foreach($categories as $index => $cat)
+            <div class="col-6 col-lg-4 col-lg-2 col-xl-2 {{ $index >= 2 ? 'mt-lg-0 mt-sm-6 mt-4' : '' }}">
+                <a href="{{ $cat['link'] ?? route('shop.index') }}" class="product-category-item" @if(!empty($cat['bg_color'])) data-bg-color="{{ $cat['bg_color'] }}" @endif>
+                    @if(!empty($cat['icon']))
+                        <img class="icon" src="{{ asset('storage/' . $cat['icon']) }}" width="80" height="80" alt="{{ $cat['name'] }}">
+                    @else
+                        <img class="icon" src="{{ asset('brancy/images/shop/category/' . ($index + 1) . '.webp') }}" width="80" height="80" alt="{{ $cat['name'] }}">
+                    @endif
+                    <h3 class="title">{{ $cat['name'] }}</h3>
+                    @if(!empty($cat['badge']))
+                        <span class="flag-new">{{ $cat['badge'] }}</span>
+                    @endif
                 </a>
-                <!--== End Product Category Item ==-->
             </div>
-            <div class="col-6 col-lg-4 col-lg-2 col-xl-2">
-                <!--== Start Product Category Item ==-->
-                <a href="{{ route('shop.index') }}" class="product-category-item" data-bg-color="#FFEDB4">
-                    <img class="icon" src="{{ asset('brancy/images/shop/category/2.webp') }}" width="80" height="80" alt="Image-HasTech">
-                    <h3 class="title">Skin care</h3>
-                </a>
-                <!--== End Product Category Item ==-->
-            </div>
-            <div class="col-6 col-lg-4 col-lg-2 col-xl-2 mt-lg-0 mt-sm-6 mt-4">
-                <!--== Start Product Category Item ==-->
-                <a href="{{ route('shop.index') }}" class="product-category-item" data-bg-color="#DFE4FF">
-                    <img class="icon" src="{{ asset('brancy/images/shop/category/3.webp') }}" width="80" height="80" alt="Image-HasTech">
-                    <h3 class="title">Lip stick</h3>
-                </a>
-                <!--== End Product Category Item ==-->
-            </div>
-            <div class="col-6 col-lg-4 col-lg-2 col-xl-2 mt-xl-0 mt-sm-6 mt-4">
-                <!--== Start Product Category Item ==-->
-                <a href="{{ route('shop.index') }}" class="product-category-item" data-bg-color="#FFEACC">
-                    <img class="icon" src="{{ asset('brancy/images/shop/category/4.webp') }}" width="80" height="80" alt="Image-HasTech">
-                    <h3 class="title">Face skin</h3>
-                    <span data-bg-color="#835BF4" class="flag-new">sale</span>
-                </a>
-                <!--== End Product Category Item ==-->
-            </div>
-            <div class="col-6 col-lg-4 col-lg-2 col-xl-2 mt-xl-0 mt-sm-6 mt-4">
-                <!--== Start Product Category Item ==-->
-                <a href="{{ route('shop.index') }}" class="product-category-item" data-bg-color="#FFDAE0">
-                    <img class="icon" src="{{ asset('brancy/images/shop/category/5.webp') }}" width="80" height="80" alt="Image-HasTech">
-                    <h3 class="title">Blusher</h3>
-                </a>
-                <!--== End Product Category Item ==-->
-            </div>
-            <div class="col-6 col-lg-4 col-lg-2 col-xl-2 mt-xl-0 mt-sm-6 mt-4">
-                <!--== Start Product Category Item ==-->
-                <a href="{{ route('shop.index') }}" class="product-category-item" data-bg-color="#FFF3DA">
-                    <img class="icon" src="{{ asset('brancy/images/shop/category/6.webp') }}" width="80" height="80" alt="Image-HasTech">
-                    <h3 class="title">Natural</h3>
-                </a>
-                <!--== End Product Category Item ==-->
-            </div>
+            @endforeach
         </div>
     </div>
 </section>
@@ -163,8 +149,8 @@
         <div class="row">
             <div class="col-12">
                 <div class="section-title text-center">
-                    <h2 class="title">Top sale</h2>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis</p>
+                    <h2 class="title">{{ setting('home.featured_title', 'Top sale') }}</h2>
+                    <p>{{ setting('home.featured_description', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis') }}</p>
                 </div>
             </div>
         </div>
@@ -183,27 +169,25 @@
 <section>
     <div class="container">
         <div class="row">
-            <div class="col-sm-6 col-lg-4">
-                <!--== Start Product Category Item ==-->
-                <a href="{{ route('shop.index') }}" class="product-banner-item">
-                    <img src="{{ asset('brancy/images/shop/banner/1.webp') }}" width="370" height="370" alt="Image-HasTech">
+            @forelse($banners->take(3) as $banner)
+            <div class="col-sm-6 col-lg-4 {{ !$loop->first ? 'mt-sm-0 mt-6' : '' }}">
+                <a href="{{ $banner->link ?: route('shop.index') }}" class="product-banner-item">
+                    @if($banner->image)
+                        <img src="{{ asset('storage/' . $banner->image) }}" width="370" height="370" alt="{{ $banner->title }}">
+                    @else
+                        <img src="{{ asset('brancy/images/shop/banner/' . $loop->iteration . '.webp') }}" width="370" height="370" alt="{{ $banner->title }}">
+                    @endif
                 </a>
-                <!--== End Product Category Item ==-->
             </div>
-            <div class="col-sm-6 col-lg-4 mt-sm-0 mt-6">
-                <!--== Start Product Category Item ==-->
+            @empty
+            @for($i = 1; $i <= 3; $i++)
+            <div class="col-sm-6 col-lg-4 {{ $i > 1 ? 'mt-sm-0 mt-6' : '' }}">
                 <a href="{{ route('shop.index') }}" class="product-banner-item">
-                    <img src="{{ asset('brancy/images/shop/banner/2.webp') }}" width="370" height="370" alt="Image-HasTech">
+                    <img src="{{ asset('brancy/images/shop/banner/' . $i . '.webp') }}" width="370" height="370" alt="Banner {{ $i }}">
                 </a>
-                <!--== End Product Category Item ==-->
             </div>
-            <div class="col-sm-6 col-lg-4 mt-lg-0 mt-6">
-                <!--== Start Product Category Item ==-->
-                <a href="{{ route('shop.index') }}" class="product-banner-item">
-                    <img src="{{ asset('brancy/images/shop/banner/3.webp') }}" width="370" height="370" alt="Image-HasTech">
-                </a>
-                <!--== End Product Category Item ==-->
-            </div>
+            @endfor
+            @endforelse
         </div>
     </div>
 </section>
@@ -229,63 +213,41 @@
         <div class="row">
             <div class="col-12">
                 <div class="section-title text-center">
-                    <h2 class="title">Blog posts</h2>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis</p>
+                    <h2 class="title">{{ setting('home.blog_title', 'Blog posts') }}</h2>
+                    <p>{{ setting('home.blog_description', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis') }}</p>
                 </div>
             </div>
         </div>
         <div class="row mb-n9">
+            @php
+                $categoryClasses = ['post-category', 'post-category post-category-two', 'post-category post-category-three'];
+                $categoryColors = [null, '#A49CFF', '#9CDBFF'];
+            @endphp
+            @forelse($latestPosts as $index => $post)
             <div class="col-sm-6 col-lg-4 mb-8">
-                <!--== Start Blog Item ==-->
                 <div class="post-item">
-                    <a href="{{ route('blog.show', 'demo-1') }}" class="thumb">
-                        <img src="{{ asset('brancy/images/blog/1.webp') }}" width="370" height="320" alt="Blog Post">
+                    <a href="{{ route('blog.show', $post->slug) }}" class="thumb">
+                        @if($post->featured_image)
+                            <img src="{{ asset('storage/' . $post->featured_image) }}" width="370" height="320" alt="{{ $post->title }}">
+                        @else
+                            <img src="{{ asset('brancy/images/blog/' . ($index + 1) . '.webp') }}" width="370" height="320" alt="{{ $post->title }}">
+                        @endif
                     </a>
                     <div class="content">
-                        <a class="post-category" href="{{ route('blog.index', ['category' => 'beauty']) }}">beauty</a>
-                        <h4 class="title"><a href="{{ route('blog.show', 'demo-1') }}">Lorem ipsum dolor sit amet consectetur adipiscing.</a></h4>
+                        <a class="{{ $categoryClasses[$index % 3] }}" @if($categoryColors[$index % 3]) data-bg-color="{{ $categoryColors[$index % 3] }}" @endif href="{{ route('blog.index', ['category' => $post->category]) }}">{{ $post->category }}</a>
+                        <h4 class="title"><a href="{{ route('blog.show', $post->slug) }}">{{ $post->title }}</a></h4>
                         <ul class="meta">
-                            <li class="author-info"><span>By:</span> Tomas Alva Addison</li>
-                            <li class="post-date">February 13, 2022</li>
+                            <li class="author-info"><span>By:</span> {{ $post->author }}</li>
+                            <li class="post-date">{{ $post->formatted_date }}</li>
                         </ul>
                     </div>
                 </div>
-                <!--== End Blog Item ==-->
             </div>
-            <div class="col-sm-6 col-lg-4 mb-8">
-                <!--== Start Blog Item ==-->
-                <div class="post-item">
-                    <a href="{{ route('blog.show', 'demo-2') }}" class="thumb">
-                        <img src="{{ asset('brancy/images/blog/2.webp') }}" width="370" height="320" alt="Blog Post">
-                    </a>
-                    <div class="content">
-                        <a class="post-category post-category-two" data-bg-color="#A49CFF" href="{{ route('blog.index', ['category' => 'beauty']) }}">beauty</a>
-                        <h4 class="title"><a href="{{ route('blog.show', 'demo-2') }}">Benefit of Hot Ston Spa for your health & life.</a></h4>
-                        <ul class="meta">
-                            <li class="author-info"><span>By:</span> Tomas Alva Addison</li>
-                            <li class="post-date">February 13, 2022</li>
-                        </ul>
-                    </div>
-                </div>
-                <!--== End Blog Item ==-->
+            @empty
+            <div class="col-12 text-center">
+                <p>No blog posts yet. Check back soon!</p>
             </div>
-            <div class="col-sm-6 col-lg-4 mb-8">
-                <!--== Start Blog Item ==-->
-                <div class="post-item">
-                    <a href="{{ route('blog.show', 'demo-3') }}" class="thumb">
-                        <img src="{{ asset('brancy/images/blog/3.webp') }}" width="370" height="320" alt="Blog Post">
-                    </a>
-                    <div class="content">
-                        <a class="post-category post-category-three" data-bg-color="#9CDBFF" href="{{ route('blog.index', ['category' => 'beauty']) }}">beauty</a>
-                        <h4 class="title"><a href="{{ route('blog.show', 'demo-3') }}">Facial Scrub is natural treatment for face.</a></h4>
-                        <ul class="meta">
-                            <li class="author-info"><span>By:</span> Tomas Alva Addison</li>
-                            <li class="post-date">February 13, 2022</li>
-                        </ul>
-                    </div>
-                </div>
-                <!--== End Blog Item ==-->
-            </div>
+            @endforelse
         </div>
     </div>
 </section>
@@ -297,8 +259,8 @@
         <div class="newsletter-content-wrap" data-bg-img="{{ asset('brancy/images/photos/bg1.webp') }}">
             <div class="newsletter-content">
                 <div class="section-title mb-0">
-                    <h2 class="title">Join with us</h2>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam.</p>
+                    <h2 class="title">{{ setting('newsletter.title', 'Join with us') }}</h2>
+                    <p>{{ setting('newsletter.description', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam.') }}</p>
                 </div>
             </div>
             <div class="newsletter-form">

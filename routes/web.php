@@ -25,7 +25,11 @@ Route::get('/', function () {
     ->take(8)
     ->get();
 
-    return view('frontend.pages.home', compact('featuredProducts'));
+    $sliders = \App\Models\Slider::active()->ordered()->get();
+    $banners = \App\Models\Banner::active()->position('home_promo')->ordered()->get();
+    $latestPosts = \App\Models\BlogPost::published()->latest('published_at')->take(3)->get();
+
+    return view('frontend.pages.home', compact('featuredProducts', 'sliders', 'banners', 'latestPosts'));
 })->name('home');
 
 // Static Pages

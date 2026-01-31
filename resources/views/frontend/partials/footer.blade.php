@@ -10,7 +10,7 @@
                             <a class="widget-logo" href="{{ route('home') }}">
                                 <img src="{{ asset('brancy/images/logo.png') }}" width="95" height="68" alt="{{ config('app.name') }}">
                             </a>
-                            <p class="desc">{{ config('app.name') }} - Your trusted beauty and cosmetic destination. Quality products for your beautiful skin.</p>
+                            <p class="desc">{{ setting('general.footer_description', config('app.name') . ' - Your trusted beauty and cosmetic destination. Quality products for your beautiful skin.') }}</p>
                         </div>
                     </div>
                 </div>
@@ -35,10 +35,10 @@
                     <div class="widget-item">
                         <h4 class="widget-title">Social Info</h4>
                         <div class="widget-social">
-                            <a href="{{ config('app.social.twitter', '#') }}" target="_blank" rel="noopener"><i class="fa fa-twitter"></i></a>
-                            <a href="{{ config('app.social.facebook', '#') }}" target="_blank" rel="noopener"><i class="fa fa-facebook"></i></a>
-                            <a href="{{ config('app.social.pinterest', '#') }}" target="_blank" rel="noopener"><i class="fa fa-pinterest-p"></i></a>
-                            <a href="{{ config('app.social.instagram', '#') }}" target="_blank" rel="noopener"><i class="fa fa-instagram"></i></a>
+                            <a href="{{ setting('social.twitter', '#') }}" target="_blank" rel="noopener"><i class="fa fa-twitter"></i></a>
+                            <a href="{{ setting('social.facebook', '#') }}" target="_blank" rel="noopener"><i class="fa fa-facebook"></i></a>
+                            <a href="{{ setting('social.pinterest', '#') }}" target="_blank" rel="noopener"><i class="fa fa-pinterest-p"></i></a>
+                            <a href="{{ setting('social.instagram', '#') }}" target="_blank" rel="noopener"><i class="fa fa-instagram"></i></a>
                         </div>
                     </div>
                 </div>
