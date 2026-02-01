@@ -61,7 +61,7 @@
                         <div class="col-12 col-md-6">
                             <div class="hero-slide-thumb">
                                 @if($slider->image)
-                                    <img src="{{ asset('storage/' . $slider->image) }}" width="841" height="832" alt="{{ $slider->title }}">
+                                    <img src="{{ media_url($slider->image) }}" width="841" height="832" alt="{{ $slider->title }}">
                                 @else
                                     <img src="{{ asset('brancy/images/slider/slider' . $loop->iteration . '.webp') }}" width="841" height="832" alt="{{ $slider->title }}">
                                 @endif
@@ -127,7 +127,7 @@
             <div class="col-6 col-lg-4 col-lg-2 col-xl-2 {{ $index >= 2 ? 'mt-lg-0 mt-sm-6 mt-4' : '' }}">
                 <a href="{{ $cat['link'] ?? route('shop.index') }}" class="product-category-item" @if(!empty($cat['bg_color'])) data-bg-color="{{ $cat['bg_color'] }}" @endif>
                     @if(!empty($cat['icon']))
-                        <img class="icon" src="{{ asset('storage/' . $cat['icon']) }}" width="80" height="80" alt="{{ $cat['name'] }}">
+                        <img class="icon" src="{{ media_url($cat['icon']) }}" width="80" height="80" alt="{{ $cat['name'] }}">
                     @else
                         <img class="icon" src="{{ asset('brancy/images/shop/category/' . ($index + 1) . '.webp') }}" width="80" height="80" alt="{{ $cat['name'] }}">
                     @endif
@@ -173,7 +173,7 @@
             <div class="col-sm-6 col-lg-4 {{ !$loop->first ? 'mt-sm-0 mt-6' : '' }}">
                 <a href="{{ $banner->link ?: route('shop.index') }}" class="product-banner-item">
                     @if($banner->image)
-                        <img src="{{ asset('storage/' . $banner->image) }}" width="370" height="370" alt="{{ $banner->title }}">
+                        <img src="{{ media_url($banner->image) }}" width="370" height="370" alt="{{ $banner->title }}">
                     @else
                         <img src="{{ asset('brancy/images/shop/banner/' . $loop->iteration . '.webp') }}" width="370" height="370" alt="{{ $banner->title }}">
                     @endif
@@ -228,7 +228,7 @@
                 <div class="post-item">
                     <a href="{{ route('blog.show', $post->slug) }}" class="thumb">
                         @if($post->featured_image)
-                            <img src="{{ asset('storage/' . $post->featured_image) }}" width="370" height="320" alt="{{ $post->title }}">
+                            <img src="{{ media_url($post->featured_image) }}" width="370" height="320" alt="{{ $post->title }}">
                         @else
                             <img src="{{ asset('brancy/images/blog/' . ($index + 1) . '.webp') }}" width="370" height="320" alt="{{ $post->title }}">
                         @endif

@@ -35,7 +35,7 @@
                     <div class="title-img">
                         @php $heroImage = setting('about.hero_image'); @endphp
                         @if($heroImage)
-                            <img src="{{ asset('storage/' . $heroImage) }}" alt="About title">
+                            <img src="{{ media_url($heroImage) }}" alt="About title">
                         @else
                             <img src="{{ $cdn }}/photos/about-title.webp" alt="About title">
                         @endif
@@ -49,7 +49,7 @@
                 <div class="page-header-thumb">
                     @php $heroPhoto = setting('about.hero_photo'); @endphp
                     @if($heroPhoto)
-                        <img src="{{ asset('storage/' . $heroPhoto) }}" width="570" height="669" alt="About hero">
+                        <img src="{{ media_url($heroPhoto) }}" width="570" height="669" alt="About hero">
                     @else
                         <img src="{{ $cdn }}/photos/about1.webp" width="570" height="669" alt="About hero">
                     @endif
@@ -70,7 +70,7 @@
                 <div class="funfact-item">
                     <div class="icon">
                         @if(!empty($fact['icon']))
-                            <img src="{{ asset('storage/' . $fact['icon']) }}" width="110" height="110" alt="{{ $fact['label'] }} icon">
+                            <img src="{{ media_url($fact['icon']) }}" width="110" height="110" alt="{{ $fact['label'] }} icon">
                         @else
                             <img src="{{ $cdn }}/icons/funfact{{ $index + 1 }}.webp" width="110" height="110" alt="{{ $fact['label'] }} icon">
                         @endif
@@ -95,7 +95,7 @@
                 <div class="swiper-slide brand-logo-item">
                     <!--== Start Brand Logo Item ==-->
                     @if(!empty($logo['image']))
-                        <img src="{{ asset('storage/' . $logo['image']) }}" width="155" height="110" alt="{{ $logo['alt'] ?? 'Brand logo ' . ($index + 1) }}">
+                        <img src="{{ media_url($logo['image']) }}" width="155" height="110" alt="{{ $logo['alt'] ?? 'Brand logo ' . ($index + 1) }}">
                     @else
                         <img src="{{ $cdn }}/brand-logo/{{ $index + 1 }}.webp" width="155" height="110" alt="{{ $logo['alt'] ?? 'Brand logo ' . ($index + 1) }}">
                     @endif
@@ -114,7 +114,7 @@
         <div class="about-thumb">
             @php $mainImage = setting('about.main_image'); @endphp
             @if($mainImage)
-                <img src="{{ asset('storage/' . $mainImage) }}" alt="{{ setting('about.section_title', 'Best Cosmetics Provider') }}">
+                <img src="{{ media_url($mainImage) }}" alt="{{ setting('about.section_title', 'Best Cosmetics Provider') }}">
             @else
                 <img src="{{ $cdn }}/photos/about2.webp" alt="{{ setting('about.section_title', 'Best Cosmetics Provider') }}">
             @endif
@@ -137,7 +137,7 @@
                 <div class="feature-item">
                     <h5 class="title">
                         @if(!empty($feature['icon']))
-                            <img class="icon" src="{{ asset('storage/' . $feature['icon']) }}" width="60" height="60" alt="{{ $feature['title'] }} icon">
+                            <img class="icon" src="{{ media_url($feature['icon']) }}" width="60" height="60" alt="{{ $feature['title'] }} icon">
                         @else
                             <img class="icon" src="{{ $cdn }}/icons/feature{{ $index + 1 }}.webp" width="60" height="60" alt="{{ $feature['title'] }} icon">
                         @endif

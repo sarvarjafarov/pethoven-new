@@ -8,7 +8,7 @@
 
     // Handle featured image
     $postFeaturedSrc = $post->featured_image
-        ? asset('storage/' . $post->featured_image)
+        ? media_url($post->featured_image)
         : "{$cdn}/blog/blog-detail1.webp";
 
     // Get previous/next posts for navigation
@@ -74,7 +74,7 @@
             <a href="{{ route('shop.index') }}" class="product-banner-item">
                 @php $blogBanner = setting('blog.banner_image'); @endphp
                 @if($blogBanner)
-                    <img src="{{ asset('storage/' . $blogBanner) }}" width="1170" height="200" alt="Shop Banner">
+                    <img src="{{ media_url($blogBanner) }}" width="1170" height="200" alt="Shop Banner">
                 @else
                     <img src="{{ $cdn }}/shop/banner/9.webp" width="1170" height="200" alt="Shop Banner">
                 @endif
@@ -164,7 +164,7 @@
                     <div class="post-item">
                         <a href="{{ route('blog.show', $relatedPost->slug) }}" class="thumb">
                             @if($relatedPost->featured_image)
-                                <img src="{{ asset('storage/' . $relatedPost->featured_image) }}" width="370" height="320" alt="{{ $relatedPost->title }}">
+                                <img src="{{ media_url($relatedPost->featured_image) }}" width="370" height="320" alt="{{ $relatedPost->title }}">
                             @else
                                 <img src="{{ $cdn }}/blog/{{ ($index % 6) + 1 }}.webp" width="370" height="320" alt="{{ $relatedPost->title }}">
                             @endif

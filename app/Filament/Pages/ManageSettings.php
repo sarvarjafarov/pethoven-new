@@ -130,7 +130,7 @@ class ManageSettings extends Page
                                             ->required(),
                                         Forms\Components\FileUpload::make('icon')
                                             ->image()
-                                            ->disk('public')
+                                            ->disk(media_disk())
                                             ->directory('categories')
                                             ->visibility('public'),
                                         Forms\Components\ColorPicker::make('bg_color')
@@ -166,11 +166,13 @@ class ManageSettings extends Page
                                 Forms\Components\FileUpload::make('about_hero_image')
                                     ->label('Hero Title Image')
                                     ->image()
+                                    ->disk(media_disk())
                                     ->directory('about')
                                     ->visibility('public'),
                                 Forms\Components\FileUpload::make('about_hero_photo')
                                     ->label('Hero Photo')
                                     ->image()
+                                    ->disk(media_disk())
                                     ->directory('about')
                                     ->visibility('public'),
                                 Forms\Components\TextInput::make('about_section_title')
@@ -181,6 +183,7 @@ class ManageSettings extends Page
                                 Forms\Components\FileUpload::make('about_main_image')
                                     ->label('Main Section Image')
                                     ->image()
+                                    ->disk(media_disk())
                                     ->directory('about')
                                     ->visibility('public'),
                                 Forms\Components\Repeater::make('about_brand_logos')
@@ -188,7 +191,7 @@ class ManageSettings extends Page
                                     ->schema([
                                         Forms\Components\FileUpload::make('image')
                                             ->image()
-                                            ->disk('public')
+                                            ->disk(media_disk())
                                             ->directory('about')
                                             ->visibility('public'),
                                         Forms\Components\TextInput::make('alt')
@@ -210,7 +213,7 @@ class ManageSettings extends Page
                                             ->placeholder('e.g. Clients'),
                                         Forms\Components\FileUpload::make('icon')
                                             ->image()
-                                            ->disk('public')
+                                            ->disk(media_disk())
                                             ->directory('about')
                                             ->visibility('public'),
                                     ])
@@ -226,7 +229,7 @@ class ManageSettings extends Page
                                             ->rows(2),
                                         Forms\Components\FileUpload::make('icon')
                                             ->image()
-                                            ->disk('public')
+                                            ->disk(media_disk())
                                             ->directory('about')
                                             ->visibility('public'),
                                     ])
@@ -258,7 +261,7 @@ class ManageSettings extends Page
                                 Forms\Components\FileUpload::make('blog_banner_image')
                                     ->label('Blog Page Banner')
                                     ->image()
-                                    ->disk('public')
+                                    ->disk(media_disk())
                                     ->directory('blog')
                                     ->visibility('public'),
                             ]),

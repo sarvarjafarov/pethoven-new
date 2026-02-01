@@ -54,7 +54,7 @@
                 <div class="post-item">
                     <a href="{{ route('blog.show', $post->slug) }}" class="thumb">
                         @if($post->featured_image)
-                            <img src="{{ asset('storage/' . $post->featured_image) }}" width="370" height="320" alt="{{ $post->title }}">
+                            <img src="{{ media_url($post->featured_image) }}" width="370" height="320" alt="{{ $post->title }}">
                         @else
                             <img src="{{ $cdn }}/blog/{{ $blogImages[$index % count($blogImages)] }}" width="370" height="320" alt="{{ $post->title }}">
                         @endif
@@ -103,7 +103,7 @@
                 <div class="post-item">
                     <a href="{{ route('blog.show', $post->slug) }}" class="thumb">
                         @if($post->featured_image)
-                            <img src="{{ asset('storage/' . $post->featured_image) }}" width="570" height="340" alt="{{ $post->title }}">
+                            <img src="{{ media_url($post->featured_image) }}" width="570" height="340" alt="{{ $post->title }}">
                         @else
                             <img src="{{ $cdn }}/blog/col6-{{ $index + 1 }}.webp" width="570" height="340" alt="{{ $post->title }}">
                         @endif
@@ -143,7 +143,7 @@
                     <div class="post-item">
                         <a href="{{ route('blog.show', $post->slug) }}" class="thumb">
                             @if($post->featured_image)
-                                <img src="{{ asset('storage/' . $post->featured_image) }}" width="370" height="320" alt="{{ $post->title }}">
+                                <img src="{{ media_url($post->featured_image) }}" width="370" height="320" alt="{{ $post->title }}">
                             @else
                                 <img src="{{ $cdn }}/blog/{{ $blogImages[$index % count($blogImages)] }}" width="370" height="320" alt="{{ $post->title }}">
                             @endif
@@ -187,7 +187,7 @@
                 <a href="{{ route('shop.index') }}" class="product-banner-item">
                     @php $blogBanner = setting('blog.banner_image'); @endphp
                     @if($blogBanner)
-                        <img src="{{ asset('storage/' . $blogBanner) }}" width="770" height="250" alt="Shop Banner">
+                        <img src="{{ media_url($blogBanner) }}" width="770" height="250" alt="Shop Banner">
                     @else
                         <img src="{{ $cdn }}/shop/banner/8.webp" width="770" height="250" alt="Shop Banner">
                     @endif
