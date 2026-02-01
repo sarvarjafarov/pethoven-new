@@ -130,6 +130,7 @@ class ManageSettings extends Page
                                             ->required(),
                                         Forms\Components\FileUpload::make('icon')
                                             ->image()
+                                            ->disk('public')
                                             ->directory('categories')
                                             ->visibility('public'),
                                         Forms\Components\ColorPicker::make('bg_color')
@@ -187,6 +188,7 @@ class ManageSettings extends Page
                                     ->schema([
                                         Forms\Components\FileUpload::make('image')
                                             ->image()
+                                            ->disk('public')
                                             ->directory('about')
                                             ->visibility('public'),
                                         Forms\Components\TextInput::make('alt')
@@ -208,6 +210,7 @@ class ManageSettings extends Page
                                             ->placeholder('e.g. Clients'),
                                         Forms\Components\FileUpload::make('icon')
                                             ->image()
+                                            ->disk('public')
                                             ->directory('about')
                                             ->visibility('public'),
                                     ])
@@ -223,6 +226,7 @@ class ManageSettings extends Page
                                             ->rows(2),
                                         Forms\Components\FileUpload::make('icon')
                                             ->image()
+                                            ->disk('public')
                                             ->directory('about')
                                             ->visibility('public'),
                                     ])
@@ -254,6 +258,7 @@ class ManageSettings extends Page
                                 Forms\Components\FileUpload::make('blog_banner_image')
                                     ->label('Blog Page Banner')
                                     ->image()
+                                    ->disk('public')
                                     ->directory('blog')
                                     ->visibility('public'),
                             ]),

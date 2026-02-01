@@ -49,6 +49,7 @@ class BlogPostResource extends Resource
                     ->schema([
                         Forms\Components\FileUpload::make('featured_image')
                             ->image()
+                            ->disk('public')
                             ->directory('blog')
                             ->visibility('public'),
                         Forms\Components\TextInput::make('category')
@@ -71,6 +72,7 @@ class BlogPostResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('featured_image')
+                    ->disk('public')
                     ->size(60),
                 Tables\Columns\TextColumn::make('title')
                     ->searchable()

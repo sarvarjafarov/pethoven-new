@@ -31,6 +31,7 @@ class BannerResource extends Resource
                         Forms\Components\FileUpload::make('image')
                             ->image()
                             ->required()
+                            ->disk('public')
                             ->directory('banners')
                             ->visibility('public'),
                         Forms\Components\TextInput::make('link')
@@ -62,6 +63,7 @@ class BannerResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('image')
+                    ->disk('public')
                     ->size(80),
                 Tables\Columns\TextColumn::make('title')
                     ->searchable()

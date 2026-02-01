@@ -45,6 +45,7 @@ class SliderResource extends Resource
                     ->schema([
                         Forms\Components\FileUpload::make('image')
                             ->image()
+                            ->disk('public')
                             ->directory('sliders')
                             ->visibility('public')
                             ->imageResizeMode('cover')
@@ -66,6 +67,7 @@ class SliderResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('image')
+                    ->disk('public')
                     ->size(60),
                 Tables\Columns\TextColumn::make('title')
                     ->searchable(),
